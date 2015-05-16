@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Majora base domain definirion -->
+        <service id="majora.domain.abstract"
+                 class="Majora\Framework\Domain\AbstractDomain"
+                 abstract="true" public="false"
+        >
+            <call method="setEventDispatcher">
+                <argument type="service" id="event_dispatcher" />
+            </call>
+            <call method="setValidator">
+                <argument type="service" id="validator" />
+            </call>
+        </service>
+
+        <!-- Majora base loader definirion -->
+        <service id="majora.loader.abstract"
+                 class="Majora\Framework\Loader\BaseLoader"
+                 abstract="true" public="false"
+        >
+
+        </service>
+
+        <!-- Majora base api repository definition -->
+        <service id="majora.api_repository.abstract"
+                 class="Majora\Framework\Repository\Api\AbstractApiRepository"
+                 abstract="true" public="false"
+        >
+
+        </service>
+
+        <!-- Majora base fixtures repository definition -->
+        <service id="majora.fixtures_repository.abstract"
+                 class="Majora\Framework\Repository\Fixtures\AbstractFixturesRepository"
+                 abstract="true" public="false"
+        >
+
+        </service>
+
+        <!-- Majora base doctrine repository definition -->
+        <service id="majora.doctrine_repository.abstract"
+                 class="Majora\Framework\Repository\Doctrine\BaseDoctrineRepository"
+                 abstract="true" public="false"
+        >
+
+        </service>
+
+    </services>
+</container>

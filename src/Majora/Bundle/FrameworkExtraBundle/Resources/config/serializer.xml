@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Serializer -->
+        <service id="majora.serializer" class="Majora\Framework\Serializer\MajoraSerializer">
+            <argument><!-- serialize handlers --></argument>
+        </service>
+        <service id="serializer" alias="majora.serializer" />
+
+        <!-- Json serialization handler -->
+        <service id="majora.serialization_handler.json" class="Majora\Framework\Serializer\Handler\Json\JsonHandler" public="false">
+            <tag name="majora.serialization_handler" format="json" />
+        </service>
+
+        <!-- Array serialization handler -->
+        <service id="majora.serialization_handler.array" class="Majora\Framework\Serializer\Handler\Collection\CollectionHandler" public="false">
+            <tag name="majora.serialization_handler" format="array" />
+        </service>
+
+        <!-- Yaml serialization handler -->
+        <service id="majora.serialization_handler.yaml" class="Majora\Framework\Serializer\Handler\Yaml\YamlHandler" public="false">
+            <tag name="majora.serialization_handler" format="yaml" />
+            <argument type="service" id="yaml_parser" />
+        </service>
+
+        <!-- Yaml parser -->
+        <service id="yaml_parser" class="Symfony\Component\Yaml\Yaml" public="false" />
+
+    </services>
+</container>

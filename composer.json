@@ -1,0 +1,38 @@
+{
+    "name":         "majora/framework-extra-bundle",
+    "version":      "1.0",
+    "description":  "Provides extra classes and configurations for Symfony framework.",
+    "keywords":     ["framework", "Symfony", "bundle"],
+    "type":         "library",
+    "license":      "MIT",
+    "authors":     [
+        {
+            "name":     "Quentin Cerny",
+            "email":    "quentin.cerny@gmail.com",
+            "homepage": "https://github.com/Nyxis"
+        },
+        {
+            "name": "LinkValue partners",
+            "homepage": "https://github.com/orgs/LinkValue/people"
+        },
+        {
+            "name":     "LinkValue",
+            "email":    "contact@link-value.fr",
+            "homepage": "http://link-value.fr/"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "symfony/symfony": "*"
+    },
+    "suggest": {
+        "majora/generator-bundle": "If you want to generate powerfull architecture without write to more code."
+    },
+    "autoload": {
+        "psr-4": {
+            "Majora\\Bundle\\Doctrine\\": "src/Majora/Bundle",
+            "Majora\\Framework\\": "src/Majora/Framework"
+        }
+    },
+    "minimum-stability": "dev"
+}
