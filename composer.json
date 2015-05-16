@@ -30,7 +30,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Majora\\Bundle\\Doctrine\\": "src/Majora/Bundle",
+            "Majora\\Bundle\\": "src/Majora/Bundle",
             "Majora\\Framework\\": "src/Majora/Framework"
         }
     },
