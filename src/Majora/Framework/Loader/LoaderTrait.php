@@ -90,7 +90,7 @@ trait LoaderTrait
             $offset
         );
 
-        return get_class($collection) == $this->collectionClass ?
+        return is_object($collection) && get_class($collection) == $this->collectionClass ?
             $collection :
             new $this->collectionClass(
                 $collection instanceof Collection ?

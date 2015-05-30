@@ -3,7 +3,6 @@
 namespace Majora\Framework\Validation;
 
 use Majora\Framework\Model\CollectionableInterface;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Custom exception class for validation exceptions.
@@ -17,14 +16,14 @@ class ValidationException extends \InvalidArgumentException
     /**
      * construct.
      *
-     * @param CollectionableInterface          $entity
-     * @param ConstraintViolationListInterface $report
-     * @param array                            $groups
+     * @param CollectionableInterface                            $entity
+     * @param FormErrorIterator|ConstraintViolationListInterface $report
+     * @param array                                              $groups
      */
     public function __construct(
-        CollectionableInterface          $entity,
-        ConstraintViolationListInterface $report,
-        array                            $groups = null,
+        CollectionableInterface $entity,
+        $report,
+        array $groups = null,
         $code     = null,
         $previous = null
     ) {
@@ -41,5 +40,35 @@ class ValidationException extends \InvalidArgumentException
             $code,
             $previous
         );
+    }
+
+    /**
+     * return failed entity
+     *
+     * @return CollectionableInterface
+     */
+    public function getEntity()
+    {
+        return $this->entity;
+    }
+
+    /**
+     * return validation groups which are failing
+     *
+     * @return array
+     */
+    public function getGroups()
+    {
+        return $this->report;
+    }
+
+    /**
+     * return violation list report
+     *
+     * @return FormErrorIterator|ConstraintViolationListInterface
+     */
+    public function getReport()
+    {
+        return $this->report;
     }
 }

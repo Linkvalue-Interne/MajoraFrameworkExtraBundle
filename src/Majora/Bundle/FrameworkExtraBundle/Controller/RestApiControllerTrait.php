@@ -2,11 +2,14 @@
 
 namespace Majora\Bundle\FrameworkExtraBundle\Controller;
 
+use Majora\Bundle\FrameworkExtraBundle\Controller\ControllerTrait;
 use Majora\Framework\Serializer\Handler\Json\Exception\JsonDeserializationException;
+use Majora\Framework\Validation\ValidationException;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -16,6 +19,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 trait RestApiControllerTrait
 {
+    use ControllerTrait;
+
     /**
      * Create a JsonResponse with given data, if object given, it will be serialize
      * with registered serializer.
@@ -94,29 +99,34 @@ trait RestApiControllerTrait
      * @param Request       $request
      * @param FormInterface $form
      *
-     * @return bool
+     * @throws HttpException       if invalid json data
+     * @throws ValidationException if invalid form
      */
-    protected function submitJsonData(Request $request, FormInterface $form)
+    protected function assertSubmitedJsonFormIsValid(Request $request, FormInterface $form)
     {
-        $data = json_decode($request->getContent(), true);
-
+        $data = @json_decode($request->getContent(), true);
         if (null === $data) {
-            throw new JsonDeserializationException(sprintf(
-                'Invalid json data, error %s : %s',
+            throw new HttpException(400, sprintf(
+                'Invalid submitted json data, error %s : %s',
                 json_last_error(),
                 json_last_error_msg()
             ));
         }
 
+        // data camel case normalization
+        $normalizer = $this->container->has('fos_rest.normalizer.camel_keys') ?
+            $this->container->get('fos_rest.normalizer.camel_keys') :
+            null
+        ;
+        $data = $normalizer ? $normalizer->normalize($data) : $data;
+
         $form->submit($data);
         if (!$valid = $form->isValid()) {
-            $this->container->get('logger')->notice(
-                'Invalid form submitted',
-                ['errors' => $form->getErrors(), 'data' => $data]
+            throw new ValidationException(
+                $form->getData(),
+                $form->getErrors(true, true) // deep & flattened
             );
         }
-
-        return $valid;
     }
 
     /**

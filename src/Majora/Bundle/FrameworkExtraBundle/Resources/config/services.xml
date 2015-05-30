@@ -51,5 +51,11 @@
 
         </service>
 
+        <!-- Exception listener -->
+        <service id="majora.validation.exception_listener" class="Majora\Framework\Validation\Listener\ValidationExceptionListener">
+            <argument>%kernel.debug%</argument>
+            <tag name="kernel.event_subscriber" />
+        </service>
+
     </services>
 </container>
