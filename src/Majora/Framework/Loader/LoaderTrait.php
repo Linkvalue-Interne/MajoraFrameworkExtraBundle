@@ -101,6 +101,14 @@ trait LoaderTrait
     }
 
     /**
+     * @see LoaderInterface::retrieveOne()
+     */
+    public function retrieveOne(array $filters = array())
+    {
+        return $this->retrieveAll($filters)->first();
+    }
+
+    /**
      * @see LoaderInterface::retrieve()
      */
     public function retrieve($id)

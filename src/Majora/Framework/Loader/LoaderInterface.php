@@ -19,6 +19,15 @@ interface LoaderInterface
     public function retrieveAll(array $filters = array(), $limit = null, $offset = null);
 
     /**
+     * retrive one entity matching given filters throught this loader
+     *
+     * @param array $filters optionnal property => value filter map
+     *
+     * @return Object
+     */
+    public function retrieveOne(array $filters = array());
+
+    /**
      * Retrieves a single entity by id.
      *
      * @param $id

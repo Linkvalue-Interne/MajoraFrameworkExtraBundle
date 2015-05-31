@@ -80,13 +80,21 @@ trait DoctrineRepositoryTrait
     }
 
     /**
+     * @see LoaderInterface::retrieveOne()
+     */
+    public function retrieveOne(array $filters = array())
+    {
+        return $this->createFilteredQuery($filters)
+            ->getOneOrNullResult()
+        ;
+    }
+
+    /**
      * @see LoaderInterface::retrieve()
      */
     public function retrieve($id)
     {
-        return $this->createFilteredQuery(array('id' => $id))
-            ->getOneOrNullResult()
-        ;
+        return $this->retrieveOne(array('id' => $id));
     }
 
     /**
