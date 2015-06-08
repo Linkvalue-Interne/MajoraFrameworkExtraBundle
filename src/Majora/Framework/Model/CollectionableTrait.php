@@ -10,11 +10,11 @@ use Doctrine\Common\Collections\Collection;
 trait CollectionableTrait
 {
     /**
-     * helper class to use for cast arrays to
+     * helper method to use for cast arrays to
      * collections of entities.
      *
-     * @param ArrayCollection|array $data
-     * @param string                $collectionClass
+     * @param Collection|array $data
+     * @param string           $collectionClass
      *
      * @return EntityCollection
      */

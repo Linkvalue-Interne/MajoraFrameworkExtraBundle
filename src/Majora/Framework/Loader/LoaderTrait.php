@@ -4,7 +4,7 @@ namespace Majora\Framework\Loader;
 
 use Doctrine\Common\Collections\Collection;
 use Majora\Framework\Repository\RepositoryInterface;
-use Majora\Framework\Serializer\Model\SerializableInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Base trait for loaders.
@@ -14,6 +14,7 @@ trait LoaderTrait
     protected $entityRepository;
     protected $entityClass;
     protected $collectionClass;
+    protected $filterResolver;
 
     /**
      * setUp method.
@@ -31,11 +32,10 @@ trait LoaderTrait
         $this->entityClass      = $entityClass;
         $this->collectionClass  = $collectionClass;
 
-        $entity = new $entityClass();
-        if (!$entity instanceof SerializableInterface) {
-            throw new \InvalidArgumentException(
-                'You must provide a Majora\Framework\Model\SerializableInterface class name.'
-            );
+        $reflected = new \ReflectionClass($entityClass);
+        $this->filterResolver = new OptionsResolver();
+        foreach ($reflected->getProperties() as $property) {
+            $this->filterResolver->setDefined($property->getName());
         }
     }
 
@@ -46,7 +46,9 @@ trait LoaderTrait
      */
     private function assertIsConfigured()
     {
-        if ($this->entityRepository && $this->entityClass && $this->collectionClass) {
+        if ($this->entityRepository && $this->entityClass
+            && $this->collectionClass && $this->filterResolver
+        ) {
             return;
         }
 
@@ -54,24 +56,6 @@ trait LoaderTrait
             '%s methods cannot be used, it hasnt been initialize through setUp() method.',
             __CLASS__
         ));
-    }
-
-    /**
-     * Filter filters, only keep those who match related entity fields.
-     *
-     * @param array $filters
-     *
-     * @return array
-     */
-    private function cleanFilters(array $filters)
-    {
-        /** @var SerializableInterface $entity */
-        $entity = new $this->entityClass();
-
-        return array_intersect_key(
-            $filters,
-            array_flip(array_keys($entity->serialize()))
-        );
     }
 
     /**
@@ -85,7 +69,7 @@ trait LoaderTrait
         $this->assertIsConfigured();
 
         $collection = $this->entityRepository->retrieveAll(
-            $this->cleanFilters($filters),
+            $this->filterResolver->resolve($filters),
             $limit,
             $offset
         );
