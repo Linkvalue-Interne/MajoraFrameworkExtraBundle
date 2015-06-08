@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -130,7 +131,21 @@ trait RestApiControllerTrait
     }
 
     /**
-     * @see Symfony\Bundle\FrameworkBundle\Controller\Controller::createForm()
+     * verify if intention on given resource (request if undefined) is granted
+     *
+     * @param string $intention
+     * @param mixed  $resource
+     *
+     * @throws AccessDeniedHttpException if denied
      */
-    abstract public function createForm($type, $data = null, array $options = array());
+    protected function assertIsGrantedOr403($intention, $resource = null)
+    {
+        if (!$this->checkSecurity($intention, $resource)) {
+            throw new AccessDeniedHttpException(sprintf(
+                'Access denied while trying to "%s" an "%s" object.',
+                $intention,
+                is_object($resource) ? get_class($resource) : 'unknown'
+            ));
+        }
+    }
 }

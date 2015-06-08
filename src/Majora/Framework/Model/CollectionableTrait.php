@@ -2,7 +2,7 @@
 
 namespace Majora\Framework\Model;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Trait for collectionable objects.
@@ -22,8 +22,8 @@ trait CollectionableTrait
     {
         $data = $data ?: array();
 
-        if (!is_array($data) && !$data instanceof ArrayCollection) {
-            throw new \InvalidArgumentException('Can transform only ArrayCollections or arrays.');
+        if (!is_array($data) && !$data instanceof Collection) {
+            throw new \InvalidArgumentException('Can transform only Collections or arrays.');
         }
 
         return is_object($data) && get_class($data) == $collectionClass ?

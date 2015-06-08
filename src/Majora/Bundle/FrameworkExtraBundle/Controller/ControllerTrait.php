@@ -13,6 +13,47 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 trait ControllerTrait
 {
     /**
+     * return controller security mapping as "intention" => "credentials"
+     *
+     * @example :
+     *    return array(
+     *       'list'   => array('fetch'),
+     *       'get'    => array('read'),
+     *       'create' => array('write'),
+     *       'udpate' => array('write')
+     *    );
+     *
+     * @see ControllerTrait::checkSecurity()
+     *
+     * @return array
+     */
+    protected function getSecurityMapping()
+    {
+        return array();
+    }
+
+    /**
+     * checks security for given intention
+     *
+     * @param string $intention
+     * @param mixed  $resource
+     *
+     * @return boolean
+     */
+    protected function checkSecurity($intention, $resource = null)
+    {
+        $securityMapping = $this->getSecurityMapping();
+        if (empty($securityMapping[$intention])) {
+            return true; // no mapping ? granted
+        }
+
+        return $this->container->get('security.context')->isGranted(
+            (array) $securityMapping[$intention],
+            $resource
+        );
+    }
+
+    /**
      * Extract available query filter from request.
      *
      * @param Request $request
