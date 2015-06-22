@@ -20,17 +20,17 @@ trait CollectionableTrait
      */
     private function toCollection($data, $collectionClass)
     {
-        $data = $data ?: array();
+        if ($data instanceof $collectionClass) {
+            return $data;
+        }
 
+        $data = $data ?: array();
         if (!is_array($data) && !$data instanceof Collection) {
             throw new \InvalidArgumentException('Can transform only Collections or arrays.');
         }
 
-        return is_object($data) && get_class($data) == $collectionClass ?
-            $collectionClass :
-            new $collectionClass(
-                is_array($data) ? $data : $data->toArray()
-            )
-        ;
+        return new $collectionClass(
+            is_array($data) ? $data : $data->toArray()
+        );
     }
 }

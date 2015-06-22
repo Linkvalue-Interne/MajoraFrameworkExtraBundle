@@ -52,6 +52,10 @@ trait SerializableTrait
                         ;
                         $value = $value->serialize($subScope);
                     }
+                    // date ?
+                    if ($value instanceof \DateTime) {
+                        $value = $value->format(\DateTime::ISO8601);
+                    }
 
                     $data[$fieldConfig] = $value;
 
@@ -96,21 +100,12 @@ trait SerializableTrait
     {
         foreach ($data as $property => $value) {
             if (!property_exists($this, $property)) {
-                throw new \InvalidArgumentException(sprintf(
-                    'Try to set "%s" property on a %s object which doesnt exists.',
-                    $property,
-                    get_class($this)
-                ));
+                continue;
             }
 
             $setter = sprintf('set%s', ucfirst($property));
             if (!method_exists($this, $setter)) {
                 $this->$property = $value;
-
-                continue;
-            }
-            if (!is_array($value)) {
-                $this->$setter($value);
 
                 continue;
             }
@@ -120,7 +115,9 @@ trait SerializableTrait
             $parameters       = $reflectionMethod->getParameters();
             $setParameter     = $parameters[0];
 
-            if ($setParameter->isArray()) {
+            if (!$setParameter->getClass() ||
+                $setParameter->isArray()
+            ) {
                 $this->$setter($value);
 
                 continue;
@@ -128,14 +125,13 @@ trait SerializableTrait
 
             // non array hinting but no class either : interface or callable
             $classHinting = $setParameter->getClass();
-            if (!$classHinting) {
+            if (!$classHinting || empty($value)) {
                 continue;
             }
-
-            $instance = $classHinting->newInstance();
-            $this->$setter($instance instanceof SerializableInterface ?
-                $instance->deserialize($value) :
-                $instance
+            $this->$setter(
+                $classHinting->implementsInterface('Majora\Framework\Serializer\Model\SerializableInterface') ?
+                    $classHinting->newInstance()->deserialize($value) :
+                    $classHinting->newInstanceArgs(array($value))
             );
         }
 

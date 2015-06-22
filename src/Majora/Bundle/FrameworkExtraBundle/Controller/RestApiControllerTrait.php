@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Base trait for REST APIs entity controllers traits.
@@ -166,7 +167,11 @@ trait RestApiControllerTrait
         ;
         $data = $normalizer ? $normalizer->normalize($data) : $data;
 
-        $form->submit($data);
+        $form->submit(
+            $data,
+            $request->getMethod() !== 'PATCH'
+        );
+
         if (!$valid = $form->isValid()) {
             throw new ValidationException(
                 $form->getData(),
