@@ -5,14 +5,21 @@ namespace Majora\Framework\Domain;
 use Majora\Framework\Validation\ValidationException;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Base trait for domains.
  */
 trait DomainTrait
 {
+    /**
+     * @var ValidatorInterface
+     */
     protected $validator;
+
+    /**
+     * @var EventDispatcherInterface
+     */
     protected $eventDispatcher;
 
     /**
@@ -54,6 +61,7 @@ trait DomainTrait
 
         $violationList = $this->validator->validate(
             $entity,
+            null,
             $scope ? (array) $scope : null
         );
 
@@ -74,7 +82,7 @@ trait DomainTrait
      * @param string $eventName
      * @param Event  $event
      *
-     * @throws BadMethodCallException If any event dispatcher set
+     * @throws \BadMethodCallException If any event dispatcher set
      */
     protected function fireEvent($eventName, Event $event)
     {
