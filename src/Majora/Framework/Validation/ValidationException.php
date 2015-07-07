@@ -2,6 +2,7 @@
 
 namespace Majora\Framework\Validation;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Majora\Framework\Model\CollectionableInterface;
 
 /**
@@ -22,7 +23,7 @@ class ValidationException extends \InvalidArgumentException
      */
     public function __construct(
         CollectionableInterface $entity,
-        $report,
+        $report = null,
         array $groups = null,
         $code     = null,
         $previous = null
@@ -59,7 +60,7 @@ class ValidationException extends \InvalidArgumentException
      */
     public function getGroups()
     {
-        return $this->report;
+        return $this->groups;
     }
 
     /**
@@ -69,6 +70,9 @@ class ValidationException extends \InvalidArgumentException
      */
     public function getReport()
     {
-        return $this->report;
+        return $this->report ?
+            $this->report :
+            new ArrayCollection()
+        ;
     }
 }
