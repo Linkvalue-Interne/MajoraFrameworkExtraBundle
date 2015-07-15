@@ -162,7 +162,7 @@ trait RestApiControllerTrait
 
         // data camel case normalization
         $data = $this->container->has('majora.inflector') ?
-            $this->container->get('majora.inflector')->normalize($data, 'camelcase') :
+            $this->container->get('majora.inflector')->normalize($data, 'camelize') :
             $data
         ;
 
