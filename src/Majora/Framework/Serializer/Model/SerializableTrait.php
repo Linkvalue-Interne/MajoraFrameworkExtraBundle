@@ -2,6 +2,7 @@
 
 namespace Majora\Framework\Serializer\Model;
 
+use Majora\Framework\Serializer\Model\SerializableInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
@@ -36,6 +37,8 @@ trait SerializableTrait
             return array();
         }
 
+        $propertyAccessor = $propertyAccessor ?: PropertyAccess::createPropertyAccessor();
+
         $read = function ($property) use ($propertyAccessor) {
             if (!($propertyAccessor && $propertyAccessor->isReadable($this, $property))
                 && !property_exists($this, $property)
@@ -47,8 +50,8 @@ trait SerializableTrait
                 ));
             }
 
-            return $propertyAccessor && $this->propertyAccessor->isReadable($this, $property) ?
-                $this->propertyAccessor->getValue($this, $property) :
+            return $propertyAccessor && $propertyAccessor->isReadable($this, $property) ?
+                $propertyAccessor->getValue($this, $property) :
                 $this->$property
             ;
         };
@@ -114,6 +117,8 @@ trait SerializableTrait
      */
     public function deserialize(array $data, PropertyAccessorInterface $propertyAccessor = null)
     {
+        $propertyAccessor = $propertyAccessor ?: PropertyAccess::createPropertyAccessor();
+
         $write = function ($property, $value) use ($propertyAccessor) {
             if (!($propertyAccessor && $propertyAccessor->isWritable($this, $property))
                 && !property_exists($this, $property)

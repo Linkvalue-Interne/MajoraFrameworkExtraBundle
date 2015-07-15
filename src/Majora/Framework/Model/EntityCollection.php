@@ -4,22 +4,33 @@ namespace Majora\Framework\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Majora\Framework\Serializer\Model\SerializableInterface;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * Base class for entity aggregation collection.
  */
-class EntityCollection
-    extends ArrayCollection
-    implements SerializableInterface
+class EntityCollection extends ArrayCollection implements SerializableInterface
 {
+    /**
+     * return collectionned entity class
+     *
+     * @return string
+     */
+    protected function getEntityClass()
+    {
+        throw new \BadMethodCallException(sprintf('%s() method has to be defined in %s class.',
+            __FUNCTION__, get_class($this)
+        ));
+    }
+
     /**
      * @see SerializableInterface::serialize()
      */
-    public function serialize($scope = 'default')
+    public function serialize($scope = 'default', PropertyAccessorInterface $propertyAccessor = null)
     {
         return array_values(array_map(
-            function (SerializableInterface $entity) use ($scope) {
-                return $entity->serialize($scope);
+            function (SerializableInterface $entity) use ($scope, $propertyAccessor) {
+                return $entity->serialize($scope, $propertyAccessor);
             },
             $this->toArray()
         ));
@@ -28,11 +39,23 @@ class EntityCollection
     /**
      * @see SerializableInterface::deserialize()
      */
-    public function deserialize(array $data)
+    public function deserialize(array $data, PropertyAccessorInterface $propertyAccessor = null)
     {
-        throw new \BadMethodCallException(sprintf('%s() method has to be defined in %s class.',
-            __FUNCTION__, get_class($this)
-        ));
+        $this->clear();
+        $entityClass = $this->getEntityClass();
+
+        $entities = array_map(
+            function (array $majoraEntityData) use ($entityClass, $propertyAccessor) {
+                return (new $entityClass())->deserialize($majoraEntityData, $propertyAccessor);
+            },
+            $data
+        );
+
+        foreach ($entities as $entity) {
+            $this->set($entity->getId(), $entity);
+        }
+
+        return $this;
     }
 
     /**
