@@ -23,7 +23,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "symfony/symfony": "*"
+        "symfony/symfony": ">=2.7.0"
     },
     "suggest": {
         "majora/generator-bundle": "If you want to generate powerfull architecture without write to more code."
