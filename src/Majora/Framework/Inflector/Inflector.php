@@ -112,6 +112,46 @@ class Inflector
     }
 
     /**
+     * Normalize given data
+     * If an array is given, normalize keys, according to given method
+     *
+     * @param string|array &$data
+     * @param string       $format
+     *
+     * @return string|array
+     *
+     * @see for inspiration https://github.com/FriendsOfSymfony/FOSRestBundle/blob/master/Normalizer/CamelKeysNormalizer.php
+     */
+    public function normalize(&$data, $format)
+    {
+        if (!is_array($data)) {
+            return $this->$format($data);
+        }
+        foreach ($data as $key => $value) {
+
+            // already formatted ?
+            if ($key != ($normalizedKey = $this->$format($key))) {
+                if (array_key_exists($normalizedKey, $data)) {
+                    throw new \InvalidArgumentException(sprintf(
+                        'Both "%s" and %s("%s") keys exists, abord normalizing.',
+                        $key, $format, $normalizedKey
+                    ));
+                }
+                unset($data[$key]);
+                $data[$normalizedKey] = $value;
+                $key = $normalizedKey;
+            }
+
+            // iterate over child keys
+            if (is_array($value)) {
+                $this->normalize($data[$key], $format);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * Replace '/' and '\' by current OS directory separator.
      *
      * This won't return the full path from the system root to a file, use realpath() or SplFileInfo::getRealPath() instead.

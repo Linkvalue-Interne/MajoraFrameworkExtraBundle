@@ -6,7 +6,7 @@
 
     <services>
 
-        <!-- Majora base domain definirion -->
+        <!-- Majora base domain definition -->
         <service id="majora.domain.abstract"
                  class="Majora\Framework\Domain\AbstractDomain"
                  abstract="true" public="false"
@@ -19,7 +19,7 @@
             </call>
         </service>
 
-        <!-- Majora base loader definirion -->
+        <!-- Majora base loader definition -->
         <service id="majora.loader.abstract"
                  class="Majora\Framework\Loader\BaseLoader"
                  abstract="true" public="false"
@@ -56,6 +56,9 @@
             <argument>%kernel.debug%</argument>
             <tag name="kernel.event_subscriber" />
         </service>
+
+        <!-- Inflector -->
+        <service id="majora.inflector" class="Majora\Framework\Inflector\Inflector" />
 
     </services>
 </container>

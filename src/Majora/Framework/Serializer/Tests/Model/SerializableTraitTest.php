@@ -46,6 +46,7 @@ class SerializableTraitTest
                 'label' => 'mock_1_label',
                 'table' => array('mock_1_1', 'mock_1_2'),
                 'mock2' => 2,
+                'date'  => (new \DateTime('2015-01-01'))->format(\DateTime::ISO8601),
             )),
             array('extra', array(
                 'id' => 1,
@@ -56,6 +57,7 @@ class SerializableTraitTest
                     'label' => 'mock_2_label',
                     'table' => array('mock_2_1', 'mock_2_1'),
                 ),
+                'date'  => (new \DateTime('2015-01-01'))->format(\DateTime::ISO8601),
             )),
         );
     }
@@ -64,7 +66,7 @@ class SerializableTraitTest
      * tests unserialize methods with an unsupported scope.
      *
      * @expectedException              InvalidArgumentException
-     * @expectedExceptionMessageRegExp #Try to set "fake_member" property on a .+ object which doesnt exists.#
+     * @expectedExceptionMessageRegExp #Unable to set "fake_member" property into a ".+" object, any existing property path to define it in.#
      */
     public function testUnsupportedDeserializeData()
     {
@@ -117,10 +119,20 @@ class SerializableTraitTest
                     ->setMock3(new \StdClass()),
             ),
 
+            // test with a datetime
+            array(
+                array('id' => 75, 'date' => (new \DateTime('2015-07-01'))->format(\DateTime::ISO8601)),
+                (new SerializableMock1())
+                    ->setId(75)
+                    ->setDate(new \DateTime('2015-07-01')),
+            ),
+
             // tests with unsupported hinting
             array(
                 array('id' => 80, 'callback' => array($this, 'serializedDataProvider')),
-                (new SerializableMock1())->setId(80),
+                (new SerializableMock1())
+                    ->setId(80)
+                    ->setCallback(array($this, 'serializedDataProvider')),
             ),
 
             // serializable child class

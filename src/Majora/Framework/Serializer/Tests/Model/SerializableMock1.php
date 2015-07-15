@@ -17,10 +17,12 @@ class SerializableMock1
     protected $mock2;
     protected $mock3;
     protected $callback;
+    protected $date;
 
     public function __construct()
     {
         $this->mock2 = new SerializableMock2();
+        $this->date  = new \DateTime('2015-01-01');
     }
 
     public function getId()
@@ -90,6 +92,18 @@ class SerializableMock1
         return $this;
     }
 
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTime $date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
     public function getCallback()
     {
         return $this->callback;
@@ -110,7 +124,7 @@ class SerializableMock1
         return array(
             'default' => array('id', 'label'),
             'id'      => 'id',
-            'full'    => array('@default', 'table', 'mock2@id'),
+            'full'    => array('@default', 'table', 'date', 'mock2@id'),
             'extra'   => array('@full', 'mock2'),
         );
     }

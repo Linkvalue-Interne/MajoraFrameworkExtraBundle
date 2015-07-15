@@ -2,6 +2,9 @@
 
 namespace Majora\Framework\Serializer\Model;
 
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+
 /**
  * Implements a generic serializable trait.
  *
@@ -18,7 +21,7 @@ trait SerializableTrait
     /**
      * @see SerializableInterface::serialize()
      */
-    public function serialize($scope = 'default')
+    public function serialize($scope = 'default', PropertyAccessorInterface $propertyAccessor = null)
     {
         $scopes = $this->getScopes();
         if (!isset($scopes[$scope])) {
@@ -29,29 +32,47 @@ trait SerializableTrait
                 $scope
             ));
         }
+        if (empty($scopes[$scope])) {
+            return array();
+        }
+
+        $read = function ($property) use ($propertyAccessor) {
+            if (!($propertyAccessor && $propertyAccessor->isReadable($this, $property))
+                && !property_exists($this, $property)
+            ) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Unable to get "%s" property from a "%s" object, any existing property path to read it in.',
+                    $property,
+                    __CLASS__
+                ));
+            }
+
+            return $propertyAccessor && $this->propertyAccessor->isReadable($this, $property) ?
+                $this->propertyAccessor->getValue($this, $property) :
+                $this->$property
+            ;
+        };
 
         if (is_string($scopes[$scope])) {
-            $method = sprintf('get%s', ucfirst($scopes[$scope]));
-
-            return $this->$method();
+            return $read($scopes[$scope]);
         }
 
         $data  = array();
         $stack = array($scopes[$scope]);
-        while (true) {
+        do {
             $stackedField = array_shift($stack);
             foreach ($stackedField as $fieldConfig) {
                 if (strpos($fieldConfig, '@') === false) {
-                    $method = sprintf('get%s', ucfirst($fieldConfig));
-                    $value  = $this->$method();
+                    $value = $read($fieldConfig);
 
                     // serializable child object ?
                     if ($value instanceof SerializableInterface) {
                         $subScope = array_key_exists($scope, $value->getScopes()) ?
                             $scope : 'default'
                         ;
-                        $value = $value->serialize($subScope);
+                        $value = $value->serialize($subScope, $propertyAccessor);
                     }
+
                     // date ?
                     if ($value instanceof \DateTime) {
                         $value = $value->format(\DateTime::ISO8601);
@@ -74,8 +95,7 @@ trait SerializableTrait
                     continue;
                 }
 
-                $method        = sprintf('get%s', ucfirst($field));
-                $relatedEntity = $this->$method();
+                $relatedEntity = $read($field);
 
                 // serialize child entity
                 if ($relatedEntity instanceof SerializableInterface) {
@@ -84,11 +104,7 @@ trait SerializableTrait
 
                 $data[$field] = $relatedEntity;
             }
-
-            if (empty($stack)) {
-                break;
-            }
-        }
+        } while (!empty($stack));
 
         return $data;
     }
@@ -96,17 +112,31 @@ trait SerializableTrait
     /**
      * @see SerializableInterface::deserialize()
      */
-    public function deserialize(array $data)
+    public function deserialize(array $data, PropertyAccessorInterface $propertyAccessor = null)
     {
-        foreach ($data as $property => $value) {
-            if (!property_exists($this, $property)) {
-                continue;
+        $write = function ($property, $value) use ($propertyAccessor) {
+            if (!($propertyAccessor && $propertyAccessor->isWritable($this, $property))
+                && !property_exists($this, $property)
+            ) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Unable to set "%s" property into a "%s" object, any existing property path to define it in.',
+                    $property,
+                    get_class($this)
+                ));
             }
+
+            if ($propertyAccessor && $propertyAccessor->isWritable($this, $property)) {
+                $propertyAccessor->setValue($this, $property, $value);
+            } else {
+                $this->$property = $value;
+            }
+        };
+
+        foreach ($data as $property => $value) {
 
             $setter = sprintf('set%s', ucfirst($property));
             if (!method_exists($this, $setter)) {
-                $this->$property = $value;
-
+                $write($property, $value);
                 continue;
             }
 
@@ -115,23 +145,39 @@ trait SerializableTrait
             $parameters       = $reflectionMethod->getParameters();
             $setParameter     = $parameters[0];
 
-            if (!$setParameter->getClass() ||
-                $setParameter->isArray()
-            ) {
-                $this->$setter($value);
+            // scalar or array ?
+            if (!$setParameter->getClass() || $setParameter->isArray()) {
+                $write($property, $value);
 
                 continue;
             }
 
-            // non array hinting but no class either : interface or callable
+            // nullable object ?
+            if (empty($value)) {
+                if ($setParameter->allowsNull()) {
+                    $write($property, null);
+                }
+
+                continue;
+            }
+
+            // callable ?
+            if (is_callable($value)) {
+                if ($setParameter->isCallable()) {
+                    $write($property, $value);
+                }
+            }
+
             $classHinting = $setParameter->getClass();
-            if (!$classHinting || empty($value)) {
-                continue;
-            }
-            $this->$setter(
+
+            $write(
+                $property,
                 $classHinting->implementsInterface('Majora\Framework\Serializer\Model\SerializableInterface') ?
-                    $classHinting->newInstance()->deserialize($value) :
-                    $classHinting->newInstanceArgs(array($value))
+                    $classHinting->newInstance()->deserialize($value, $propertyAccessor) : (
+                        $classHinting->hasMethod('__construct') ?
+                            $classHinting->newInstanceArgs(array($value)) :
+                            $classHinting->newInstance()
+                    )
             );
         }
 

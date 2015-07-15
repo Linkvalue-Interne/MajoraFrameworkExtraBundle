@@ -4,6 +4,7 @@ namespace Majora\Framework\Domain\Tests;
 
 use Majora\Framework\Domain\DomainTrait;
 use PHPUnit_Framework_TestCase;
+use Prophecy\Argument;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -67,8 +68,8 @@ class DomainTraitTest
         $object = new \StdClass();
         $object->name = $entity;
 
-        $validator = $this->prophesize('Symfony\Component\Validator\ValidatorInterface');
-        $validator->validate($object, $expectedScope)
+        $validator = $this->prophesize('Symfony\Component\Validator\Validator\ValidatorInterface');
+        $validator->validate($object, Argument::exact(null), $expectedScope)
             ->willReturn(array())
             ->shouldBeCalled()
         ;
@@ -97,8 +98,8 @@ class DomainTraitTest
         $violation2    = $this->prophesize('Symfony\Component\Validator\ConstraintViolationInterface')->reveal();
         $violationList = new ConstraintViolationList(array($violation1, $violation2));
 
-        $validator = $this->prophesize('Symfony\Component\Validator\ValidatorInterface');
-        $validator->validate($object, $expectedScope)
+        $validator = $this->prophesize('Symfony\Component\Validator\Validator\ValidatorInterface');
+        $validator->validate($object, Argument::exact(null), $expectedScope)
             ->willReturn($violationList)
             ->shouldBeCalled()
         ;

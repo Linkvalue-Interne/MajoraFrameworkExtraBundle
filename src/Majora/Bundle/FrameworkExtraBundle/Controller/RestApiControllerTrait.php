@@ -161,11 +161,10 @@ trait RestApiControllerTrait
         }
 
         // data camel case normalization
-        $normalizer = $this->container->has('fos_rest.normalizer.camel_keys') ?
-            $this->container->get('fos_rest.normalizer.camel_keys') :
-            null
+        $data = $this->container->has('majora.inflector') ?
+            $this->container->get('majora.inflector')->normalize($data, 'camelcase') :
+            $data
         ;
-        $data = $normalizer ? $normalizer->normalize($data) : $data;
 
         $form->submit(
             $data,
