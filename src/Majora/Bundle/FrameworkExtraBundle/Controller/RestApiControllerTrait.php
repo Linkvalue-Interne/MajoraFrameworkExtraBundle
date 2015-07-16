@@ -25,50 +25,6 @@ trait RestApiControllerTrait
     use ControllerTrait;
 
     /**
-     * create a filter option resolver
-     *
-     * @param array $defaultFilters
-     *
-     * @return OptionResolver
-     */
-    private function createFilterResolver(array $defaultFilters = array())
-    {
-        $resolver = new OptionsResolver();
-        $resolver->setDefaults(array(
-            'scope' => null,
-            'limit' => null,
-        ));
-        $resolver->setDefaults($defaultFilters);
-
-        return $resolver;
-    }
-
-    /**
-     * fetch filters into given request
-     *
-     * @see createFilterResolver()
-     *
-     * @param  Request $request
-     * @param  array   $defaultFilters optionnal extra filters
-     *
-     * @return ArrayCollection
-     *
-     * @throws HttpException   if given query parameters arent supported
-     */
-    private function fetchQueryParameters(Request $request, array $defaultFilters = array())
-    {
-        try {
-            return new ArrayCollection(
-                $this
-                    ->createFilterResolver($defaultFilters)
-                    ->resolve($request->query->all())
-            );
-        } catch (\InvalidArgumentException $e) {
-            throw new HttpException(400, 'Invalid query parameters.', $e);
-        }
-    }
-
-    /**
      * Create a JsonResponse with given data, if object given, it will be serialize
      * with registered serializer.
      *
