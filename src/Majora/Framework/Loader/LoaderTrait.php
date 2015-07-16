@@ -68,6 +68,25 @@ trait LoaderTrait
     }
 
     /**
+     * Convert given array or Collection result set to managed entity collection class
+     *
+     * @param array|Collection $result [description]
+     *
+     * @return EntityCollection
+     */
+    protected function toEntityCollection($result)
+    {
+        return is_object($result) && get_class($result) == $this->collectionClass ?
+            $result :
+            new $this->collectionClass(
+                $result instanceof Collection ?
+                    $result->toArray() :
+                    $result
+            )
+        ;
+    }
+
+    /**
      * Loads data from repository
      * then cast it to proper classes if not.
      *
@@ -77,20 +96,13 @@ trait LoaderTrait
     {
         $this->assertIsConfigured();
 
-        $collection = $this->entityRepository->retrieveAll(
-            $this->filterResolver->resolve($filters),
-            $limit,
-            $offset
-        );
-
-        return is_object($collection) && get_class($collection) == $this->collectionClass ?
-            $collection :
-            new $this->collectionClass(
-                $collection instanceof Collection ?
-                    $collection->toArray() :
-                    $collection
+        return $this->toEntityCollection(
+            $this->entityRepository->retrieveAll(
+                $this->filterResolver->resolve($filters),
+                $limit,
+                $offset
             )
-        ;
+        );
     }
 
     /**
