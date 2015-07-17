@@ -3,6 +3,8 @@
 namespace Majora\Framework\Loader;
 
 use Doctrine\Common\Collections\Collection;
+use Majora\Framework\Loader\Bridge\Form\DataTransformerLoaderTrait;
+use Majora\Framework\Loader\Bridge\Security\UserProviderLoaderTrait;
 use Majora\Framework\Repository\RepositoryInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -12,8 +14,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 trait LoaderTrait
 {
+    use DataTransformerLoaderTrait, UserProviderLoaderTrait;
+
     protected $entityRepository;
     protected $entityClass;
+    protected $entityReflection;
     protected $collectionClass;
     protected $filterResolver;
 
@@ -33,8 +38,8 @@ trait LoaderTrait
         $this->entityClass      = $entityClass;
         $this->collectionClass  = $collectionClass;
 
-        $reflected = new \ReflectionClass($entityClass);
-        if (!$reflected->implementsInterface('Majora\Framework\Model\CollectionableInterface')) {
+        $this->entityReflection = new \ReflectionClass($entityClass);
+        if (!$this->entityReflection->implementsInterface('Majora\Framework\Model\CollectionableInterface')) {
             throw new \InvalidArgumentException(sprintf(
                 'Cannot support "%s" class into "%s" : managed items have to be Majora\Framework\Model\CollectionableInterface.',
                 $entityClass,
@@ -43,7 +48,7 @@ trait LoaderTrait
         }
 
         $this->filterResolver = new OptionsResolver();
-        foreach ($reflected->getProperties() as $property) {
+        foreach ($this->entityReflection->getProperties() as $property) {
             $this->filterResolver->setDefined($property->getName());
         }
     }
@@ -121,47 +126,5 @@ trait LoaderTrait
         $this->assertIsConfigured();
 
         return $this->entityRepository->retrieve($id);
-    }
-
-    /**
-     * Model -> View
-     *
-     * @see DataTransformerInterface::transform()
-     */
-    public function transform($entity)
-    {
-        if (null === $entity) {
-            return '';
-        }
-        if (get_class($entity) != $this->entityClass) {
-            throw new \InvalidArgumentException(sprintf(
-                'Unsupported entity "%s" into "%s" loader.',
-                get_class($entity),
-                __CLASS__
-            ));
-        }
-
-        return $entity->getId();
-    }
-
-    /**
-     * View -> Model
-     *
-     * @see DataTransformerInterface::reverseTransform()
-     */
-    public function reverseTransform($id)
-    {
-        if (!$id) {
-            return null;
-        }
-        if (!$entity = $this->retrieve($id)) {
-            throw new TransformationFailedException(sprintf(
-                '%s#%s cannot be found.',
-                $this->entityClass,
-                $id
-            ));
-        }
-
-        return $entity;
     }
 }
