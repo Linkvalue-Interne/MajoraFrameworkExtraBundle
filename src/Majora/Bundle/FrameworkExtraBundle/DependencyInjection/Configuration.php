@@ -18,7 +18,20 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('majora_framework_extra');
+        $treeBuilder->root('majora_framework_extra')
+            ->addDefaultsIfNotSet()
+            ->children()
+                ->arrayNode('clock')
+                    ->canBeEnabled()
+                    ->children()
+                        ->scalarNode('mock_param')
+                            ->defaultValue('_date_mock')
+                            ->cannotBeEmpty()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
 
         return $treeBuilder;
     }
