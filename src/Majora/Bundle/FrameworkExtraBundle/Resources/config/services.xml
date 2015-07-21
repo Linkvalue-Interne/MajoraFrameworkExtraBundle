@@ -60,5 +60,8 @@
         <!-- Inflector -->
         <service id="majora.inflector" class="Majora\Framework\Inflector\Inflector" />
 
+        <!-- Clock -->
+        <service id="majora.clock" class="Majora\Framework\Date\Clock" />
+
     </services>
 </container>

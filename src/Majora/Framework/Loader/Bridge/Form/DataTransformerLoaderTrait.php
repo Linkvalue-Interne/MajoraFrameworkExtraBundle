@@ -24,7 +24,7 @@ trait DataTransformerLoaderTrait
         if (null === $entity) {
             return '';
         }
-        if (get_class($entity) != $this->entityClass) {
+        if (!is_subclass_of($entity, $this->entityClass)) {
             throw new \InvalidArgumentException(sprintf(
                 'Unsupported entity "%s" into "%s" loader.',
                 get_class($entity),
