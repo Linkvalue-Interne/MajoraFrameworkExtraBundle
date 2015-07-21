@@ -10,20 +10,14 @@ use Majora\Framework\Model\CollectionableInterface;
 trait DoctrineRepositoryTrait
 {
     /**
-     * return application entity manager.
-     *
-     * @return EntityManager
+     * @see Doctrine\ORM\EntityRepository::getEntityManager()
      */
     abstract protected function getEntityManager();
 
     /**
-     * create a query builder.
-     *
-     * @param string $alias
-     *
-     * @return QueryBuilder
+     * @see Doctrine\ORM\EntityRepository::createQueryBuilder()
      */
-    abstract public function createQueryBuilder($alias);
+    abstract public function createQueryBuilder($alias, $indexBy = null);
 
     /**
      * create entity query.

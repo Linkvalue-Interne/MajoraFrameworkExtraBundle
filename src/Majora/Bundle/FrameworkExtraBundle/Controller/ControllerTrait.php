@@ -47,7 +47,7 @@ trait ControllerTrait
             return true; // no mapping ? granted
         }
 
-        return $this->container->get('security.context')->isGranted(
+        return $this->container->get('security.authorization_checker')->isGranted(
             (array) $securityMapping[$intention],
             $resource
         );

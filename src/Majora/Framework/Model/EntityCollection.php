@@ -4,6 +4,7 @@ namespace Majora\Framework\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Majora\Framework\Serializer\Model\SerializableInterface;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
@@ -75,17 +76,16 @@ class EntityCollection extends ArrayCollection implements SerializableInterface
      */
     public function search(array $filters)
     {
-        return $this->filter(function (CollectionableInterface $entity) use ($filters) {
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+
+        return $this->filter(function (CollectionableInterface $entity) use ($filters, $propertyAccessor) {
             $res = true;
             foreach ($filters as $key => $value) {
-                $method = sprintf('get%s', ucfirst($key));
-                $res = $res
-                    && method_exists($entity, $method)
-                    && (is_array($value) ?
-                        in_array($entity->$method(), $value) :
-                        $entity->$method() == $value
-                    )
-                ;
+                $current = $propertyAccessor->getValue($entity, $key);
+                $res = $res && (is_array($value) ?
+                    in_array($current, $value) :
+                    $current == $value
+                );
             }
 
             return $res;
