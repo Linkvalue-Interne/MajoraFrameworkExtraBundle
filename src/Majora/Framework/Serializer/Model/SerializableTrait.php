@@ -70,10 +70,7 @@ trait SerializableTrait
 
                     // serializable child object ?
                     if ($value instanceof SerializableInterface) {
-                        $subScope = array_key_exists($scope, $value->getScopes()) ?
-                            $scope : 'default'
-                        ;
-                        $value = $value->serialize($subScope, $propertyAccessor);
+                        $value = $value->serialize('default', $propertyAccessor);
                     }
 
                     // date ?
@@ -102,7 +99,10 @@ trait SerializableTrait
 
                 // serialize child entity
                 if ($relatedEntity instanceof SerializableInterface) {
-                    $relatedEntity = $relatedEntity->serialize($includeScope);
+                    $relatedEntity = $relatedEntity->serialize(
+                        $includeScope ?: 'default',
+                        $propertyAccessor
+                    );
                 }
 
                 $data[$field] = $relatedEntity;
