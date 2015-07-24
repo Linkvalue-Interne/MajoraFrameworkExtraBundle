@@ -29,12 +29,12 @@ class EntityCollection extends ArrayCollection implements SerializableInterface
      */
     public function serialize($scope = 'default', PropertyAccessorInterface $propertyAccessor = null)
     {
-        return array_values(array_map(
-            function (SerializableInterface $entity) use ($scope, $propertyAccessor) {
+        return $this
+            ->map(function(SerializableInterface $entity) use ($scope, $propertyAccessor) {
                 return $entity->serialize($scope, $propertyAccessor);
-            },
-            $this->toArray()
-        ));
+            })
+            ->toArray()
+        ;
     }
 
     /**
