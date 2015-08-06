@@ -26,6 +26,7 @@ class MajoraFrameworkExtraExtension extends Extension
         $loader->load('serializer.xml');
         $loader->load('services.xml');
 
+        // clock mocker
         if (!empty($config['clock']['enabled'])) {
             $loader->load('clock.xml');
             $container->getDefinition('majora.clock')->replaceArgument(
@@ -33,5 +34,11 @@ class MajoraFrameworkExtraExtension extends Extension
                 $config['clock']['mock_param']
             );
         }
+
+        // agnostic url generator
+        if (!empty($config['agnostic_url_generator']['enabled'])) {
+            $loader->load('agnostic_url_generator.xml');
+        }
+
     }
 }
