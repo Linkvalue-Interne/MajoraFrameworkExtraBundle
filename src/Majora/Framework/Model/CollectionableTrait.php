@@ -18,7 +18,7 @@ trait CollectionableTrait
      *
      * @return EntityCollection
      */
-    private function toCollection($data, $collectionClass)
+    protected function toCollection($data, $collectionClass)
     {
         if ($data instanceof $collectionClass) {
             return $data;
