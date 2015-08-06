@@ -30,6 +30,9 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('agnostic_url_generator')
+                    ->canBeEnabled()
+                ->end()
             ->end()
         ;
 
