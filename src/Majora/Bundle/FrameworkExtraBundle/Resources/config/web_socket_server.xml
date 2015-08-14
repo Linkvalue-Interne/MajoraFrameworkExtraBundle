@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Web socket server -->
+        <service id="majora.web_socket.server" class="Majora\Framework\WebSocket\Server\EventDispatcherServer">
+            <tag name="monolog.logger" channel="web_socket" />
+            <argument type="service">
+                <service class="Hoa\Socket\Server">
+                    <argument>%majora.web_socket.server.end_point%</argument>
+                </service>
+            </argument>
+            <call method="registerHandlers" />
+            <call method="registerLogger">
+                <argument type="service" id="logger" />
+                <argument>%kernel.debug%</argument>
+            </call>
+        </service>
+
+    </services>
+
+</container>

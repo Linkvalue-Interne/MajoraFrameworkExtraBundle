@@ -40,5 +40,34 @@ class MajoraFrameworkExtraExtension extends Extension
             $loader->load('agnostic_url_generator.xml');
         }
 
+        // web socket server
+        if (!empty($config['web_socket']['server']['enabled'])) {
+            $container->setParameter('majora.web_socket.server.end_point', sprintf(
+                '%s://%s',
+                $config['web_socket']['server']['protocol'],
+                $config['web_socket']['server']['host']
+            ));
+
+            $loader->load('web_socket_server.xml');
+        }
+
+        // web socket client
+        if (!empty($config['web_socket']['client']['enabled'])) {
+            $container->setParameter('majora.web_socket.client.remote_end_point', sprintf(
+                '%s://%s',
+                $config['web_socket']['client']['remote_protocol'],
+                $config['web_socket']['client']['remote_host']
+            ));
+
+            $loader->load('web_socket_client.xml');
+
+            $webSocketClientDefinition = $container->getDefinition('majora.web_socket.client');
+            foreach ($config['web_socket']['client']['listen'] as $listenedEvent) {
+                $webSocketClientDefinition->addTag('kernel.event_listener', array(
+                    'event' => $listenedEvent,
+                    'method' => 'onBroadcastableEvent',
+                ));
+            }
+        }
     }
 }

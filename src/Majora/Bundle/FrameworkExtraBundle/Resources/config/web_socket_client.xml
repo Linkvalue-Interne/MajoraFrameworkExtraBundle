@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Web socket client -->
+        <service id="majora.web_socket.client" class="Majora\Framework\WebSocket\Client\EventListenerClient">
+            <tag name="monolog.logger" channel="web_socket" />
+
+            <argument type="service">
+                <service class="Hoa\Websocket\Client">
+                    <argument type="service">
+                        <service class="Hoa\Socket\Client">
+                            <argument>%majora.web_socket.client.remote_end_point%</argument>
+                        </service>
+                    </argument>
+                    <call method="setHost">
+                        <argument>%majora.web_socket.client.remote_end_point%</argument>
+                    </call>
+                </service>
+            </argument>
+
+            <call method="registerLogger">
+                <argument type="service" id="logger" />
+                <argument>%kernel.debug%</argument>
+            </call>
+        </service>
+
+    </services>
+
+</container>
