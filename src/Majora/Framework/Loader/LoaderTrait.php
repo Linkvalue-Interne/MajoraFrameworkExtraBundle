@@ -73,6 +73,18 @@ trait LoaderTrait
     }
 
     /**
+     * hook which call on every entity loaded through this loader
+     *
+     * @param object $entity
+     *
+     * @return $object same entity
+     */
+    protected function onLoad($entity)
+    {
+        return $entity;
+    }
+
+    /**
      * Convert given array or Collection result set to managed entity collection class
      *
      * @param array|Collection $result [description]
@@ -81,7 +93,7 @@ trait LoaderTrait
      */
     protected function toEntityCollection($result)
     {
-        return is_object($result) && get_class($result) == $this->collectionClass ?
+        $collection = is_object($result) && get_class($result) == $this->collectionClass ?
             $result :
             new $this->collectionClass(
                 $result instanceof Collection ?
@@ -89,6 +101,10 @@ trait LoaderTrait
                     $result
             )
         ;
+
+        return $collection->map(function($entity) {
+            return $this->onLoad($entity);
+        });
     }
 
     /**
@@ -125,6 +141,8 @@ trait LoaderTrait
     {
         $this->assertIsConfigured();
 
-        return $this->entityRepository->retrieve($id);
+        return $this->onLoad(
+            $this->entityRepository->retrieve($id)
+        );
     }
 }
