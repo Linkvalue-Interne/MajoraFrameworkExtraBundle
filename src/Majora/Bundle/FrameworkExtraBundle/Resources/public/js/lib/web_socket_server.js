@@ -125,6 +125,6 @@ var WebSocketServer = function (api, config, handlers) {
 
     return {
         push: _push,
-        connect: _connect()
+        connect: _connect
     };
 };

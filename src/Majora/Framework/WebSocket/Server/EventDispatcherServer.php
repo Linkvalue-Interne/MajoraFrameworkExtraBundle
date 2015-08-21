@@ -4,6 +4,7 @@ namespace Majora\Framework\WebSocket\Server;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Hoa\Core\Event\Bucket;
+use Hoa\Websocket\Connection;
 use Majora\Framework\WebSocket\Server\Server;
 
 /**
@@ -41,10 +42,10 @@ class EventDispatcherServer extends Server
                 ->getCurrentNode()
         ;
 
-        $this->listeners->add(array(
-            'metadata' => $metadata,
-            'node' => $node
-        ));
+        $this->listeners->set(
+            $node->getId(),
+            array('metadata' => $metadata, 'node' => $node)
+        );
     }
 
     /**
@@ -124,6 +125,8 @@ class EventDispatcherServer extends Server
     public function onClose(Bucket $bucket)
     {
         $node = $bucket->getSource()->getConnection()->getCurrentNode();
+
+        $this->listeners->remove($node->getId());
 
         $this->log('debug', 'Web socket closed.', array(
             'client' => $node->getId()

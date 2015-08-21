@@ -66,6 +66,13 @@ trait SerializableTrait
             $stackedField = array_shift($stack);
             foreach ($stackedField as $fieldConfig) {
                 if (strpos($fieldConfig, '@') === false) {
+
+                    // dont override previously setted value :
+                    // first to inject always are field in asked scope, included one dont have to override
+                    if (array_key_exists($fieldConfig, $data)) {
+                        continue;
+                    }
+
                     $value = $read($fieldConfig);
 
                     // serializable child object ?

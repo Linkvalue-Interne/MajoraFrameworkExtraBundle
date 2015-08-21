@@ -9,11 +9,12 @@ var Api = function (config) {
         'client_id': config['client_id'],
         'client_secret': config['client_secret']
     };
-    var _accessToken = null;
+    var _accessToken = config['access_token'] ? config['access_token'] : null ;
 
     /**
      * access token requested method
-     * @return {[type]} [description]
+     *
+     * @return Promise
      */
     var getAccessToken = function() {
         return new Promise(function(success, error, progress) {
