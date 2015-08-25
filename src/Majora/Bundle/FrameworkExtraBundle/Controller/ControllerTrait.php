@@ -43,12 +43,12 @@ trait ControllerTrait
     protected function checkSecurity($intention, $resource = null)
     {
         $securityMapping = $this->getSecurityMapping();
-        if (empty($securityMapping[$intention])) {
-            return true; // no mapping ? granted
-        }
 
         return $this->container->get('security.authorization_checker')->isGranted(
-            (array) $securityMapping[$intention],
+            (array) (empty($securityMapping[$intention]) ?
+                $intention :
+                $securityMapping[$intention]
+            ),
             $resource
         );
     }

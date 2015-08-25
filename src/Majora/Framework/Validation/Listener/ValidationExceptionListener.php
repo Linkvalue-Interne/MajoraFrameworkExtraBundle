@@ -66,13 +66,7 @@ class ValidationExceptionListener implements EventSubscriberInterface
 
             // validation exception
             case $exception instanceof ValidationException :
-                foreach ($exception->getReport() as $violation) {
-                    $violation = $violation instanceof FormError ?
-                        $violation->getCause() :
-                        $violation
-                    ;
-                    $errors[(string) $violation->getPropertyPath()] = $violation->getMessage();
-                }
+                $errors = $this->parseValidationException($exception);
                 $statusCode = 400;
             break;
 
@@ -91,6 +85,28 @@ class ValidationExceptionListener implements EventSubscriberInterface
         }
 
         $event->setResponse(new JsonResponse($data, $statusCode));
+    }
+
+    protected function parseValidationException(ValidationException $exception)
+    {
+        $errors = array();
+
+        foreach ($exception->getReport() as $key => $violation) {
+            if (is_string($violation)) {
+                $errors[$key] = $violation;
+
+                continue;
+            }
+
+            $violation = $violation instanceof FormError ?
+                $violation->getCause() :
+                $violation
+            ;
+
+            $errors[(string) $violation->getPropertyPath()] = $violation->getMessage();
+        }
+
+        return $errors;
     }
 
     protected function supports(Request $request)

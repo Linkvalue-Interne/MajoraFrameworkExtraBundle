@@ -66,7 +66,7 @@ class ValidationException extends \InvalidArgumentException
     /**
      * return violation list report
      *
-     * @return FormErrorIterator|ConstraintViolationListInterface
+     * @return ArrayCollection|FormErrorIterator|ConstraintViolationListInterface
      */
     public function getReport()
     {
