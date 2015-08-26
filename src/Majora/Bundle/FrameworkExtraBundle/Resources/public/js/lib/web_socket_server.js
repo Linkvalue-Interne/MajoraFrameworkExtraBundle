@@ -10,25 +10,39 @@ var WebSocketServer = function (api, config, handlers) {
      */
     var _config = {
         'host': null,
-        'reconnect_route': null
+        'protocol': 'ws',
+        'reconnect_route': null,
+        'max_reconnect_tries': 5,
+        'reconnect_timeout': 2000
     };
     _.merge(_config, config);
 
     var _api = api;
     var _handlers = handlers;
     var _socket = null;
+    var _reconnectTries = 0;
+    var _reconnectTimeout = 0;
 
     /**
      * websocket reconnection handler
      */
     var _reconnect = function() {
+        if (_config['max_reconnect_tries'] - _reconnectTries < 0) {
+            return new Promise(function (resolve, reject) {
+                reject('Max connection attempt reached.');
+            });
+        }
+
+        _reconnectTries++;
+        _reconnectTimeout += _config['reconnect_timeout'];
+
         if (!_config['reconnect_route']) {
-            return _.delay(_connect, 2000);
+            return _.delay(_connect, _reconnectTimeout);
         }
 
         return api.get(_config['reconnect_route'])
             .then(function(success, error) {
-                _.delay(_connect, 2000);
+                _.delay(_connect, _reconnectTimeout);
             })
         ;
     };
@@ -43,7 +57,7 @@ var WebSocketServer = function (api, config, handlers) {
             }
 
             try {
-                _socket = new WebSocket('ws://' + _config.host);
+                _socket = new WebSocket(_config.protocol + '://' + _config.host);
 
                 // connection handler
                 _socket.onopen = function () {
@@ -81,8 +95,11 @@ var WebSocketServer = function (api, config, handlers) {
                     });
                 };
             } catch (e) {
-                console.log('Error on location server connection: ' + e.message);
-                _reconnect();
+                console.log('Error on web socket server connection: ' + e.message);
+                _reconnect()
+                    .then(success)
+                    .catch(reject)
+                ;
             }
         });
     };
