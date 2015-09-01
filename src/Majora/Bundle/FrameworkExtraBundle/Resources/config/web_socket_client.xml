@@ -7,7 +7,32 @@
     <services>
 
         <!-- Web socket client -->
-        <service id="majora.web_socket.client" class="Majora\Framework\WebSocket\Client\EventListenerClient">
+        <service id="majora.web_socket.event_listener" class="Majora\Framework\WebSocket\Client\Wrapper\EventListenerWrapper">
+            <argument type="service" id="majora.web_socket.client" />
+        </service>
+
+        <!-- Api web socket client -->
+        <service id="majora.web_socket.api_client" public="false"
+            class="Majora\Framework\WebSocket\Client\ApiClient"
+        >
+            <tag name="monolog.logger" channel="web_socket" />
+
+            <argument type="service">
+                <service class="GuzzleHttp\Client"/>
+            </argument>
+
+            <!-- Logger -->
+            <call method="registerLogger">
+                <argument type="service" id="logger" />
+                <argument>%kernel.debug%</argument>
+            </call>
+
+        </service>
+
+        <!-- Hoa web socket client -->
+        <service id="majora.web_socket.hoa_client" public="false"
+            class="Majora\Framework\WebSocket\Client\Client"
+        >
             <tag name="monolog.logger" channel="web_socket" />
 
             <argument type="service">
@@ -23,10 +48,12 @@
                 </service>
             </argument>
 
+            <!-- Logger -->
             <call method="registerLogger">
                 <argument type="service" id="logger" />
                 <argument>%kernel.debug%</argument>
             </call>
+
         </service>
 
     </services>

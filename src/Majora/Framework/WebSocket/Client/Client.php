@@ -4,11 +4,12 @@ namespace Majora\Framework\WebSocket\Client;
 
 use Hoa\Websocket\Client as HoaClient;
 use Majora\Framework\Log\LoggableTrait;
+use Majora\Framework\WebSocket\Client\ClientInterface;
 
 /**
  * Wrapper for HoaWebSocketClient
  */
-class Client
+class Client implements ClientInterface
 {
     use LoggableTrait;
 

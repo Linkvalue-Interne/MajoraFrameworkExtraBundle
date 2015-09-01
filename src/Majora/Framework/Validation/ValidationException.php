@@ -22,7 +22,7 @@ class ValidationException extends \InvalidArgumentException
      * @param array                                              $groups
      */
     public function __construct(
-        CollectionableInterface $entity,
+        CollectionableInterface $entity = null,
         $report = null,
         array $groups = null,
         $code     = null,
@@ -32,15 +32,20 @@ class ValidationException extends \InvalidArgumentException
         $this->groups = $groups;
         $this->report = $report;
 
-        parent::__construct(
-            sprintf('Validation failed on %s#%s entity, on ["%s"] scopes.',
-                get_class($entity),
-                $entity->getId(),
-                implode('", "', $groups ?: array())
-            ),
-            $code,
-            $previous
-        );
+        $message = 'Validation failed';
+        if ($this->entity) {
+            $message .= sprintf(' on entity %s#%s',
+                get_class($this->entity),
+                $this->entity->getId()
+            );
+        }
+        if (!empty($this->groups)) {
+            $message .= sprintf(' for ["%s"] groups',
+                implode('"', $this->groups)
+            );
+        }
+
+        parent::__construct($message, $code, $previous);
     }
 
     /**
