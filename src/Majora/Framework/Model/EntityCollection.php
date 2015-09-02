@@ -142,4 +142,22 @@ class EntityCollection extends ArrayCollection implements SerializableInterface
 
         return $this;
     }
+
+    /**
+     * Sort collection with given closure
+     *
+     * @param \Closure $p
+     *
+     * @return EntityCollection
+     */
+    public function sort(\Closure $p)
+    {
+        $elements = $this->toArray();
+
+        if (!uasort($elements, $p)) {
+            throw new \InvalidArgumentException('Sort failed.');
+        }
+
+        return new self($elements);
+    }
 }
