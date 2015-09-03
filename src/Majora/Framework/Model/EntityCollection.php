@@ -160,4 +160,18 @@ class EntityCollection extends ArrayCollection implements SerializableInterface
 
         return new self($elements);
     }
+
+    /**
+     * Reduce collection with given closure.
+     * @link http://php.net/manual/en/function.array-reduce.php
+     *
+     * @param \Closure $p
+     * @param mixed $initialValue
+     *
+     * @return mixed
+     */
+    public function reduce(\Closure $p, $initialValue = null)
+    {
+        return array_reduce($this->toArray(), $p, $initialValue);
+    }
 }
