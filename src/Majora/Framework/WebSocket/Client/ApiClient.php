@@ -63,7 +63,7 @@ class ApiClient implements ClientInterface
         ));
         $this->log('debug', 'Websocket event data.', $data);
 
-        $this->httpClient->post($url, $data);
+        $this->httpClient->post($url, array('json' => $data));
     }
 
     /**
