@@ -73,9 +73,9 @@ trait LoaderTrait
     }
 
     /**
-     * hook which call on every entity loaded through this loader
+     * hook which call on every entity or collection loaded through this loader
      *
-     * @param object $entity
+     * @param object|EntityCollection $entity
      *
      * @return $object same entity
      */
@@ -93,18 +93,14 @@ trait LoaderTrait
      */
     protected function toEntityCollection($result)
     {
-        $collection = is_object($result) && get_class($result) == $this->collectionClass ?
+        return $this->onLoad(is_object($result) && get_class($result) == $this->collectionClass ?
             $result :
             new $this->collectionClass(
                 $result instanceof Collection ?
                     $result->toArray() :
                     $result
             )
-        ;
-
-        return $collection->map(function($entity) {
-            return $this->onLoad($entity);
-        });
+        );
     }
 
     /**

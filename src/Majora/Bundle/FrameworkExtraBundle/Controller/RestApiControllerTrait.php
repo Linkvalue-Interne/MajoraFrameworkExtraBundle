@@ -105,15 +105,27 @@ trait RestApiControllerTrait
      * @throws HttpException       if invalid json data
      * @throws ValidationException if invalid form
      */
-    protected function assertSubmitedJsonFormIsValid(Request $request, FormInterface $form)
+    protected function assertSubmitedFormIsValid(Request $request, FormInterface $form)
     {
-        $data = @json_decode($request->getContent(), true);
-        if (null === $data) {
-            throw new HttpException(400, sprintf(
-                'Invalid submitted json data, error %s : %s',
-                json_last_error(),
-                json_last_error_msg()
-            ));
+        switch ($request->headers->get('content-type')) {
+
+            case 'application/json':
+                $data = @json_decode($request->getContent(), true);
+                if (null === $data) {
+                    throw new HttpException(400, sprintf(
+                        'Invalid submitted json data, error %s : %s',
+                        json_last_error(),
+                        json_last_error_msg()
+                    ));
+                }
+            break;
+
+            default:
+                $data = array_replace_recursive(
+                    $request->request->all(),
+                    $request->files->all()
+                );
+            break;
         }
 
         // data camel case normalization
