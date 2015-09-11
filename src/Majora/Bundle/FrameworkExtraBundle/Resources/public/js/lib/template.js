@@ -1,14 +1,26 @@
+'use strict';
 /**
  * Templates holder class
  * @param object config
  */
-var Template = function (config) {
+function Template(config) {
     var _templates = {};
+    var templatesHtml;
     var _config = {
-        'template_class': '.template',
         'template_alias': 'template'
     };
     _.merge(_config, config);
+
+    if (_config.container) {
+        templatesHtml = $(_config.container).html();
+        $(templatesHtml).filter('[data-' + _config.template_alias + ']')
+            .each(function(index, element) {
+                register(
+                    element.dataset[_config.template_alias],
+                    _.unescape(element.innerHTML)
+                );
+            });
+    }
 
     /**
      * register a template
@@ -16,9 +28,9 @@ var Template = function (config) {
      * @param string name
      * @param string content
      */
-    var register = function(name, content) {
-        _templates[name] = _.template(_.unescape(content));
-    };
+    function register(name, content) {
+        _.set(_templates, name, _.template(content));
+    }
 
     /**
      * render template under "name" alias, with given data
@@ -27,29 +39,16 @@ var Template = function (config) {
      * @param object data
      * @return string
      */
-    var render = function(name, data) {
-        if (!_templates[name]) {
+    function render(name, data) {
+        var template = _.get(_templates, name);
+        if (!template) {
             throw "Unregistered template " + name;
         }
-
-        return _templates[name](data);
-    };
-
-    if (_config.container) {
-        $(_config.container)
-            .find(_config.template_class + '[data-' + _config.template_alias + ']')
-            .each(function(index, element) {
-                var element = $(element);
-                register(
-                    element.data(_config.template_alias),
-                    element.html()
-                );
-            })
-        ;
+        return template(data);
     }
 
     return {
         render: render,
         templates: _templates
     };
-};
+}
