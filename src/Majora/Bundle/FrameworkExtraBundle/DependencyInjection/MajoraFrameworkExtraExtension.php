@@ -46,6 +46,11 @@ class MajoraFrameworkExtraExtension extends Extension
             $loader->load('exception_listener.xml');
         }
 
+        // doctrine events proxy
+        if (!empty($config['doctrine_events_proxy']['enabled'])) {
+            $loader->load('doctrine_events_proxy.xml');
+        }
+
         // web socket server
         if (!empty($config['web_socket']['server']['enabled'])) {
             $container->setParameter('majora.web_socket.server.end_point', sprintf(

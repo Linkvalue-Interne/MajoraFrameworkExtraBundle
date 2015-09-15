@@ -4,6 +4,7 @@ namespace Majora\Bundle\FrameworkExtraBundle;
 
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\AgnosticRouteCompilerPass;
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\FixturesCompilerPass;
+use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\LoaderCompilerPass;
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\SerializerCompilerPass;
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\ValidationCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,5 +20,6 @@ class MajoraFrameworkExtraBundle extends Bundle
         $container->addCompilerPass(new ValidationCompilerPass());
         $container->addCompilerPass(new FixturesCompilerPass());
         $container->addCompilerPass(new AgnosticRouteCompilerPass());
+        $container->addCompilerPass(new LoaderCompilerPass());
     }
 }
