@@ -165,4 +165,47 @@ trait RestApiControllerTrait
             ));
         }
     }
+
+    /**
+     * Forwarding action which can proxy other controllers / methods, in cases
+     * of some protocols isn't supported by clients
+     *
+     * Routing has to provide 2 options keys :
+     * @example
+     *     route_name:
+     *         path: .......
+     *         ....
+     *         options:
+     *            forward:
+     *                controller: MajoraNamespaceBundle:MajoraEntityApi:link
+     *                method: LINK    # GET by default here
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function forwardAction(Request $request)
+    {
+        $route = $this->container->get('router')->getRouteCollection()
+            ->get($request->get('_route'))
+        ;
+        if (!$forwardOptions = $route->getOption('forward')) {
+            throw new \RuntimeException('Forward action has to be called under a route with "forward" option key.');
+        }
+        if (empty($forwardOptions['controller'])) {
+            throw new \InvalidArgumentException('You must provide a "controller" key under "forward" routing option key.');
+        }
+
+        $subRequest = $request->duplicate();
+        $subRequest->attributes->set('_controller', $forwardOptions['controller']);
+        $subRequest->setMethod(isset($forwardOptions['method']) ?
+            $forwardOptions['method'] :
+            'GET'
+        );
+
+        return $this->container->get('http_kernel')->handle(
+            $subRequest,
+            HttpKernelInterface::SUB_REQUEST
+        );
+    }
 }
