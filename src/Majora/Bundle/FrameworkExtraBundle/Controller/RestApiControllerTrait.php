@@ -97,16 +97,15 @@ trait RestApiControllerTrait
     }
 
     /**
-     * Custom method for form submission to handle http method bugs, and extra fields
-     * error options.
+     * Retrieve given request data depending on its content type.
      *
-     * @param Request       $request
-     * @param FormInterface $form
+     * @param Request $request
      *
-     * @throws HttpException       if invalid json data
-     * @throws ValidationException if invalid form
+     * @return array
+     *
+     * @throws HttpException if JSON content-type and invalid JSON data
      */
-    protected function assertSubmitedFormIsValid(Request $request, FormInterface $form)
+    protected function getRequestData(Request $request)
     {
         switch ($request->headers->get('content-type')) {
 
@@ -119,15 +118,32 @@ trait RestApiControllerTrait
                         json_last_error_msg()
                     ));
                 }
-            break;
+                break;
 
             default:
                 $data = array_replace_recursive(
                     $request->request->all(),
                     $request->files->all()
                 );
-            break;
+                break;
         }
+        
+        return $data;
+    }
+
+    /**
+     * Custom method for form submission to handle http method bugs, and extra fields
+     * error options.
+     *
+     * @param Request       $request
+     * @param FormInterface $form
+     *
+     * @throws HttpException       if invalid json data
+     * @throws ValidationException if invalid form
+     */
+    protected function assertSubmitedFormIsValid(Request $request, FormInterface $form)
+    {
+        $data = $this->getRequestData($request);
 
         // data camel case normalization
         $data = $this->container->has('majora.inflector') ?
