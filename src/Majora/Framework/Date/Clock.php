@@ -16,7 +16,7 @@ class Clock
     /**
      * use given date as mock
      *
-     * @param string|DateTime $date
+     * @param string|\DateTime $date
      */
     protected function mock($date)
     {
@@ -31,7 +31,7 @@ class Clock
      *
      * @param string $format optionnal date format
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function now($format = null)
     {
