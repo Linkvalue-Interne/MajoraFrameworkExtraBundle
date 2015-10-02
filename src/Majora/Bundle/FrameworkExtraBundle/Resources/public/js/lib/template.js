@@ -1,4 +1,5 @@
 'use strict';
+
 /**
  * Templates holder class
  * @param object config
@@ -10,6 +11,8 @@ function Template(config) {
         'template_alias': 'template'
     };
     _.merge(_config, config);
+
+    var _defaultParameters = {};
 
     if (_config.container) {
         templatesHtml = $(_config.container).html();
@@ -33,6 +36,16 @@ function Template(config) {
     }
 
     /**
+     * register a default parameter for all rendered templates
+     *
+     * @param string name
+     * @param callable method
+     */
+    function addDefault(name, value) {
+        _defaultParameters[name] = value;
+    }
+
+    /**
      * render template under "name" alias, with given data
      *
      * @param string name
@@ -44,11 +57,19 @@ function Template(config) {
         if (!template) {
             throw "Unregistered template " + name;
         }
-        return template(data);
+        return template(_.merge(
+            _defaultParameters,
+            data
+        ));
     }
 
     return {
         render: render,
-        templates: _templates
+        templates: _templates,
+        defaults: function (defaults) {
+            _.each(defaults, function (value, name) {
+                addDefault(name, value);
+            });
+        }
     };
 }
