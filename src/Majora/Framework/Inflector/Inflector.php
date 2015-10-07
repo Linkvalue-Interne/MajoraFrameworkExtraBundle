@@ -112,6 +112,37 @@ class Inflector
     }
 
     /**
+     * Replace every "non-word" "non-ascii" characters in $string by $replacement.
+     *
+     * @param string $string
+     * @param string $replacement Default value is '-'.
+     *
+     * @return string
+     */
+    public function slugify($string, $replacement = '-')
+    {
+        $slug = $string;
+
+        // @todo handle transliteration
+//        if (function_exists('iconv')) {
+//            $slug = iconv('utf-8', 'us-ascii//TRANSLIT', $slug);
+//        }
+
+        // replace "non letter" and "digits"
+        $slug = preg_replace('/\W+/', $replacement, $slug);
+
+        // trim
+        $slug = trim($slug, $replacement);
+
+        // if slug is empty, returns replacement
+        if (empty($slug)) {
+            return $replacement;
+        }
+
+        return $slug;
+    }
+
+    /**
      * Normalize given data
      * If an array is given, normalize keys, according to given method
      *
