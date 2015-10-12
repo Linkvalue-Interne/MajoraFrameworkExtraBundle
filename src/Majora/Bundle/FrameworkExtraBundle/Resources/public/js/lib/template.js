@@ -2,7 +2,7 @@
 
 /**
  * Templates holder class
- * @param object config
+ * @param {Object} config
  */
 function Template(config) {
     var _templates = {};
