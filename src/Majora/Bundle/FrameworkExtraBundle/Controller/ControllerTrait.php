@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * Base trait for controllers traits.
  *
- * @property ContainerInterface $container
+ * @property \Symfony\Component\DependencyInjection\ContainerInterface $container
  */
 trait ControllerTrait
 {
