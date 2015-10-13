@@ -195,7 +195,7 @@ function Api(config) {
                     $.ajax({
                         method: method,
                         url: Routing.generate(route, query || {}),
-                        data: data || {},
+                        data: data ? JSON.stringify(data) : null,
                         beforeSend: function(xhr) {
                             xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
                             xhr.setRequestHeader('Content-type', 'application/json');
