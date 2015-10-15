@@ -4,6 +4,8 @@ namespace Majora\Framework\Validation;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Majora\Framework\Model\CollectionableInterface;
+use Symfony\Component\Form\FormErrorIterator;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Custom exception class for validation exceptions.
@@ -79,5 +81,36 @@ class ValidationException extends \InvalidArgumentException
             $this->report :
             new ArrayCollection()
         ;
+    }
+
+    /**
+     * format and return report (translatable) messages
+     *
+     * @return array
+     */
+    public function formatReport(){
+        $messages = array();
+        $report = $this->getReport();
+
+        switch(true){
+
+            case $report instanceof ConstraintViolationListInterface:
+                foreach ($report as $constraintViolation){
+                    $messages[] = $constraintViolation->getMessage();
+                }
+                break;
+
+            case $report instanceof FormErrorIterator:
+                foreach ($report as $formError) {
+                    $messages[] = $formError->getMessage();
+                }
+                break;
+
+            default:
+                $messages[] = $this->getMessage();
+
+        }
+
+        return $messages;
     }
 }
