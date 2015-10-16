@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Translated texts form -->
+        <service id="majora.form.translatable_text" class="Majora\Bundle\FrameworkExtraBundle\Form\Type\TranslatableTextType">
+            <tag name="form.type" alias="translatable_text" />
+            <argument>%majora.translations.enabled_locales%</argument>
+        </service>
+
+    </services>
+
+</container>

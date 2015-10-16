@@ -1,0 +1,8 @@
+{% block translatable_text_widget %}
+    {% for locale, child in form.children %}
+        <div class="input-group localized">
+          {{ form_widget(child) }}
+          <div class="input-group-addon flag-icon-background flag-icon-{{ locale|lower }}"></div>
+        </div>
+    {% endfor %}
+{% endblock %}

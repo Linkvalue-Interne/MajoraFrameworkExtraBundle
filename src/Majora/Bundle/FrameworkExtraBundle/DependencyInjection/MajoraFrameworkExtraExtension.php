@@ -36,6 +36,15 @@ class MajoraFrameworkExtraExtension extends Extension
             );
         }
 
+        // translations
+        if (!empty($config['translations']['enabled'])) {
+            $container->setParameter(
+                'majora.translations.enabled_locales',
+                $config['translations']['locales']
+            );
+            $loader->load('translations.xml');
+        }
+
         // agnostic url generator
         if (!empty($config['agnostic_url_generator']['enabled'])) {
             $loader->load('agnostic_url_generator.xml');
