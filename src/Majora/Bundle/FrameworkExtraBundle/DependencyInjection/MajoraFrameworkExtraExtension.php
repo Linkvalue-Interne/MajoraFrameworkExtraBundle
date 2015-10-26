@@ -3,10 +3,12 @@
 namespace Majora\Bundle\FrameworkExtraBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * This is the class that loads and manages your bundle configuration.
@@ -114,7 +116,6 @@ class MajoraFrameworkExtraExtension extends Extension
                         'route' => $config['web_socket']['client']['api']['route'],
                         'arguments' => 'majora.web_socket.client.arguments',
                     ));
-
                 break;
             }
 
@@ -123,7 +124,16 @@ class MajoraFrameworkExtraExtension extends Extension
             }
 
             $container->setAlias('majora.web_socket.client', new Alias($webSocketClientId));
+
             $webSocketWrapperDefinition = $container->getDefinition('majora.web_socket.event_listener');
+            if (($consoleSpooling = !empty($config['web_socket']['client']['spooling']['console']))
+                || ($requestSpooling = !empty($config['web_socket']['client']['spooling']['request']))
+            ) {
+                $webSocketWrapperDefinition->addTag('kernel.event_subscriber');
+            }
+
+            $webSocketWrapperDefinition->replaceArgument(1, $requestSpooling);
+            $webSocketWrapperDefinition->replaceArgument(2, $consoleSpooling);
 
             foreach ($config['web_socket']['client']['listen'] as $listenedEvent) {
                 $webSocketWrapperDefinition->addTag('kernel.event_listener', array(

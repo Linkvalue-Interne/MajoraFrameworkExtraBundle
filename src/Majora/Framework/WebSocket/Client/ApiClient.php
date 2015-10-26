@@ -2,15 +2,16 @@
 
 namespace Majora\Framework\WebSocket\Client;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\ClientInterface as HttpClientInterface;
-use Majora\Framework\WebSocket\Client\ClientInterface;
 use Majora\Framework\Log\LoggableTrait;
+use Majora\Framework\WebSocket\Client\SpoolableClientInterface;
 
 /**
  * Websocket client which use Api post calls instead of
  * websocket protocol to send messages
  */
-class ApiClient implements ClientInterface
+class ApiClient implements SpoolableClientInterface
 {
     use LoggableTrait;
 
@@ -25,11 +26,17 @@ class ApiClient implements ClientInterface
     protected $wsHttpEndPoint;
 
     /**
+     * @var ArrayCollection
+     */
+    protected $spooler;
+
+    /**
      * Construct
      */
     public function __construct(HttpClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
+        $this->spooler = new ArrayCollection();
     }
 
     /**
@@ -48,6 +55,27 @@ class ApiClient implements ClientInterface
     public function connect()
     {
         // not needed for api implementation
+    }
+
+    /**
+     * @see ClientInterface::spool()
+     */
+    public function spool($event, array $data = array())
+    {
+        $this->spooler->add(array(
+            'event' => $event,
+            'data' => $data
+        ));
+    }
+
+    /**
+     * @see ClientInterface::unleash()
+     */
+    public function unleash()
+    {
+        foreach ($this->spooler as $eventData) {
+            $this->send($eventData['event'], $eventData['data']);
+        }
     }
 
     /**

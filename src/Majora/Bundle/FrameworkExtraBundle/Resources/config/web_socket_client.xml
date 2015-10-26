@@ -7,8 +7,10 @@
     <services>
 
         <!-- Web socket client -->
-        <service id="majora.web_socket.event_listener" class="Majora\Framework\WebSocket\Client\Wrapper\EventListenerWrapper">
+        <service id="majora.web_socket.event_listener" class="Majora\Bundle\FrameworkExtraBundle\WebSocket\Client\EventListenerWrapper">
             <argument type="service" id="majora.web_socket.client" />
+            <argument><!-- request spooling --></argument>
+            <argument><!-- console spooling --></argument>
         </service>
 
         <!-- Api web socket client -->

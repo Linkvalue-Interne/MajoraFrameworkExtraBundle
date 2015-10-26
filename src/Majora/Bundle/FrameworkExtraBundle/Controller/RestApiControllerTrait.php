@@ -127,8 +127,12 @@ trait RestApiControllerTrait
                 );
                 break;
         }
-        
-        return $data;
+
+        // data camel case normalization
+        return $this->container->has('majora.inflector') ?
+            $this->container->get('majora.inflector')->normalize($data, 'camelize') :
+            $data
+        ;
     }
 
     /**
@@ -143,16 +147,8 @@ trait RestApiControllerTrait
      */
     protected function assertSubmitedFormIsValid(Request $request, FormInterface $form)
     {
-        $data = $this->getRequestData($request);
-
-        // data camel case normalization
-        $data = $this->container->has('majora.inflector') ?
-            $this->container->get('majora.inflector')->normalize($data, 'camelize') :
-            $data
-        ;
-
         $form->submit(
-            $data,
+            $this->getRequestData($request),
             $request->getMethod() !== 'PATCH'
         );
 
