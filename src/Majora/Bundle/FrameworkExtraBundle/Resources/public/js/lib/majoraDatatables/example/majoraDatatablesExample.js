@@ -8,7 +8,7 @@
 $(document).ready(function() {
 
     $('#example_client_side_processing').DataTable( {
-        ajax: {
+        ajax: { // see https://datatables.net/reference/option/ajax
             'url': 'mock/client_side_processing.json',
             'dataSrc': ''
         },
