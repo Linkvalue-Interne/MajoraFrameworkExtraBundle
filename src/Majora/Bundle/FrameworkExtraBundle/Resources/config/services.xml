@@ -35,6 +35,14 @@
 
         </service>
 
+        <!-- Majora base graph repository definition -->
+        <service id="majora.graph_repository.abstract"
+                 class="Majora\Framework\Repository\Graph\AbstractGraphRepository"
+                 abstract="true" public="false"
+        >
+
+        </service>
+
         <!-- Majora base fixtures repository definition -->
         <service id="majora.fixtures_repository.abstract"
                  class="Majora\Framework\Repository\Fixtures\AbstractFixturesRepository"

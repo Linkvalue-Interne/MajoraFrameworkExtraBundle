@@ -7,8 +7,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 /**
  * Base class for fixtures repository.
  */
-class MajoraSerializer
-    implements SerializerInterface
+class MajoraSerializer implements SerializerInterface
 {
     protected $handlers;
 

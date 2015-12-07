@@ -1,20 +1,21 @@
 <?php
 
-namespace Majora\Framework\Repository\Api;
+namespace Majora\Framework\Repository\Graph;
 
 use Majora\Framework\Model\CollectionableInterface;
+use Majora\Framework\Repository\RepositoryInterface;
 
 /**
- * Base trait for api repository.
+ * Trait to use into Graph repositories to get a simple implementation of RepositoryInterface
  */
-trait ApiRepositoryTrait
+trait GraphRepositoryTrait
 {
     /**
      * @see RepositoryInterface::persist()
      */
     public function persist(CollectionableInterface $entity)
     {
-        return;
+
     }
 
     /**
@@ -22,6 +23,6 @@ trait ApiRepositoryTrait
      */
     public function remove(CollectionableInterface $entity)
     {
-        return;
+
     }
 }

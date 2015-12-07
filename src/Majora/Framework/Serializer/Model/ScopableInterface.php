@@ -21,5 +21,5 @@ interface ScopableInterface
      *
      * @return array
      */
-    public function getScopes();
+    public static function getScopes();
 }

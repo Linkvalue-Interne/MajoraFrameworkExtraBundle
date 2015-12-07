@@ -31,6 +31,26 @@ class BroadcastableEvent extends Event implements BroadcastableEventInterface
     }
 
     /**
+     * @see BroadcastableEventInterface::getSubject()
+     */
+    public function getSubject()
+    {
+        throw new \BadMethodCallException(sprintf('%s::getSubject() has to be implemented.',
+            get_class($this)
+        ));
+    }
+
+    /**
+     * @see BroadcastableEventInterface::getAction()
+     */
+    public function getAction()
+    {
+        throw new \BadMethodCallException(sprintf('%s::getAction() has to be implemented.',
+            get_class($this)
+        ));
+    }
+
+    /**
      * @see BroadcastableEventInterface::setBroadcasted()
      */
     public function setBroadcasted($broadcasted)
@@ -44,19 +64,5 @@ class BroadcastableEvent extends Event implements BroadcastableEventInterface
     public function isBroadcasted()
     {
         return !empty($this->isBroadcasted);
-    }
-
-    /**
-     * return event related data.
-     *
-     * @return object
-     */
-    public function getData()
-    {
-        throw new \BadMethodCallException(sprintf(
-            '%s method has to be implemented in class %s.',
-            __FUNCTION__,
-            get_class($this)
-        ));
     }
 }
