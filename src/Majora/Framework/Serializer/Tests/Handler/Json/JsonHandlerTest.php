@@ -11,8 +11,7 @@ use PHPUnit_Framework_TestCase;
  *
  * @see Majora\Framework\Serializer\Handler\Json\JsonHandler
  */
-class JsonHandlerTest
-    extends PHPUnit_Framework_TestCase
+class JsonHandlerTest extends PHPUnit_Framework_TestCase
 {
     /**
      * tests serialize() method.

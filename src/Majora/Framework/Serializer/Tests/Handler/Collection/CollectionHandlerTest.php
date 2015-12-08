@@ -11,8 +11,7 @@ use PHPUnit_Framework_TestCase;
  *
  * @see Majora\Framework\Serializer\Handler\Collection\CollectionHandler
  */
-class CollectionHandlerTest
-    extends PHPUnit_Framework_TestCase
+class CollectionHandlerTest extends PHPUnit_Framework_TestCase
 {
     /**
      * tests serialize() method.

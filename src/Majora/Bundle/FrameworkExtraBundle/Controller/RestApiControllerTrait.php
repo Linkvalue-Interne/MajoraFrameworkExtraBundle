@@ -2,19 +2,15 @@
 
 namespace Majora\Bundle\FrameworkExtraBundle\Controller;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Majora\Bundle\FrameworkExtraBundle\Controller\ControllerTrait;
-use Majora\Framework\Serializer\Handler\Json\Exception\JsonDeserializationException;
 use Majora\Framework\Validation\ValidationException;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Base trait for REST APIs entity controllers traits.

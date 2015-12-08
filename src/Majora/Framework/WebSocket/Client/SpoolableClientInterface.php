@@ -2,8 +2,6 @@
 
 namespace Majora\Framework\WebSocket\Client;
 
-use Majora\Framework\WebSocket\Client\ClientInterface;
-
 /**
  * Interface to implements on Spoolable websocket clients
  */

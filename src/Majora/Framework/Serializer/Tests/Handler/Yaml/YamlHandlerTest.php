@@ -12,8 +12,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @see Majora\Framework\Serializer\Handler\Collection\YamlHandler
  */
-class YamlHandlerTest
-    extends PHPUnit_Framework_TestCase
+class YamlHandlerTest extends PHPUnit_Framework_TestCase
 {
     /**
      * tests serialize() method.

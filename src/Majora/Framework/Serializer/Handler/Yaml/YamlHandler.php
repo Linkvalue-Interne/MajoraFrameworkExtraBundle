@@ -8,8 +8,7 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Handler implementation creating and using yaml.
  */
-class YamlHandler
-    extends CollectionHandler
+class YamlHandler extends CollectionHandler
 {
     protected $yamlParser;
 

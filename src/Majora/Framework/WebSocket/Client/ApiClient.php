@@ -5,7 +5,6 @@ namespace Majora\Framework\WebSocket\Client;
 use Doctrine\Common\Collections\ArrayCollection;
 use GuzzleHttp\ClientInterface as HttpClientInterface;
 use Majora\Framework\Log\LoggableTrait;
-use Majora\Framework\WebSocket\Client\SpoolableClientInterface;
 
 /**
  * Websocket client which use Api post calls instead of
@@ -44,7 +43,7 @@ class ApiClient implements SpoolableClientInterface
      *
      * @param string $wsHttpEndPoint
      */
-    public function setWsApiEndpoint($route, $wsHttpEndPoint, array $defaultQueryParams = array())
+    public function setWsApiEndpoint($wsHttpEndPoint)
     {
         $this->wsHttpEndPoint = $wsHttpEndPoint;
     }

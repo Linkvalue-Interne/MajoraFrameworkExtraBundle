@@ -5,7 +5,6 @@ namespace Majora\Framework\Loader\Bridge\Doctrine;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Majora\Framework\Loader\Bridge\Doctrine\DoctrineLoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
