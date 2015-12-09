@@ -8,8 +8,7 @@ use Majora\Framework\Serializer\Handler\Json\Exception\JsonDeserializationExcept
 /**
  * Handler implementation creating and using json.
  */
-class JsonHandler
-    extends CollectionHandler
+class JsonHandler extends CollectionHandler
 {
     /**
      * @see FormatHandlerInterface::serialize()

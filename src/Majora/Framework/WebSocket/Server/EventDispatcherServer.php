@@ -5,7 +5,6 @@ namespace Majora\Framework\WebSocket\Server;
 use Doctrine\Common\Collections\ArrayCollection;
 use Hoa\Core\Event\Bucket;
 use Hoa\Websocket\Connection;
-use Majora\Framework\WebSocket\Server\Server;
 
 /**
  * Web socket server class which dispatch message to registered listeners
@@ -30,7 +29,6 @@ class EventDispatcherServer extends Server
     /**
      * Register a listener for given metadata
      *
-     * @param string $event
      * @param array  $metadata
      * @param Bucket $bucket
      */

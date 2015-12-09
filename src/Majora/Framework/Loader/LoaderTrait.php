@@ -3,10 +3,8 @@
 namespace Majora\Framework\Loader;
 
 use Doctrine\Common\Collections\Collection;
-use Majora\Framework\Loader\Bridge\Form\DataTransformerLoaderTrait;
-use Majora\Framework\Loader\Bridge\Security\UserProviderLoaderTrait;
+use Majora\Framework\Model\EntityCollection;
 use Majora\Framework\Repository\RepositoryInterface;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -14,20 +12,37 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 trait LoaderTrait
 {
-    use DataTransformerLoaderTrait, UserProviderLoaderTrait;
-
+    /**
+     * @var RepositoryInterface
+     */
     protected $entityRepository;
+
+    /**
+     * @var string
+     */
     protected $entityClass;
+
+    /**
+     * @var \ReflectionClass
+     */
     protected $entityReflection;
+
+    /**
+     * @var string
+     */
     protected $collectionClass;
+
+    /**
+     * @var OptionsResolver
+     */
     protected $filterResolver;
 
     /**
      * setUp method.
      *
-     * @param RepositoryInterface $entityRepository
-     * @param string              $entityClass
-     * @param string              $collectionClass
+     * @param RepositoryInterface     $entityRepository
+     * @param string                  $entityClass
+     * @param string                  $collectionClass
      */
     public function setUp(
         RepositoryInterface $entityRepository,
@@ -56,7 +71,7 @@ trait LoaderTrait
     /**
      * checks if loader is initialized.
      *
-     * @throws RuntimeException if not configured
+     * @throws \RuntimeException if not configured
      */
     private function assertIsConfigured()
     {
@@ -77,7 +92,7 @@ trait LoaderTrait
      *
      * @param object|EntityCollection $entity
      *
-     * @return $object same entity
+     * @return object same entity
      */
     protected function onLoad($entity)
     {
@@ -87,7 +102,7 @@ trait LoaderTrait
     /**
      * Convert given array or Collection result set to managed entity collection class
      *
-     * @param array|Collection $result [description]
+     * @param array|Collection $result
      *
      * @return EntityCollection
      */

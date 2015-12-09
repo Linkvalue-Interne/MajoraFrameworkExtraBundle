@@ -2,8 +2,8 @@
 
 namespace Majora\Framework\Validation;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Majora\Framework\Model\CollectionableInterface;
+use Majora\Framework\Model\EntityCollection;
 use Symfony\Component\Form\FormErrorIterator;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
@@ -22,6 +22,8 @@ class ValidationException extends \InvalidArgumentException
      * @param CollectionableInterface                            $entity
      * @param FormErrorIterator|ConstraintViolationListInterface $report
      * @param array                                              $groups
+     * @param int                                                $code
+     * @param \Exception                                         $previous
      */
     public function __construct(
         CollectionableInterface $entity = null,
@@ -73,13 +75,13 @@ class ValidationException extends \InvalidArgumentException
     /**
      * return violation list report
      *
-     * @return ArrayCollection|FormErrorIterator|ConstraintViolationListInterface
+     * @return EntityCollection|FormErrorIterator|ConstraintViolationListInterface
      */
     public function getReport()
     {
         return $this->report ?
             $this->report :
-            new ArrayCollection()
+            new EntityCollection()
         ;
     }
 

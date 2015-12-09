@@ -21,7 +21,7 @@
 
         <!-- Majora base loader definition -->
         <service id="majora.loader.abstract"
-                 class="Majora\Framework\Loader\BaseLoader"
+                 class="Majora\Framework\Loader\AbstractLoader"
                  abstract="true" public="false"
         >
 

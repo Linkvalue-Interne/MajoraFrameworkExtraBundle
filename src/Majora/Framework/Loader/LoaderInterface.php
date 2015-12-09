@@ -2,6 +2,8 @@
 
 namespace Majora\Framework\Loader;
 
+use Majora\Framework\Model\EntityCollection;
+
 /**
  * Base interface for all loaders.
  */
@@ -14,7 +16,7 @@ interface LoaderInterface
      * @param int   $limit   optionnal limit of results
      * @param int   $offset
      *
-     * @return Iterable
+     * @return EntityCollection
      */
     public function retrieveAll(array $filters = array(), $limit = null, $offset = null);
 
