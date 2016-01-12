@@ -26,6 +26,11 @@
         "symfony/symfony": ">=2.7.0",
         "doctrine/collections": "^1.3"
     },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^2.7",
+        "phpunit/phpunit": "5.1.*",
+        "phake/phake": "2.*"
+    },
     "suggest": {
         "majora/generator-bundle": "If you want to generate powerfull architecture without write to more code."
     },
