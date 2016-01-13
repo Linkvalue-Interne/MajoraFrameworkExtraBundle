@@ -7,8 +7,9 @@
 >
 
     <testsuites>
-        <testsuite name="MajoraFramework Json Form Extension test suite">
+        <testsuite name="JsonFormExtension">
             <directory suffix="Test.php">src/Majora/Framework/Form/Extension/Json/Tests</directory>
+            <file>src/Majora/Bundle/FrameworkExtraBundle/Tests/Functional/JsonFormExtensionTest.php</file>
         </testsuite>
     </testsuites>
 
@@ -18,6 +19,7 @@
             <exclude>
                 <directory>src/Majora/Bundle/FrameworkExtraBundle/Resources</directory>
                 <directory>src/Majora/Bundle/FrameworkExtraBundle/Tests</directory>
+                <directory>src/Majora/Framework/Form/Extension/Json/Tests</directory>
                 <directory>vendor</directory>
             </exclude>
         </whitelist>

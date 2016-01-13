@@ -13,7 +13,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getConfigTreeBuilder()
     {
@@ -47,6 +47,9 @@ class Configuration implements ConfigurationInterface
                     ->canBeEnabled()
                 ->end()
                 ->arrayNode('doctrine_events_proxy')
+                    ->canBeEnabled()
+                ->end()
+                ->arrayNode('json_form_extension')
                     ->canBeEnabled()
                 ->end()
                 ->arrayNode('web_socket')

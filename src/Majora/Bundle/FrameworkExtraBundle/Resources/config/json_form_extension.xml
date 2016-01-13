@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Majora Json Form Extension Type -->
+        <service id="form.type_extension.form.majora.json_extension" class="Majora\Framework\Form\Extension\Json\Type\FormTypeJsonExtension">
+            <argument type="service" id="form.type_extension.form.majora.json_extension.request_handler" />
+            <tag name="form.type_extension" extended_type="Symfony\Component\Form\Extension\Core\Type\FormType" />
+        </service>
+
+        <!-- Alias http_foundation form type -->
+        <service id="form.type_extension.form.http_foundation"
+                 alias="form.type_extension.form.majora.json_extension"
+        >
+        </service>
+
+        <!-- Majora Json Extension Request Handler -->
+        <service id="form.type_extension.form.majora.json_extension.request_handler" class="Majora\Framework\Form\Extension\Json\JsonRequestHandler">
+            <argument type="service" id="form.type_extension.form.request_handler" />
+        </service>
+
+        <!-- Majora Json Extension Listener -->
+        <service id="form.type_extension.form.majora.json_extension.listener" class="Majora\Framework\Form\Extension\Json\JsonExtensionListener">
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+    </services>
+</container>
