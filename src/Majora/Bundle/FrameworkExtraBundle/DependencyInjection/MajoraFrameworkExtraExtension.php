@@ -3,12 +3,10 @@
 namespace Majora\Bundle\FrameworkExtraBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * This is the class that loads and manages your bundle configuration.
@@ -18,7 +16,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class MajoraFrameworkExtraExtension extends Extension
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -60,6 +58,11 @@ class MajoraFrameworkExtraExtension extends Extension
         // doctrine events proxy
         if (!empty($config['doctrine_events_proxy']['enabled'])) {
             $loader->load('doctrine_events_proxy.xml');
+        }
+
+        // json form extension
+        if (!empty($config['json_form_extension']['enabled'])) {
+            $loader->load('json_form_extension.xml');
         }
 
         // web socket server

@@ -1,0 +1,5 @@
+imports:
+    - { resource: ../config/default.yml }
+
+majora_framework_extra:
+    json_form_extension: ~

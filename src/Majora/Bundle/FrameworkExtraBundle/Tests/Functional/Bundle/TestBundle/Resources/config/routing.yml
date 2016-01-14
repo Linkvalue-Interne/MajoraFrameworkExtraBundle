@@ -1,0 +1,6 @@
+json_form_extension.json:
+    path:   /json-form-extension/json
+    defaults: { _controller: TestBundle:JsonFormExtension:handleJson}
+json_form_extension.post:
+    path:   /json-form-extension/post
+    defaults: { _controller: TestBundle:JsonFormExtension:handlePost}
