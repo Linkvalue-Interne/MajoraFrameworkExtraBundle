@@ -46,12 +46,13 @@ class JsonFormExtensionTest extends WebTestCase
             $json
         );
 
-        $expectedJson = json_encode([
+        $expectedJsonRegExp = json_encode([
             'Class' => 'InvalidArgumentException',
-            'Message' => "Invalid submitted json data, error 4 : Syntax error, json : $json",
+            'Message' => "Invalid submitted json data, error (.*) : (.*)",
         ], 15);
-        $this->assertEquals(
-            $expectedJson,
+
+        $this->assertRegExp(
+            $expectedJsonRegExp,
             $this->client->getResponse()->getContent()
         );
     }
