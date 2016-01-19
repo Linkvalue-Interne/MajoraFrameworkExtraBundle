@@ -63,8 +63,14 @@ trait DoctrineLoaderTrait
                 $collection = new $this->collectionClass($result->toArray());
                 break;
 
+            // simple related entity ?
             case is_object($result) && is_subclass_of($result, $this->entityClass) :
                 $collection = new $this->collectionClass(array($result));
+                break;
+
+            // simple array ?
+            case is_array($result) :
+                $collection = new $this->collectionClass($result);
                 break;
 
             default:

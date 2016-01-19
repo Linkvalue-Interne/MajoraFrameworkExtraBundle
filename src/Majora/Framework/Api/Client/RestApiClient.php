@@ -64,7 +64,7 @@ class RestApiClient
             $options
         );
 
-        return (string) $response->getBody();
+        return $response;
     }
 
     /**

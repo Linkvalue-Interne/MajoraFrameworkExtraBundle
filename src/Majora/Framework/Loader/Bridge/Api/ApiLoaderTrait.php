@@ -46,10 +46,12 @@ trait ApiLoaderTrait
     {
         $this->assertIsConfigured();
 
+        $response = $this->restApiClient->cget(
+            $this->filterResolver->resolve($filters)
+        );
+
         return $this->serializer->deserialize(
-            $this->restApiClient->cget(
-                $this->filterResolver->resolve($filters)
-            ),
+            (string) $response->getBody(),
             $this->collectionClass,
             'json'
         );
@@ -62,8 +64,12 @@ trait ApiLoaderTrait
     {
         $this->assertIsConfigured();
 
+        $response = $this->restApiClient->get(
+            $this->filterResolver->resolve($filters)
+        );
+
         return $this->serializer->deserialize(
-            $this->restApiClient->get($filters),
+            (string) $response->getBody(),
             $this->entityClass,
             'json'
         );
@@ -74,8 +80,6 @@ trait ApiLoaderTrait
      */
     public function retrieve($id)
     {
-        $this->assertIsConfigured();
-
         return $this->retrieveOne(array('id' => $id));
     }
 }
