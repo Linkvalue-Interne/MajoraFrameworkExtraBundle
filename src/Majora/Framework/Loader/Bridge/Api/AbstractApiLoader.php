@@ -9,4 +9,5 @@ use Majora\Framework\Loader\LoaderInterface;
  */
 abstract class AbstractApiLoader implements LoaderInterface
 {
+
 }

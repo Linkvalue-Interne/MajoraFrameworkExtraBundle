@@ -6,10 +6,14 @@
 
     <services>
 
-        <!-- Majora base domain definition -->
-        <service id="majora.domain.abstract"
-                 class="Majora\Framework\Domain\AbstractDomain"
-                 abstract="true" public="false"
+        <!-- Majora base domain definition - @deprecated -->
+        <service id="majora.domain.abstract" abstract="true" public="false"
+             class="Majora\Framework\Domain\AbstractDomain" parent="majora.domain.abstract_action"
+        />
+
+        <!-- Majora domain action factory -->
+        <service id="majora.domain.abstract_action" abstract="true" public="false"
+            class="Majora\Framework\Domain\Action\ActionFactory"
         >
             <call method="setEventDispatcher">
                 <argument type="service" id="event_dispatcher" />
@@ -20,20 +24,19 @@
         </service>
 
         <!-- Majora base loader definition -->
-        <service id="majora.loader.abstract"
-                 class="Majora\Framework\Loader\AbstractLoader"
-                 abstract="true" public="false"
-        >
-
-        </service>
+        <service id="majora.loader.abstract" abstract="true" public="false"
+            class="Majora\Framework\Loader\AbstractLoader"
+        />
 
         <!-- Majora base api repository definition -->
-        <service id="majora.api_repository.abstract"
-                 class="Majora\Framework\Repository\Api\AbstractApiRepository"
-                 abstract="true" public="false"
-        >
+        <service id="majora.api_repository.abstract" abstract="true" public="false"
+            class="Majora\Framework\Repository\Api\AbstractApiRepository"
+        />
 
-        </service>
+        <!-- Majora base graph repository definition -->
+        <service id="majora.graph_repository.abstract" abstract="true" public="false"
+            class="Majora\Framework\Repository\Graph\AbstractGraphRepository"
+        />
 
         <!-- Majora base graph repository definition -->
         <service id="majora.graph_repository.abstract"
@@ -44,20 +47,14 @@
         </service>
 
         <!-- Majora base fixtures repository definition -->
-        <service id="majora.fixtures_repository.abstract"
-                 class="Majora\Framework\Repository\Fixtures\AbstractFixturesRepository"
-                 abstract="true" public="false"
-        >
-
-        </service>
+        <service id="majora.fixtures_repository.abstract" abstract="true" public="false"
+            class="Majora\Framework\Repository\Fixtures\AbstractFixturesRepository"
+        />
 
         <!-- Majora base doctrine repository definition -->
-        <service id="majora.doctrine_repository.abstract"
-                 class="Majora\Framework\Repository\Doctrine\BaseDoctrineRepository"
-                 abstract="true" public="false"
-        >
-
-        </service>
+        <service id="majora.doctrine_repository.abstract" abstract="true" public="false"
+            class="Majora\Framework\Repository\Doctrine\BaseDoctrineRepository"
+        />
 
         <!-- Inflector -->
         <service id="majora.inflector" class="Majora\Framework\Inflector\Inflector" />
