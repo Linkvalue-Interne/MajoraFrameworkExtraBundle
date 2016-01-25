@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- Guzzle Http Client -->
+        <service id="majora.http.client" class="GuzzleHttp\Client" public="false" />
+
+        <!-- Base Http Request Factory -->
+        <service id="majora.http.abstract_request_factory" abstract="true" public="false"
+            class="Majora\Framework\Api\Request\RestApiRequestFactory"
+        >
+            <argument type="service" id="majora.agnostic_url_generator" />
+            <argument type="collection">
+                <argument key="headers" type="collection">
+                    <argument key="Content-Type">application/json</argument>
+                </argument>
+            </argument>
+        </service>
+
+    </services>
+
+</container>

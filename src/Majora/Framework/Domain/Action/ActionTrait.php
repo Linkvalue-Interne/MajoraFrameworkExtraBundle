@@ -2,9 +2,11 @@
 
 namespace Majora\Framework\Domain\Action;
 
+use Majora\Framework\Api\Client\RestApiClient;
 use Majora\Framework\Validation\ValidationException;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -21,6 +23,16 @@ trait ActionTrait
      * @var EventDispatcherInterface
      */
     protected $eventDispatcher;
+
+    /**
+     * @var RestApiClient
+     */
+    private $restClient;
+
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
 
     /**
      * define event dispatcher.
@@ -40,6 +52,60 @@ trait ActionTrait
     public function setValidator(ValidatorInterface $validator)
     {
         $this->validator = $validator;
+    }
+
+    /**
+     * define rest client.
+     *
+     * @param RestApiClient $restClient
+     */
+    public function setRestApiClient(RestApiClient $restClient)
+    {
+        $this->restClient = $restClient;
+    }
+
+    /**
+     * returns api client if defined
+     *
+     * @return RestApiClient
+     */
+    protected function getRestApiClient()
+    {
+        if (!$this->restClient) {
+            throw new \BadMethodCallException(sprintf(
+                'Method %s() cannot be used while rest api client isnt configured.',
+                __METHOD__
+            ));
+        }
+
+        return $this->restClient;
+    }
+
+    /**
+     * define serializer.
+     *
+     * @param SerializerInterface $serializer
+     */
+    public function setSerializer(SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
+    /**
+     * returns serializer if defined
+     *
+     * @return SerializerInterface
+     */
+    protected function getSerializer()
+    {
+        if (!$this->serializer) {
+            throw new \BadMethodCallException(sprintf(
+                'Method %s() cannot be used while serializer isnt configured.',
+                __METHOD__
+            ));
+        }
+
+        return $this->serializer;
     }
 
     /**

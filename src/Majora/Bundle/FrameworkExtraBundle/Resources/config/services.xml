@@ -11,16 +11,20 @@
              class="Majora\Framework\Domain\AbstractDomain" parent="majora.domain.abstract_action"
         />
 
-        <!-- Majora domain action factory -->
+        <!-- Majora domain action base definition -->
         <service id="majora.domain.abstract_action" abstract="true" public="false"
             class="Majora\Framework\Domain\Action\ActionFactory"
         >
-            <call method="setEventDispatcher">
-                <argument type="service" id="event_dispatcher" />
-            </call>
-            <call method="setValidator">
-                <argument type="service" id="validator" />
-            </call>
+            <call method="setEventDispatcher"><argument type="service" id="event_dispatcher" /></call>
+            <call method="setValidator"><argument type="service" id="validator" /></call>
+        </service>
+
+        <!-- Majora domain api actions base definition -->
+        <service id="majora.domain.abstract_action" abstract="true" public="false"
+            class="Majora\Framework\Domain\Action\ActionFactory"
+        >
+            <call method="setValidator"><argument type="service" id="validator" /></call>
+            <call method="setSerializer"><argument type="service" id="serializer" /></call>
         </service>
 
         <!-- Majora base loader definition -->
@@ -37,14 +41,6 @@
         <service id="majora.graph_repository.abstract" abstract="true" public="false"
             class="Majora\Framework\Repository\Graph\AbstractGraphRepository"
         />
-
-        <!-- Majora base graph repository definition -->
-        <service id="majora.graph_repository.abstract"
-                 class="Majora\Framework\Repository\Graph\AbstractGraphRepository"
-                 abstract="true" public="false"
-        >
-
-        </service>
 
         <!-- Majora base fixtures repository definition -->
         <service id="majora.fixtures_repository.abstract" abstract="true" public="false"

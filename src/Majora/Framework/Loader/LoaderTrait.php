@@ -14,8 +14,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 trait LoaderTrait
 {
-    use DataTransformerLoaderTrait, UserProviderLoaderTrait;
-
     protected $entityRepository;
     protected $entityProperties;
     protected $entityClass;
@@ -45,24 +43,5 @@ trait LoaderTrait
         foreach ($entityProperties as $propertyName) {
             $this->filterResolver->setDefined($propertyName);
         }
-    }
-
-    /**
-     * checks if loader is initialized.
-     *
-     * @throws RuntimeException if not configured
-     */
-    private function assertIsConfigured()
-    {
-        if ($this->entityClass
-            && $this->collectionClass && $this->filterResolver
-        ) {
-            return;
-        }
-
-        throw new \RuntimeException(sprintf(
-            '%s methods cannot be used, it hasnt been initialize through setUp() method.',
-            __CLASS__
-        ));
     }
 }
