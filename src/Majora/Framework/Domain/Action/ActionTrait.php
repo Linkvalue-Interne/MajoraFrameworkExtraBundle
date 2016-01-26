@@ -73,7 +73,7 @@ trait ActionTrait
     {
         if (!$this->restClient) {
             throw new \BadMethodCallException(sprintf(
-                'Method %s() cannot be used while rest api client isnt configured.',
+                'Method %s() cannot be used while rest api client is not configured.',
                 __METHOD__
             ));
         }
@@ -100,7 +100,7 @@ trait ActionTrait
     {
         if (!$this->serializer) {
             throw new \BadMethodCallException(sprintf(
-                'Method %s() cannot be used while serializer isnt configured.',
+                'Method %s() cannot be used while serializer is not configured.',
                 __METHOD__
             ));
         }
@@ -120,7 +120,7 @@ trait ActionTrait
     {
         if (!$this->validator) {
             throw new \BadMethodCallException(sprintf(
-                'Method %s() cannot be used while validator isnt configured.',
+                'Method %s() cannot be used while validator is not configured.',
                 __METHOD__
             ));
         }
@@ -154,7 +154,7 @@ trait ActionTrait
     {
         if (!$this->eventDispatcher) {
             throw new \BadMethodCallException(sprintf(
-                'Method %s() cannot be used while event dispatcher isnt configured.',
+                'Method %s() cannot be used while event dispatcher is not configured.',
                 __METHOD__
             ));
         }

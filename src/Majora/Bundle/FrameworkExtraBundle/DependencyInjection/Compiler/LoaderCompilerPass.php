@@ -26,7 +26,7 @@ class LoaderCompilerPass implements CompilerPassInterface
                     if (!$entityReflection->implementsInterface('Majora\Framework\Model\CollectionableInterface')) {
                         throw new \InvalidArgumentException(sprintf(
                             'Cannot support "%s" class into "%s" : managed items have to be Majora\Framework\Model\CollectionableInterface.',
-                            $entityClass,
+                            $attributes['entityClass'],
                             $loaderDefinition->getClass()
                         ));
                     }

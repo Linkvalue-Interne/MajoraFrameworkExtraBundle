@@ -2,11 +2,7 @@
 
 namespace Majora\Framework\Loader;
 
-use Doctrine\Common\Collections\Collection;
-use Majora\Framework\Loader\Bridge\Form\DataTransformerLoaderTrait;
-use Majora\Framework\Loader\Bridge\Security\UserProviderLoaderTrait;
 use Majora\Framework\Repository\RepositoryInterface;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -14,10 +10,29 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 trait LoaderTrait
 {
+    /**
+     * @var RepositoryInterface
+     */
     protected $entityRepository;
+
+    /**
+     * @var array
+     */
     protected $entityProperties;
+
+    /**
+     * @var string
+     */
     protected $entityClass;
+
+    /**
+     * @var string
+     */
     protected $collectionClass;
+
+    /**
+     * @var OptionsResolver
+     */
     protected $filterResolver;
 
     /**

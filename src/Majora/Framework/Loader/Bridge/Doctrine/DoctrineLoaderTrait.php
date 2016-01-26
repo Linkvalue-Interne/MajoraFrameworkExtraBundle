@@ -2,10 +2,16 @@
 
 namespace Majora\Framework\Loader\Bridge\Doctrine;
 
+use Doctrine\Common\Collections\Collection;
 use Majora\Framework\Loader\LoaderTrait;
 
 /**
  * Trait to use into Doctrine loaders to get a simple implementation of LoaderInterface
+ *
+ * @property $entityRepository
+ * @property $entityClass
+ * @property $collectionClass
+ * @property $filterResolver
  */
 trait DoctrineLoaderTrait
 {
@@ -14,7 +20,7 @@ trait DoctrineLoaderTrait
     /**
      * checks if loader is initialized.
      *
-     * @throws RuntimeException if not configured
+     * @throws \RuntimeException if not configured
      */
     private function assertIsConfigured()
     {
@@ -25,7 +31,7 @@ trait DoctrineLoaderTrait
         }
 
         throw new \RuntimeException(sprintf(
-            '%s methods cannot be used, it hasnt been initialize through setUp() method.',
+            '%s methods cannot be used, it has not been initialize through setUp() method.',
             __CLASS__
         ));
     }

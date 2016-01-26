@@ -3,7 +3,6 @@
 namespace Majora\Bundle\FrameworkExtraBundle;
 
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\ActionRegisterCompilerPass;
-use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\AgnosticRouteCompilerPass;
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\AliasRegisterCompilerPass;
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\FixturesCompilerPass;
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\LoaderCompilerPass;

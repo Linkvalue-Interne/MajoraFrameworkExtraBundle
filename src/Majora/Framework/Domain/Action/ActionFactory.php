@@ -18,7 +18,7 @@ class ActionFactory
     /**
      * Construct
      *
-     * @param array $prototypes
+     * @param array $actions
      */
     public function __construct(array $actions)
     {
