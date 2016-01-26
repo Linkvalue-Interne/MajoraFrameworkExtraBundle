@@ -22,7 +22,21 @@ class ActionFactory
      */
     public function __construct(array $actions)
     {
-        $this->actions = new ArrayCollection($actions);
+        $this->actions = new ArrayCollection();
+        foreach ($actions as $name => $action) {
+            $this->registerAction($name, $action);
+        }
+    }
+
+    /**
+     * Register an action under given name
+     *
+     * @param  string          $name
+     * @param  ActionInterface $action
+     */
+    public function registerAction($name, ActionInterface $action)
+    {
+        $this->actions->set($name, $action);
     }
 
     /**
