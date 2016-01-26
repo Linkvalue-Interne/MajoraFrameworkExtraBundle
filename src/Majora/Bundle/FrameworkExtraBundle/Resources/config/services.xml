@@ -20,7 +20,7 @@
         </service>
 
         <!-- Majora domain api actions base definition -->
-        <service id="majora.domain.abstract_action" abstract="true" public="false"
+        <service id="majora.domain.abstract_api_action" abstract="true" public="false"
             class="Majora\Framework\Domain\Action\ActionFactory"
         >
             <call method="setValidator"><argument type="service" id="validator" /></call>

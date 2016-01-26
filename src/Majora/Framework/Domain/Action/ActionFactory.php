@@ -20,7 +20,7 @@ class ActionFactory
      *
      * @param array $actions
      */
-    public function __construct(array $actions)
+    public function __construct(array $actions = array())
     {
         $this->actions = new ArrayCollection();
         foreach ($actions as $name => $action) {
@@ -31,8 +31,8 @@ class ActionFactory
     /**
      * Register an action under given name
      *
-     * @param  string          $name
-     * @param  ActionInterface $action
+     * @param string          $name
+     * @param ActionInterface $action
      */
     public function registerAction($name, ActionInterface $action)
     {
@@ -50,7 +50,7 @@ class ActionFactory
     {
         if (!$this->actions->containsKey($name)) {
             throw new \InvalidArgumentException(sprintf(
-                'Any action registered under "%s" name, only [%s] are.',
+                'Any action registered under "%s" name, only ["%s"] are.',
                 $name,
                 implode('","', $this->actions->getKeys())
             ));
