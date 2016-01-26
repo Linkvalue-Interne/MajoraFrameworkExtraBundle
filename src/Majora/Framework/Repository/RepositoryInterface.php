@@ -2,13 +2,12 @@
 
 namespace Majora\Framework\Repository;
 
-use Majora\Framework\Loader\LoaderInterface;
 use Majora\Framework\Model\CollectionableInterface;
 
 /**
  * General repository interface.
  */
-interface RepositoryInterface extends LoaderInterface
+interface RepositoryInterface
 {
     /**
      * save given entity data into persistence layer.

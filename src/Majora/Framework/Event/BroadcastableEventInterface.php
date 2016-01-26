@@ -22,11 +22,18 @@ interface BroadcastableEventInterface
     public function getOriginName();
 
     /**
-     * return event related data.
+     * return event related action
      *
-     * @return array
+     * @return mixed
      */
-    public function getData();
+    public function getAction();
+
+    /**
+     * return event related subject
+     *
+     * @return mixed
+     */
+    public function getSubject();
 
     /**
      * define is event is currently broadcasted.

@@ -62,7 +62,7 @@ class EntityCollection extends ArrayCollection implements SerializableInterface
     /**
      * @see ScopableInterface::getScopes()
      */
-    public function getScopes()
+    public static function getScopes()
     {
         return array();
     }

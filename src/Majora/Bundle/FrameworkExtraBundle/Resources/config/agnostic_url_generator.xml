@@ -7,14 +7,8 @@
     <services>
 
         <!-- Agnostic url generator -->
-        <service id="majora.agnostic_url_generator"
-            class="Symfony\Component\Routing\Generator\UrlGenerator"
-        >
-            <argument type="expression">service('router').getRouteCollection()</argument>
-            <argument type="service">
-                <service class="Symfony\Component\Routing\RequestContext" />
-            </argument>
-            <argument type="service" id="logger" />
+        <service id="majora.agnostic_url_generator" class="Majora\Framework\Routing\AgnosticUrlGenerator">
+            <argument type="service" id="router" />
         </service>
 
     </services>

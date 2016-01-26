@@ -14,30 +14,45 @@ class LoaderCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $loaderTags = $container->findTaggedServiceIds('majora.loader');
-        $doctrineProxy = $container->hasDefinition('majora.doctrine.event_proxy') ?
-            $container->getDefinition('majora.doctrine.event_proxy') :
-            null
-        ;
-        $registerProxy = (boolean) $doctrineProxy;
 
         foreach ($loaderTags as $loaderId => $tags) {
             $loaderDefinition = $container->getDefinition($loaderId);
-            $reflection = new \ReflectionClass($loaderDefinition->getClass());
-            $setUp = $reflection->hasMethod('setUp');
+            $loaderReflection = new \ReflectionClass($loaderDefinition->getClass());
+            $setUp = $loaderReflection->hasMethod('setUp');
 
             foreach ($tags as $attributes) {
                 if ($setUp) {
+                    $entityReflection = new \ReflectionClass($attributes['entityClass']);
+                    if (!$entityReflection->implementsInterface('Majora\Framework\Model\CollectionableInterface')) {
+                        throw new \InvalidArgumentException(sprintf(
+                            'Cannot support "%s" class into "%s" : managed items have to be Majora\Framework\Model\CollectionableInterface.',
+                            $attributes['entityClass'],
+                            $loaderDefinition->getClass()
+                        ));
+                    }
+
                     $loaderDefinition->addMethodCall('setUp', array(
-                        new Reference($attributes['repository']),
                         $attributes['entityClass'],
-                        $attributes['entityCollection']
+                        array_map(
+                            function($property) { return $property->getName(); },
+                            $entityReflection->getProperties()
+                        ),
+                        $attributes['entityCollection'],
+                        isset($attributes['repository']) ?
+                            new Reference($attributes['repository']) :
+                            null
                     ));
                 }
-                if ($registerProxy) {
-                    $doctrineProxy->addMethodCall('registerDoctrineLoader', array(
-                        $attributes['entityClass'],
-                        $loaderId
-                    ));
+
+                // doctrine bridge
+                if ($container->hasDefinition('majora.doctrine.event_proxy')) {
+                    $container
+                        ->getDefinition('majora.doctrine.event_proxy')
+                        ->addMethodCall('registerDoctrineLoader', array(
+                            $attributes['entityClass'],
+                            $loaderId
+                        ))
+                    ;
                 }
             }
         }

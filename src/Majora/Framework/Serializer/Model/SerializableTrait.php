@@ -33,7 +33,7 @@ trait SerializableTrait
                 $scope
             ));
         }
-        if (empty($scopes[$scope])) {
+        if (empty($scopes) || empty($scopes[$scope])) {
             return array();
         }
 

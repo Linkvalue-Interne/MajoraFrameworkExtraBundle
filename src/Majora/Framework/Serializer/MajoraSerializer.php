@@ -2,24 +2,30 @@
 
 namespace Majora\Framework\Serializer;
 
+use Majora\Framework\Serializer\Handler\FormatHandlerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Base class for fixtures repository.
  */
-class MajoraSerializer
-    implements SerializerInterface
+class MajoraSerializer implements SerializerInterface
 {
+    /**
+     * FormatHandlerInterface[]
+     */
     protected $handlers;
 
     /**
      * construct.
      *
-     * @param array $handlers
+     * @param FormatHandlerInterface[] $handlers
      */
     public function __construct(array $handlers)
     {
-        $this->handlers = $handlers;
+        $this->handlers = array_map(
+            function(FormatHandlerInterface $handler) { return $handler; },
+            $handlers
+        );
     }
 
     /**

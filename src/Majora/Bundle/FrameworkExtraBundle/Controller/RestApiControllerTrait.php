@@ -96,12 +96,13 @@ trait RestApiControllerTrait
      * Retrieve given request data depending on its content type.
      *
      * @param Request $request
+     * @param string  $inflection optional inflector to tuse on parameter keys
      *
      * @return array
      *
      * @throws HttpException if JSON content-type and invalid JSON data
      */
-    protected function getRequestData(Request $request)
+    protected function getRequestData(Request $request, $inflection = 'camelize')
     {
         switch ($request->headers->get('content-type')) {
 
@@ -126,7 +127,7 @@ trait RestApiControllerTrait
 
         // data camel case normalization
         return $this->container->has('majora.inflector') ?
-            $this->container->get('majora.inflector')->normalize($data, 'camelize') :
+            $this->container->get('majora.inflector')->normalize($data, $inflection) :
             $data
         ;
     }
