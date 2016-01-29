@@ -95,17 +95,7 @@ trait ApiLoaderTrait
      */
     public function retrieveOne(array $filters = array())
     {
-        return $this->apiCall(
-            'get',
-            $this->filterResolver->resolve($filters),
-            function(Response $response) {
-                return $this->serializer->deserialize(
-                    (string) $response->getBody(),
-                    $this->entityClass,
-                    'json'
-                );
-            }
-        );
+        return $this->retrieveAll($filters)->first() ?: null;
     }
 
     /**
@@ -113,6 +103,12 @@ trait ApiLoaderTrait
      */
     public function retrieve($id)
     {
-        return $this->retrieveOne(array('id' => $id));
+        return $this->apiCall('get', array('id' => $id), function(Response $response) {
+            return $this->serializer->deserialize(
+                (string) $response->getBody(),
+                $this->entityClass,
+                'json'
+            );
+        });
     }
 }

@@ -3,6 +3,7 @@
 namespace Majora\Framework\Domain\Action;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
@@ -14,6 +15,11 @@ trait DynamicActionTrait
      * @var ArrayCollection
      */
     protected $attributes;
+
+    /**
+     * @var PropertyAccessorInterface
+     */
+    private $propertyAccessor;
 
     /**
      * Magic call implementation which forward to dynamic getter / setter
@@ -56,6 +62,20 @@ trait DynamicActionTrait
     }
 
     /**
+     * Return internal property accessor
+     *
+     * @return PropertyAccessorInterface
+     */
+    private function getPropertyAccessor()
+    {
+        $this->propertyAccessor = $this->propertyAccessor ?:
+            PropertyAccess::createPropertyAccessor()
+        ;
+
+        return $this->propertyAccessor;
+    }
+
+    /**
      * Returns data under given key, null if undefined
      *
      * @param string $key
@@ -68,6 +88,18 @@ trait DynamicActionTrait
     }
 
     /**
+     * Tests if given key exists
+     *
+     * @param string $key
+     *
+     * @return boolean
+     */
+    protected function _has($key)
+    {
+        return $this->getAttributes()->containsKey($key);
+    }
+
+    /**
      * Stores given key as given value
      *
      * @param string $key
@@ -77,7 +109,30 @@ trait DynamicActionTrait
      */
     protected function _set($key, $value)
     {
-        $this->getAttributes()->set($key, $value);
+        $this->getAttributes()->set(ucfirst($key), $value);
+
+        return $this;
+    }
+
+    /**
+     * Define given field on given object, if accessible
+     *
+     * @param mixed  $object
+     * @param string $field
+     *
+     * @return self
+     */
+    protected function setIfDefined($object, $field)
+    {
+        if (!$this->_has($field = ucfirst($field))) {
+            return $this;
+        }
+
+        $this->getPropertyAccessor()->setValue(
+            $object,
+            $field,
+            $this->_get($field)
+        );
 
         return $this;
     }
@@ -103,6 +158,10 @@ trait DynamicActionTrait
      */
     public function deserialize(array $objectData, PropertyAccessorInterface $propertyAccessor = null)
     {
-        $this->getAttributes()->add($objectData);
+        foreach ($objectData as $key => $value) {
+            $this->_set($key, $value);
+        }
+
+        return $this;
     }
 }
