@@ -23,7 +23,6 @@
         <service id="majora.domain.abstract_api_action" abstract="true" public="false"
             class="Majora\Framework\Domain\Action\ActionFactory"
         >
-            <call method="setValidator"><argument type="service" id="validator" /></call>
             <call method="setSerializer"><argument type="service" id="serializer" /></call>
         </service>
 

@@ -111,8 +111,8 @@ trait ActionTrait
     /**
      * assert given entity is valid on given scope.
      *
-     * @param object $entity
-     * @param string $scope
+     * @param object       $entity
+     * @param string|array $scope
      *
      * @throws ValidationException If given object is invalid on given scope
      */
@@ -125,21 +125,19 @@ trait ActionTrait
             ));
         }
 
+        $scopes = $scope ? (array) $scope : null;
+
         $violationList = $this->validator->validate(
             $entity,
             null,
-            $scope ? (array) $scope : null
+            $scopes
         );
 
         if (!count($violationList)) {
             return;
         }
 
-        throw new ValidationException(
-            $entity,
-            $violationList,
-            $scope ? (array) $scope : null
-        );
+        throw new ValidationException($entity, $violationList, $scopes);
     }
 
     /**

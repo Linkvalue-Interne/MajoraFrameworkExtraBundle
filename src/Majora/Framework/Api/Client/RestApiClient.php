@@ -118,7 +118,7 @@ class RestApiClient
      */
     public function put(array $query = array(), array $body = array(), array $options = array())
     {
-        return $this->send('put', 'POST', $query, $body, $options);
+        return $this->send('put', 'PUT', $query, $body, $options);
     }
 
     /**
@@ -132,6 +132,6 @@ class RestApiClient
      */
     public function delete(array $query = array(), array $body = array(), array $options = array())
     {
-        return $this->send('delete', 'POST', $query, $body, $options);
+        return $this->send('delete', 'DELETE', $query, $body, $options);
     }
 }
