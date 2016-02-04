@@ -45,7 +45,7 @@ class ValidationException extends \InvalidArgumentException
         }
         if (!empty($this->groups)) {
             $message .= sprintf(' for ["%s"] groups',
-                implode('"', $this->groups)
+                implode('", "', $this->groups)
             );
         }
 

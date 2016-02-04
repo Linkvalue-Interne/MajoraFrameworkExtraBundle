@@ -2,6 +2,8 @@
 
 namespace Majora\Framework\Loader\Bridge\Api;
 
+use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Psr7\Response;
 use Majora\Framework\Api\Client\RestApiClient;
 use Majora\Framework\Loader\LoaderInterface;
 use Majora\Framework\Loader\LoaderTrait;
@@ -40,20 +42,51 @@ trait ApiLoaderTrait
     }
 
     /**
+     * Performs an Api call on given method
+     *
+     * @param string   $method
+     * @param array    $query
+     * @param callable $onSuccess
+     * @param mixed    $emptyValue
+     */
+    private function apiCall(
+        $method,
+        array $query = array(),
+        callable $onSuccess,
+        $emptyValue = null
+    )
+    {
+        try {
+            return $onSuccess(
+                $this->restApiClient->$method($query)
+            );
+        } catch (BadResponseException $e) {
+            if (($response = $e->getResponse())
+                && $response->getStatusCode() == 404
+            ) {
+                return $emptyValue;
+            }
+
+            throw $e;
+        }
+    }
+
+    /**
      * @see LoaderInterface::retrieveAll()
      */
     public function retrieveAll(array $filters = array(), $limit = null, $offset = null)
     {
-        $this->assertIsConfigured();
-
-        $response = $this->restApiClient->cget(
-            $this->filterResolver->resolve($filters)
-        );
-
-        return $this->serializer->deserialize(
-            (string) $response->getBody(),
-            $this->collectionClass,
-            'json'
+        return $this->apiCall(
+            'cget',
+            $this->filterResolver->resolve($filters),
+            function(Response $response) {
+                return $this->serializer->deserialize(
+                    (string) $response->getBody(),
+                    $this->collectionClass,
+                    'json'
+                );
+            },
+            new $this->collectionClass()
         );
     }
 
@@ -62,17 +95,7 @@ trait ApiLoaderTrait
      */
     public function retrieveOne(array $filters = array())
     {
-        $this->assertIsConfigured();
-
-        $response = $this->restApiClient->get(
-            $this->filterResolver->resolve($filters)
-        );
-
-        return $this->serializer->deserialize(
-            (string) $response->getBody(),
-            $this->entityClass,
-            'json'
-        );
+        return $this->retrieveAll($filters)->first() ?: null;
     }
 
     /**
@@ -80,6 +103,12 @@ trait ApiLoaderTrait
      */
     public function retrieve($id)
     {
-        return $this->retrieveOne(array('id' => $id));
+        return $this->apiCall('get', array('id' => $id), function(Response $response) {
+            return $this->serializer->deserialize(
+                (string) $response->getBody(),
+                $this->entityClass,
+                'json'
+            );
+        });
     }
 }

@@ -124,6 +124,10 @@ trait SerializableTrait
      */
     public function deserialize(array $data, PropertyAccessorInterface $propertyAccessor = null)
     {
+        if (empty($data)) {
+            return $this;
+        }
+
         $propertyAccessor = $propertyAccessor ?: PropertyAccess::createPropertyAccessor();
 
         $write = function ($property, $value) use ($propertyAccessor) {
