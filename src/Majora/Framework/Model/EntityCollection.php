@@ -45,15 +45,11 @@ class EntityCollection extends ArrayCollection implements SerializableInterface
         $this->clear();
         $entityClass = $this->getEntityClass();
 
-        $entities = array_map(
-            function (array $majoraEntityData) use ($entityClass, $propertyAccessor) {
-                return (new $entityClass())->deserialize($majoraEntityData, $propertyAccessor);
-            },
-            $data
-        );
-
-        foreach ($entities as $entity) {
-            $this->set($entity->getId(), $entity);
+        foreach ($data as $key => $majoraEntityData) {
+            $this->set(
+                $key,
+                (new $entityClass())->deserialize($majoraEntityData, $propertyAccessor)
+            );
         }
 
         return $this;

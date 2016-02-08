@@ -11,6 +11,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Trait to use into Api loaders to get a simple implementation of LoaderInterface
+ *
+ * @property filterResolver
  */
 trait ApiLoaderTrait
 {
@@ -39,6 +41,20 @@ trait ApiLoaderTrait
     {
         $this->restApiClient = $restApiClient;
         $this->serializer = $serializer;
+    }
+
+    /**
+     * Resolve given filters
+     *
+     * @param array $filters
+     *
+     * @return array
+     */
+    private function resolveFilters(array $filters = array())
+    {
+        $this->filterResolver->setDefined('scope');
+
+        return $this->filterResolver->resolve($filters);
     }
 
     /**
@@ -78,7 +94,7 @@ trait ApiLoaderTrait
     {
         return $this->apiCall(
             'cget',
-            $this->filterResolver->resolve($filters),
+            $this->resolveFilters($filters),
             function(Response $response) {
                 return $this->serializer->deserialize(
                     (string) $response->getBody(),
