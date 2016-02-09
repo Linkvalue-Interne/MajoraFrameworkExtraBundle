@@ -119,7 +119,7 @@ class SerializableMock1
     /**
      * @see ScopableInterface::getScopes()
      */
-    public function getScopes()
+    public static function getScopes()
     {
         return array(
             'default' => array('id', 'label'),
