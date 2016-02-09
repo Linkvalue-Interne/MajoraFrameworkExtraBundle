@@ -2,8 +2,6 @@
 
 namespace Majora\Framework\Inflector;
 
-use Symfony\Component\DependencyInjection\Container;
-
 /**
  * Inflector class which build replacements format
  * from given vars.
@@ -69,10 +67,15 @@ class Inflector
      * @param string $string
      *
      * @return string
+     *
+     * @see for inspiration https://github.com/symfony/dependency-injection/blob/master/Container.php#L342
      */
     public function pascalize($string)
     {
-        return ucfirst(Container::camelize($string));
+        return ucfirst(strtr(
+            ucwords(strtr($string, array('_' => ' ', '.' => '_ ', '\\' => '_ '))),
+            array(' ' => '')
+        ));
     }
 
     /**
@@ -81,10 +84,16 @@ class Inflector
      * @param string $string
      *
      * @return string
+     *
+     * @see for inspiration https://github.com/symfony/dependency-injection/blob/master/Container.php#L354
      */
     public function snakelize($string)
     {
-        return strtolower(Container::underscore($string));
+        return strtolower(preg_replace(
+            array('/([A-Z]+)([A-Z][a-z])/', '/([a-z\d])([A-Z])/'),
+            array('\\1_\\2', '\\1_\\2'),
+            $string
+        ));
     }
 
     /**

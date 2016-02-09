@@ -11,14 +11,11 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
  *
  * @see SerializableInterface
  * @see ScopableInterface
+ *
+ * @method getScopes()
  */
 trait SerializableTrait
 {
-    /**
-     * @see SerializableInterface::getScopes()
-     */
-    abstract public static function getScopes();
-
     /**
      * @see SerializableInterface::serialize()
      */
