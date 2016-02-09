@@ -17,7 +17,7 @@ trait SerializableTrait
     /**
      * @see SerializableInterface::getScopes()
      */
-    abstract public function getScopes();
+    abstract public static function getScopes();
 
     /**
      * @see SerializableInterface::serialize()
