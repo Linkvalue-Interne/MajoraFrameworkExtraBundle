@@ -30,14 +30,14 @@ trait DynamicActionTrait
 
             // accessor ?
             case strpos($method, 'get') === 0 :
-                return $this->_get(preg_filter(
+                return $this->_get(lcfirst(preg_filter(
                     '/^get(.+)/', '$1', $method
-                ));
+                )));
 
             // mutator ?
             case strpos($method, 'set') === 0 :
                 return $this->_set(
-                    preg_filter('/^set(.+)/', '$1', $method),
+                    lcfirst(preg_filter('/^set(.+)/', '$1', $method)),
                     $arguments[0]
                 );
 
