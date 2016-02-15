@@ -49,22 +49,14 @@ class RestApiClient
         array $options = array()
     )
     {
-        $options = $this->requestFactory->createRequestOptions($options);
-
-        $body = $this->requestFactory->createRequestBodyData($body);
-        if (!empty($body)) {
-            $options = array_replace_recursive($options, array(
-                'json' => $body
-            ));
-        }
-
-        $response = $this->httpClient->request(
+        return $this->httpClient->request(
             $method,
             $this->requestFactory->createRequestUri($name, $query),
-            $options
+            array_replace_recursive(
+                $this->requestFactory->createRequestOptions($options),
+                array('json' => $this->requestFactory->createRequestBodyData($body))
+            )
         );
-
-        return $response;
     }
 
     /**

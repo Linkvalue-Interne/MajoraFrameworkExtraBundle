@@ -107,16 +107,17 @@ trait RestApiControllerTrait
         switch ($request->headers->get('content-type')) {
 
             case 'application/json':
-                $data = @json_decode($request->getContent(), true);
-                if (null === $data) {
+                if (!($data = @json_decode($request->getContent(), true))
+                    && ($error = json_last_error()) != JSON_ERROR_NONE
+                ) {
                     throw new HttpException(400, sprintf(
                         'Invalid submitted json data, error %s : %s',
-                        json_last_error(),
+                        $error,
                         json_last_error_msg()
                     ));
                 }
-                break;
 
+                break;
             default:
                 $data = array_replace_recursive(
                     $request->request->all(),
