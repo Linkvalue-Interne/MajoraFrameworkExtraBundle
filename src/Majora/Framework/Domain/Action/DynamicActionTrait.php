@@ -109,7 +109,7 @@ trait DynamicActionTrait
      */
     protected function _set($key, $value)
     {
-        $this->getAttributes()->set(ucfirst($key), $value);
+        $this->getAttributes()->set($key, $value);
 
         return $this;
     }
@@ -120,21 +120,25 @@ trait DynamicActionTrait
      * @param mixed  $object
      * @param string $field
      *
-     * @return self
+     * @return mixed|null
      */
     protected function setIfDefined($object, $field)
     {
-        if (!$this->_has($field = ucfirst($field))) {
-            return $this;
+        $propertyAccessor = $this->getPropertyAccessor();
+        if (!$this->_has($field)) {
+            return $propertyAccessor->isReadable($object, $field) ?
+                $propertyAccessor->getValue($object, $field) :
+                null
+            ;
         }
 
-        $this->getPropertyAccessor()->setValue(
+        $propertyAccessor->setValue(
             $object,
             $field,
-            $this->_get($field)
+            $value = $this->_get($field)
         );
 
-        return $this;
+        return $value;
     }
 
     /**
