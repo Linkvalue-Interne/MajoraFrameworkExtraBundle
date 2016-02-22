@@ -12,50 +12,66 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
  */
 class ValidationException extends \InvalidArgumentException
 {
+    /**
+     * @var object
+     */
     protected $entity;
+
+    /**
+     * @var FormErrorIterator|ConstraintViolationListInterface
+     */
     protected $report;
+
+    /**
+     * @var array
+     */
     protected $groups;
 
     /**
      * construct.
      *
-     * @param CollectionableInterface                            $entity
+     * @param object                                             $entity
      * @param FormErrorIterator|ConstraintViolationListInterface $report
      * @param array                                              $groups
      * @param int                                                $code
      * @param \Exception                                         $previous
      */
     public function __construct(
-        CollectionableInterface $entity = null,
+        $entity = null,
         $report = null,
         array $groups = null,
         $code     = null,
         $previous = null
     ) {
+        if (!empty($entity) && !is_object($entity)) {
+            throw new \InvalidArgumentException('Cannot create a ValidationException from a plain value.');
+        }
+
         $this->entity = $entity;
         $this->groups = $groups;
         $this->report = $report;
 
-        $message = 'Validation failed';
-        if ($this->entity) {
-            $message .= sprintf(' on entity %s#%s',
-                get_class($this->entity),
-                $this->entity->getId()
-            );
-        }
-        if (!empty($this->groups)) {
-            $message .= sprintf(' for ["%s"] groups',
-                implode('", "', $this->groups)
-            );
-        }
-
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            trim(sprintf(
+                'Validation failed on %s%s',
+                $this->entity ? get_class($this->entity) : '',
+                $this->entity instanceof CollectionableInterface ?
+                    sprintf('#%s', $this->entity->getId()) :
+                    ''
+                ,
+                empty($this->groups) ? '' : sprintf(' for ["%s"] groups',
+                    implode('", "', $this->groups)
+                )
+            )),
+            $code,
+            $previous
+        );
     }
 
     /**
      * return failed entity
      *
-     * @return CollectionableInterface
+     * @return object
      */
     public function getEntity()
     {
