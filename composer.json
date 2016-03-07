@@ -28,7 +28,7 @@
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^2.7",
-        "phpunit/phpunit": "5.1.*",
+        "phpunit/phpunit": "~5.1",
         "phake/phake": "2.*"
     },
     "suggest": {
