@@ -154,7 +154,28 @@ trait DynamicActionTrait
      */
     public function serialize($scope = 'default', PropertyAccessorInterface $propertyAccessor = null)
     {
-        return $this->getAttributes()->toArray();
+        $data = $this->getAttributes()->toArray();
+
+        $scopes = $this->getScopes();
+        if(empty($scopes[$scope])) {
+            return $data;
+        }
+
+        $serializedData = array();
+        $propertyAccessor = $propertyAccessor ?: PropertyAccess::createPropertyAccessor();
+        foreach ($scopes[$scope] as $field) {
+            $serializedData[$field] = $propertyAccessor->isReadable(
+                    $data,
+                    $propertyPath = strpos($field, '[') === 0 ?
+                        $field :
+                        sprintf('[%s]', $field)
+                ) ?
+                $propertyAccessor->getValue($data, $propertyPath) :
+                null
+            ;
+        }
+
+        return $serializedData;
     }
 
     /**

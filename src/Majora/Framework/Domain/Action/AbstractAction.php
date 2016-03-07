@@ -7,10 +7,8 @@ use Majora\Framework\Serializer\Model\SerializableInterface;
 /**
  * Abstract action implementation
  */
-abstract class AbstractAction implements ActionInterface, SerializableInterface
+abstract class AbstractAction implements ActionInterface
 {
-    use DynamicActionTrait, ActionTrait;
-
     /**
      * Initialisation function
      */

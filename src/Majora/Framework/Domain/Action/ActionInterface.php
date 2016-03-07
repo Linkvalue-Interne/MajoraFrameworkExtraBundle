@@ -2,12 +2,14 @@
 
 namespace Majora\Framework\Domain\Action;
 
+use Majora\Framework\Serializer\Model\SerializableInterface;
+
 /**
  * Interface for action classes
  *
  * @link https://schema.org/Action
  */
-interface ActionInterface
+interface ActionInterface extends SerializableInterface
 {
     /**
      * Action resolving function

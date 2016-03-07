@@ -3,6 +3,7 @@
 namespace Majora\Framework\Log;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Provides an accessor to logger and debug mode
@@ -27,24 +28,10 @@ trait LoggableTrait
      *
      * @return self
      */
-    public function registerLogger(LoggerInterface $logger, $debug = false)
+    public function registerLogger(LoggerInterface $logger = null, $debug = false)
     {
-        $this->logger = $logger;
+        $this->logger = $logger ?: new NullLogger();
         $this->debug = $debug;
-
-        return $this;
-    }
-
-    /**
-     * @see LoggerInterface::log()
-     */
-    public function log($level, $message, array $context = array())
-    {
-        if (!$this->logger) {
-            return $this;
-        }
-
-        $this->logger->log($level, $message, $context);
 
         return $this;
     }
