@@ -10,7 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Extension for "text" form type, used to provide a multiple languages
- * for widget, which renders an array containing a label for each supported locales
+ * for widget, which renders an array containing a label for each supported locales.
  */
 class TranslatableTextType extends AbstractType
 {
@@ -20,7 +20,7 @@ class TranslatableTextType extends AbstractType
     protected $locales;
 
     /**
-     * Construct
+     * Construct.
      *
      * @param array $locales
      */
@@ -37,14 +37,6 @@ class TranslatableTextType extends AbstractType
         return 'translatable_text';
     }
 
-    // /**
-    //  * {@inheritdoc}
-    //  */
-    // public function getParent()
-    // {
-    //     return 'text';
-    // }
-
     /**
      * {@inheritdoc}
      */
@@ -52,7 +44,7 @@ class TranslatableTextType extends AbstractType
     {
         $resolver->setDefaults(array(
             'locales' => array(),
-            'options' => array()
+            'options' => array(),
         ));
     }
 

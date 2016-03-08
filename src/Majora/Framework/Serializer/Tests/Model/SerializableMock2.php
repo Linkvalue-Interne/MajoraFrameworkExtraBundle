@@ -5,12 +5,11 @@ namespace Majora\Framework\Serializer\Tests\Model;
 use Majora\Framework\Serializer\Model\SerializableInterface;
 use Majora\Framework\Serializer\Model\SerializableTrait;
 
-class SerializableMock2
-    implements SerializableInterface
+class SerializableMock2 implements SerializableInterface
 {
     use SerializableTrait;
 
-    protected $id    = 2;
+    protected $id = 2;
     protected $label = 'mock_2_label';
     protected $table = array('mock_2_1', 'mock_2_1');
 
@@ -57,7 +56,7 @@ class SerializableMock2
     {
         return array(
             'default' => array('id', 'label', 'table'),
-            'id'      => 'id',
+            'id' => 'id',
         );
     }
 }

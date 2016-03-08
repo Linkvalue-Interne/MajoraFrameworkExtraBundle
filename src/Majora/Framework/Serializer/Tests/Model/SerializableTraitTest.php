@@ -7,8 +7,7 @@ use PHPUnit_Framework_TestCase;
 /**
  * Test class for serializable trait.
  */
-class SerializableTraitTest
-    extends PHPUnit_Framework_TestCase
+class SerializableTraitTest extends PHPUnit_Framework_TestCase
 {
     /**
      * tests serialize methods with an unsupported scope.
@@ -46,7 +45,8 @@ class SerializableTraitTest
                 'label' => 'mock_1_label',
                 'table' => array('mock_1_1', 'mock_1_2'),
                 'mock2' => 2,
-                'date'  => (new \DateTime('2015-01-01'))->format(\DateTime::ISO8601),
+                'optionnal_defined' => 'optionnal_mocked',
+                'date' => (new \DateTime('2015-01-01'))->format(\DateTime::ISO8601),
             )),
             array('extra', array(
                 'id' => 1,
@@ -57,7 +57,8 @@ class SerializableTraitTest
                     'label' => 'mock_2_label',
                     'table' => array('mock_2_1', 'mock_2_1'),
                 ),
-                'date'  => (new \DateTime('2015-01-01'))->format(\DateTime::ISO8601),
+                'optionnal_defined' => 'optionnal_mocked',
+                'date' => (new \DateTime('2015-01-01'))->format(\DateTime::ISO8601),
             )),
         );
     }
@@ -66,7 +67,7 @@ class SerializableTraitTest
      * tests unserialize methods with an unsupported scope.
      *
      * @expectedException              InvalidArgumentException
-     * @expectedExceptionMessageRegExp #Unable to set "fake_member" property into a ".+" object, any existing property path to define it in.#
+     * @expectedExceptionMessageRegExp #Unable to set "fake_member" property into a ".+" object, any existing property path to write it in.#
      */
     public function testUnsupportedDeserializeData()
     {
@@ -92,6 +93,9 @@ class SerializableTraitTest
 
     public function serializedDataProvider()
     {
+        $ganonDorf = new \StdClass();
+        $ganonDorf->ganon = 'dorf';
+
         return array(
 
             // simple case : simple types
@@ -116,7 +120,7 @@ class SerializableTraitTest
                 array('id' => 70, 'mock3' => array('ganon' => 'dorf')),
                 (new SerializableMock1())
                     ->setId(70)
-                    ->setMock3(new \StdClass()),
+                    ->setMock3($ganonDorf),
             ),
 
             // test with a datetime

@@ -19,8 +19,7 @@
             <exclude>
                 <directory>src/Majora/Bundle/FrameworkExtraBundle/Resources</directory>
                 <directory>src/Majora/Bundle/FrameworkExtraBundle/Tests</directory>
-                <directory>src/Majora/Framework/Form/Extension/Json/Tests</directory>
-                <directory>vendor</directory>
+                <directory>src/Majora/Framework/**/Tests</directory>
             </exclude>
         </whitelist>
     </filter>

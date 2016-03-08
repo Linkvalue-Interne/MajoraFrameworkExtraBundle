@@ -2,6 +2,8 @@
 
 namespace Majora\Framework\Serializer\Tests\Handler\Collection;
 
+use Majora\Framework\Normalizer\MajoraNormalizer;
+use Majora\Framework\Normalizer\Model\NormalizableInterface;
 use Majora\Framework\Serializer\Handler\Json\JsonHandler;
 use Majora\Framework\Serializer\Tests\Model\SerializableMock1;
 use PHPUnit_Framework_TestCase;
@@ -16,38 +18,40 @@ class JsonHandlerTest extends PHPUnit_Framework_TestCase
     /**
      * tests serialize() method.
      *
-     * @dataProvider testSerializeProvider
+     * @dataProvider serializationSuccessCaseProvider
      */
-    public function testSerialize($object, $scope, $output)
+    public function testSerialize($normalizedData, $json)
     {
-        $collectionHandler = new JsonHandler();
+        $object = $this->prophesize('StdClass');
+        $object->willImplement(NormalizableInterface::class);
+        $object = $object->reveal();
+
+        $scope = 'test';
+
+        $normalizer = $this->prophesize(MajoraNormalizer::class);
+        $normalizer->normalize($object, $scope)
+            ->willReturn($normalizedData)
+            ->shouldBeCalled()
+        ;
+
+        $jsonHandler = new JsonHandler($normalizer->reveal());
 
         $this->assertEquals(
-            $output,
-            $collectionHandler->serialize($object, $scope)
+            $json,
+            $jsonHandler->serialize($object, $scope)
         );
     }
 
-    public function testSerializeProvider()
+    public function serializationSuccessCaseProvider()
     {
-        $cases = array(
-            'string_as_array' => array('string', 'test', json_encode(array('string'))),
-            'int_as_array'    => array(42, 'test', json_encode(array(42))),
-            'array_as_array'  => array(
-                array('hello', 'foo' => 'bar', 42),
-                'test',
-                json_encode(array('hello', 'foo' => 'bar', 42)),
-            ),
+        return array(
+            'string_as_array' => array(array('string'), '["string"]'),
+            'int_as_array' => array(array(42), '[42]'),
+            'array_as_array' => array(
+                $raw = array('hello', 'foo' => 'bar', 42, 'nested' => array('child' => 'value')),
+                json_encode($raw)
+            )
         );
-
-        $scope = 'test';
-        $object = $this->prophesize('StdClass');
-        $object->willImplement('Majora\Framework\Serializer\Model\SerializableInterface');
-        $object->serialize($scope)->willReturnArgument(0);
-
-        $cases['array_as_serialized'] = array($object->reveal(), $scope, json_encode($scope));
-
-        return $cases;
     }
 
     /**
@@ -58,36 +62,37 @@ class JsonHandlerTest extends PHPUnit_Framework_TestCase
      */
     public function testDecodeException()
     {
-        $collectionHandler = new JsonHandler();
+        $collectionHandler = new JsonHandler(
+            $this->prophesize(MajoraNormalizer::class)->reveal()
+        );
         $collectionHandler->deserialize('THIS IS NOT JSOOOOOOOOON !', 'StdClass');
     }
 
     /**
      * tests deserialize() method.
      *
-     * @dataProvider testDeserializeProvider
+     * @dataProvider deserializationSuccessCaseProvider
      */
-    public function testDeserialize($data, $type, $output)
+    public function testDeserialize($json, $normalizedData)
     {
-        $collectionHandler = new JsonHandler();
+        $normalizer = $this->prophesize(MajoraNormalizer::class);
+        $normalizer->denormalize($normalizedData, \StdClass::class)
+            ->shouldBeCalled()
+        ;
 
-        $this->assertEquals(
-            $output,
-            $collectionHandler->deserialize($data, $type)
-        );
+        $collectionHandler = new JsonHandler($normalizer->reveal());
+        $collectionHandler->deserialize($json, \StdClass::class);
     }
 
-    public function testDeserializeProvider()
+    public function deserializationSuccessCaseProvider()
     {
         return array(
-            'not_an_object'     => array(json_encode(123), 'integer', 123),
-            'inexistant_object' => array(json_encode('biggoron'), 'F*ckingBigSword', 'biggoron'),
-            'not_serializable'  => array(json_encode(array('ganon' => 'dorf')), 'StdClass', new \StdClass()),
-            'serializable'      => array(
-                json_encode(array('id' => 42)),
-                'Majora\Framework\Serializer\Tests\Model\SerializableMock1',
-                (new SerializableMock1())->setId(42),
-            ),
+            'string_as_array' => array('["string"]', array('string')),
+            'int_as_array' => array('[42]', array(42)),
+            'array_as_array' => array(
+                json_encode($raw = array('hello', 'foo' => 'bar', 42, 'nested' => array('child' => 'value'))),
+                $raw
+            )
         );
     }
 }

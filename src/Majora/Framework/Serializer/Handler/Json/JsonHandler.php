@@ -2,20 +2,24 @@
 
 namespace Majora\Framework\Serializer\Handler\Json;
 
-use Majora\Framework\Serializer\Handler\Collection\CollectionHandler;
+use Majora\Framework\Normalizer\Model\NormalizableInterface;
+use Majora\Framework\Serializer\Handler\AbstractFormatHandler;
 use Majora\Framework\Serializer\Handler\Json\Exception\JsonDeserializationException;
 
 /**
  * Handler implementation creating and using json.
  */
-class JsonHandler extends CollectionHandler
+class JsonHandler extends AbstractFormatHandler
 {
     /**
      * @see FormatHandlerInterface::serialize()
      */
     public function serialize($data, $scope)
     {
-        return json_encode(parent::serialize($data, $scope));
+        return json_encode($data instanceof NormalizableInterface ?
+            $this->normalizer->normalize($data, $scope) :
+            $data
+        );
     }
 
     /**
@@ -33,6 +37,6 @@ class JsonHandler extends CollectionHandler
             ));
         }
 
-        return parent::deserialize($arrayData, $output);
+        return $this->normalizer->denormalize($arrayData, $output);
     }
 }

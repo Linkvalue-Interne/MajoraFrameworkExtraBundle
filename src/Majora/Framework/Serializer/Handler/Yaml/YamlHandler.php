@@ -2,24 +2,31 @@
 
 namespace Majora\Framework\Serializer\Handler\Yaml;
 
-use Majora\Framework\Serializer\Handler\Collection\CollectionHandler;
+use Majora\Framework\Normalizer\MajoraNormalizer;
+use Majora\Framework\Serializer\Handler\AbstractFormatHandler;
 use Symfony\Component\Yaml\Yaml;
 
 /**
  * Handler implementation creating and using yaml.
  */
-class YamlHandler extends CollectionHandler
+class YamlHandler extends AbstractFormatHandler
 {
+    /**
+     * @var Yaml
+     */
     protected $yamlParser;
 
     /**
      * construct.
      *
-     * @param Yaml $yamlParser
+     * @param Yaml             $yamlParser
+     * @param MajoraNormalizer $normalizer
      */
-    public function __construct(Yaml $yamlParser)
+    public function __construct(Yaml $yamlParser, MajoraNormalizer $normalizer)
     {
         $this->yamlParser = $yamlParser;
+
+        parent::__construct($normalizer);
     }
 
     /**
@@ -28,7 +35,7 @@ class YamlHandler extends CollectionHandler
     public function serialize($data, $scope)
     {
         return $this->yamlParser->dump(
-            parent::serialize($data, $scope)
+            $this->normalizer->normalize($data, $scope)
         );
     }
 
@@ -37,7 +44,7 @@ class YamlHandler extends CollectionHandler
      */
     public function deserialize($data, $output)
     {
-        return parent::deserialize(
+        return $this->normalizer->denormalize(
             $this->yamlParser->parse($data),
             $output
         );
