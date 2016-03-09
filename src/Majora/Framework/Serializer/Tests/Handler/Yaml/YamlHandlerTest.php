@@ -2,6 +2,8 @@
 
 namespace Majora\Framework\Serializer\Tests\Handler\Yaml;
 
+use Majora\Framework\Normalizer\MajoraNormalizer;
+use Majora\Framework\Normalizer\Model\NormalizableInterface;
 use Majora\Framework\Serializer\Handler\Yaml\YamlHandler;
 use Majora\Framework\Serializer\Tests\Model\SerializableMock1;
 use PHPUnit_Framework_TestCase;
@@ -17,11 +19,26 @@ class YamlHandlerTest extends PHPUnit_Framework_TestCase
     /**
      * tests serialize() method.
      *
-     * @dataProvider testSerializeProvider
+     * @dataProvider serializationSuccessCaseProvider
      */
-    public function testSerialize($object, $scope, $output)
+    public function testSerialize($normalizedData, $output)
     {
-        $collectionHandler = new YamlHandler(new Yaml());
+        $object = $this->prophesize('StdClass');
+        $object->willImplement(NormalizableInterface::class);
+        $object = $object->reveal();
+
+        $scope = 'test';
+
+        $normalizer = $this->prophesize(MajoraNormalizer::class);
+        $normalizer->normalize($object, $scope)
+            ->willReturn($normalizedData)
+            ->shouldBeCalled()
+        ;
+
+        $collectionHandler = new YamlHandler(
+            new Yaml(),
+            $normalizer->reveal()
+        );
 
         $this->assertEquals(
             $output,
@@ -29,54 +46,46 @@ class YamlHandlerTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testSerializeProvider()
+    public function serializationSuccessCaseProvider()
     {
-        $cases = array(
-            'string_as_array' => array('string', 'test', "- string\n"),
-            'int_as_array'    => array(42, 'test', "- 42\n"),
+        return array(
+            'string_as_array' => array(array('string'), "- string\n"),
+            'int_as_array'    => array(array(42), "- 42\n"),
             'array_as_array'  => array(
                 array('hello', 'foo' => 'bar', 42),
-                'test',
                 "0: hello\nfoo: bar\n1: 42\n",
             ),
         );
-
-        $scope = 'test';
-        $object = $this->prophesize('StdClass');
-        $object->willImplement('Majora\Framework\Serializer\Model\SerializableInterface');
-        $object->serialize($scope)->willReturnArgument(0);
-
-        $cases['array_as_serialized'] = array($object->reveal(), $scope, $scope);
-
-        return $cases;
     }
 
     /**
      * tests deserialize() method.
      *
-     * @dataProvider testDeserializeProvider
+     * @dataProvider deserializationSuccessCaseProvider
      */
-    public function testDeserialize($data, $type, $output)
+    public function testDeserialize($json, $normalizedData)
     {
-        $collectionHandler = new YamlHandler(new Yaml());
+        $normalizer = $this->prophesize(MajoraNormalizer::class);
+        $normalizer->denormalize($normalizedData, \StdClass::class)
+            ->shouldBeCalled()
+        ;
 
-        $this->assertEquals(
-            $output,
-            $collectionHandler->deserialize($data, $type)
+        $collectionHandler = new YamlHandler(
+            new Yaml(),
+            $normalizer->reveal()
         );
+        $collectionHandler->deserialize($json, \StdClass::class);
     }
 
-    public function testDeserializeProvider()
+    public function deserializationSuccessCaseProvider()
     {
         return array(
-            'not_an_object'     => array('123', 'integer', 123),
-            'inexistant_object' => array('biggoron', 'F*ckingBigSword', 'biggoron'),
-            'not_serializable'  => array('ganon: dorf', 'StdClass', new \StdClass()),
-            'serializable'      => array(
-                'id: 42',
-                'Majora\Framework\Serializer\Tests\Model\SerializableMock1',
-                (new SerializableMock1())->setId(42),
-            ),
+            'string_as_array' => array("- string\n", array('string')),
+            'int_as_array' => array("- 42\n", array(42)),
+            'array_as_array' => array(
+                "0: hello\nfoo: bar\n1: 42\n",
+                array('hello', 'foo' => 'bar', 42),
+            )
         );
     }
 }

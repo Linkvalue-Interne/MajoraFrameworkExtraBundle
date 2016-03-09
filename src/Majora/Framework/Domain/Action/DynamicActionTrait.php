@@ -142,7 +142,7 @@ trait DynamicActionTrait
     }
 
     /**
-     * @see ScopableInterface::getScopes()
+     * @see NormalizableInterface::getScopes()
      */
     public static function getScopes()
     {
@@ -150,9 +150,9 @@ trait DynamicActionTrait
     }
 
     /**
-     * @see SerializableInterface::serialize()
+     * @see NormalizableInterface::normalize()
      */
-    public function serialize($scope = 'default', PropertyAccessorInterface $propertyAccessor = null)
+    public function normalize($scope = 'default')
     {
         $data = $this->getAttributes()->toArray();
 
@@ -161,10 +161,10 @@ trait DynamicActionTrait
             return $data;
         }
 
-        $serializedData = array();
-        $propertyAccessor = $propertyAccessor ?: PropertyAccess::createPropertyAccessor();
+        $normalizedData = array();
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
         foreach ($scopes[$scope] as $field) {
-            $serializedData[$field] = $propertyAccessor->isReadable(
+            $normalizedData[$field] = $propertyAccessor->isReadable(
                     $data,
                     $propertyPath = strpos($field, '[') === 0 ?
                         $field :
@@ -175,18 +175,38 @@ trait DynamicActionTrait
             ;
         }
 
-        return $serializedData;
+        return $normalizedData;
     }
 
     /**
-     * @see SerializableInterface::deserialize()
+     * @see NormalizableInterface::denormalize()
      */
-    public function deserialize(array $objectData, PropertyAccessorInterface $propertyAccessor = null)
+    public function denormalize(array $objectData)
     {
         foreach ($objectData as $key => $value) {
             $this->_set($key, $value);
         }
 
         return $this;
+    }
+
+    /**
+     * @see SerializableInterface::serialize()
+     */
+    public function serialize($scope = 'default', PropertyAccessorInterface $propertyAccessor = null)
+    {
+        @trigger_error(sprintf('The method %s() is deprecated and will be removed in 2.0. Use normalize() instead.', __METHOD__), E_USER_DEPRECATED);
+
+        return $this->normalize($scope);
+    }
+
+    /**
+     * @see SerializableInterface::deserialize()
+     */
+    public function deserialize(array $data, PropertyAccessorInterface $propertyAccessor = null)
+    {
+        @trigger_error(sprintf('The method %s() is deprecated and will be removed in 2.0. Use denormalize() instead.', __METHOD__), E_USER_DEPRECATED);
+
+        return $this->denormalize($data);
     }
 }

@@ -3,14 +3,13 @@
 namespace Majora\Framework\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Majora\Framework\Serializer\Model\SerializableInterface;
+use Majora\Framework\Normalizer\Model\NormalizableInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * Base class for entity aggregation collection.
  */
-class EntityCollection extends ArrayCollection implements SerializableInterface
+class EntityCollection extends ArrayCollection implements NormalizableInterface
 {
     /**
      * return collectionned entity class
@@ -25,22 +24,30 @@ class EntityCollection extends ArrayCollection implements SerializableInterface
     }
 
     /**
-     * @see SerializableInterface::serialize()
+     * @see NormalizableInterface::getScopes()
      */
-    public function serialize($scope = 'default', PropertyAccessorInterface $propertyAccessor = null)
+    public static function getScopes()
+    {
+        return array();
+    }
+
+    /**
+     * @see NormalizableInterface::normalize()
+     */
+    public function normalize($scope = 'default')
     {
         return $this
-            ->map(function(SerializableInterface $entity) use ($scope, $propertyAccessor) {
-                return $entity->serialize($scope, $propertyAccessor);
+            ->map(function(NormalizableInterface $entity) use ($scope) {
+                return $entity->normalize($scope);
             })
             ->toArray()
         ;
     }
 
     /**
-     * @see SerializableInterface::deserialize()
+     * @see NormalizableInterface::denormalize()
      */
-    public function deserialize(array $data, PropertyAccessorInterface $propertyAccessor = null)
+    public function denormalize(array $data)
     {
         $this->clear();
         $entityClass = $this->getEntityClass();
@@ -48,7 +55,7 @@ class EntityCollection extends ArrayCollection implements SerializableInterface
         foreach ($data as $key => $majoraEntityData) {
             $this->set(
                 $key,
-                (new $entityClass())->deserialize($majoraEntityData, $propertyAccessor)
+                (new $entityClass())->denormalize($majoraEntityData)
             );
         }
 
@@ -56,11 +63,23 @@ class EntityCollection extends ArrayCollection implements SerializableInterface
     }
 
     /**
-     * @see ScopableInterface::getScopes()
+     * @see SerializableInterface::serialize()
      */
-    public static function getScopes()
+    public function serialize($scope = 'default', PropertyAccessorInterface $propertyAccessor = null)
     {
-        return array();
+        @trigger_error(sprintf('The method %s() is deprecated and will be removed in 2.0. Use normalize() instead.', __METHOD__), E_USER_DEPRECATED);
+
+        return $this->normalize($scope);
+    }
+
+    /**
+     * @see SerializableInterface::deserialize()
+     */
+    public function deserialize(array $data, PropertyAccessorInterface $propertyAccessor = null)
+    {
+        @trigger_error(sprintf('The method %s() is deprecated and will be removed in 2.0. Use denormalize() instead.', __METHOD__), E_USER_DEPRECATED);
+
+        return $this->denormalize($data);
     }
 
     /**

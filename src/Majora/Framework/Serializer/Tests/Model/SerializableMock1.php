@@ -5,12 +5,11 @@ namespace Majora\Framework\Serializer\Tests\Model;
 use Majora\Framework\Serializer\Model\SerializableInterface;
 use Majora\Framework\Serializer\Model\SerializableTrait;
 
-class SerializableMock1
-    implements SerializableInterface
+class SerializableMock1 implements SerializableInterface
 {
     use SerializableTrait;
 
-    protected $id    = 1;
+    protected $id = 1;
     protected $label = 'mock_1_label';
     protected $table = array('mock_1_1', 'mock_1_2');
     protected $protect;
@@ -18,11 +17,13 @@ class SerializableMock1
     protected $mock3;
     protected $callback;
     protected $date;
+    protected $optionnal_empty;
+    protected $optionnal_defined = 'optionnal_mocked';
 
     public function __construct()
     {
         $this->mock2 = new SerializableMock2();
-        $this->date  = new \DateTime('2015-01-01');
+        $this->date = new \DateTime('2015-01-01');
     }
 
     public function getId()
@@ -123,9 +124,9 @@ class SerializableMock1
     {
         return array(
             'default' => array('id', 'label'),
-            'id'      => 'id',
-            'full'    => array('@default', 'table', 'date', 'mock2@id'),
-            'extra'   => array('@full', 'mock2'),
+            'id' => 'id',
+            'full' => array('@default', 'table', 'optionnal_empty?', 'optionnal_defined?', 'date', 'mock2@id'),
+            'extra' => array('@full', 'mock2'),
         );
     }
 }

@@ -2,13 +2,17 @@
 
 namespace Majora\Framework\Serializer\Model;
 
+@trigger_error('The '.__NAMESPACE__.'\ScopableInterface class is deprecated and will be removed in 2.0. Use Majora\Framework\Normalizer\Model\NormalizableInterface instead.', E_USER_DEPRECATED);
+
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Majora\Framework\Normalizer\Model\NormalizableInterface;
 
 /**
- * Interface to implements on all
- * scopable models.
+ * Interface to implements on all serializable models.
+ *
+ * @deprecated
  */
-interface SerializableInterface extends ScopableInterface
+interface SerializableInterface extends ScopableInterface, NormalizableInterface
 {
     /**
      * has to return an array representation of model.

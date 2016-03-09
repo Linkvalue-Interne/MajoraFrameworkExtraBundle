@@ -22,13 +22,13 @@
         }
     ],
     "require": {
-        "php": ">=5.5.9",
+        "php": ">=5.6",
         "symfony/symfony": ">=2.8.0",
         "doctrine/collections": "^1.3"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^2.7",
-        "phpunit/phpunit": "~5.1",
+        "phpunit/phpunit": "~5.2",
         "phake/phake": "2.*"
     },
     "suggest": {
@@ -41,6 +41,5 @@
             "Majora\\Bundle\\": "src/Majora/Bundle",
             "Majora\\Framework\\": "src/Majora/Framework"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }
