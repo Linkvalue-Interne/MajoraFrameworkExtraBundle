@@ -5,6 +5,10 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <!-- Normalizer -->
+        <service id="majora.normalizer" class="Majora\Framework\Normalizer\MajoraNormalizer">
+            <argument type="service" id="property_accessor" />
+        </service>
 
         <!-- Serializer -->
         <service id="majora.serializer" class="Majora\Framework\Serializer\MajoraSerializer">
@@ -15,21 +19,23 @@
         <!-- Json serialization handler -->
         <service id="majora.serialization_handler.json" class="Majora\Framework\Serializer\Handler\Json\JsonHandler" public="false">
             <tag name="majora.serialization_handler" format="json" />
-        </service>
-
-        <!-- Array serialization handler -->
-        <service id="majora.serialization_handler.array" class="Majora\Framework\Serializer\Handler\Collection\CollectionHandler" public="false">
-            <tag name="majora.serialization_handler" format="array" />
+            <argument type="service" id="majora.normalizer" />
         </service>
 
         <!-- Yaml serialization handler -->
         <service id="majora.serialization_handler.yaml" class="Majora\Framework\Serializer\Handler\Yaml\YamlHandler" public="false">
             <tag name="majora.serialization_handler" format="yaml" />
-            <argument type="service" id="yaml_parser" />
+            <argument type="service">
+                <service class="Symfony\Component\Yaml\Yaml" />
+            </argument>
+            <argument type="service" id="majora.normalizer" />
         </service>
 
-        <!-- Yaml parser -->
-        <service id="yaml_parser" class="Symfony\Component\Yaml\Yaml" public="false" />
+        <!-- Array serialization handler -->
+        <service id="majora.serialization_handler.array" class="Majora\Framework\Serializer\Handler\Collection\CollectionHandler" public="false">
+            <tag name="majora.serialization_handler" format="array" />
+            <deprecated>The "%service_id%" service is deprecated be removed in 2.0, to "Array"-serialize an object, use "majora.normalizer" instead.</deprecated>
+        </service>
 
     </services>
 </container>
