@@ -37,8 +37,8 @@ class ClockSubscriber extends Clock
     static public function getSubscribedEvents()
     {
         return array(
-            KernelEvents::REQUEST => array('onKernelRequest', 1),
-            ConsoleEvents::COMMAND => array('onConsoleCommand', 1),
+            KernelEvents::REQUEST => array('onKernelRequest', 100),
+            ConsoleEvents::COMMAND => array('onConsoleCommand', 100),
         );
     }
 
