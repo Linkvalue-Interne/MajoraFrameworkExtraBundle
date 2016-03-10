@@ -2,6 +2,7 @@
 
 namespace Majora\Bundle\FrameworkExtraBundle\Tests\Functional;
 
+use Majora\Bundle\FrameworkExtraBundle\Tests\Functional\app\AppKernel;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
@@ -22,7 +23,7 @@ class WebTestCase extends BaseWebTestCase
     {
         require_once __DIR__.'/app/AppKernel.php';
 
-        return 'Majora\Bundle\FrameworkExtraBundle\Tests\Functional\app\AppKernel';
+        return AppKernel::class;
     }
 
     protected static function createKernel(array $options = [])

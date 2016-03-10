@@ -34,16 +34,12 @@ class MajoraNormalizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testCollectionNormalization($scope, $expectedNormalization)
     {
-        $lightsaber1 = new Lightsaber();
-        $lightsaber1->id = 42;
+        $lightsaber1 = new Lightsaber(42, 1);
         $lightsaber1->color = 'purple';
-        $lightsaber1->bladesNumber = 1;
         $lightsaber1->owner = 'Mace Windu';
 
-        $lightsaber2 = new Lightsaber();
-        $lightsaber2->id = 66;
+        $lightsaber2 = new Lightsaber(66, 3);
         $lightsaber2->color = 'red';
-        $lightsaber2->bladesNumber = 3;
         $lightsaber2->owner = 'Kylo Ren';
 
         $this->assertEquals(
@@ -54,15 +50,47 @@ class MajoraNormalizerTest extends \PHPUnit_Framework_TestCase
             )
         );
     }
+
+    /**
+     * Tests denormalize() method through constructor.
+     */
+    public function testDenormalizeConstruct()
+    {
+        $expectedLightsaber = new Lightsaber(42, 1);
+        $expectedLightsaber->color = 'purple';
+        $expectedLightsaber->owner = 'Mace Windu';
+
+        $lightsaber = MajoraNormalizer::createNormalizer()->denormalize(
+            array('id' => 42, 'color' => 'purple', 'blades_number' => 1, 'owner' => 'Mace Windu'),
+            Lightsaber::class
+        );
+
+        $this->assertEquals($expectedLightsaber, $lightsaber);
+    }
+
+    /**
+     * Tests denormalize() method through constructor with plain object.
+     */
+    public function testDenormalizeConstructPlainObject()
+    {
+        $expectedDate = new \DateTime('2016-03-01');
+
+        $date = MajoraNormalizer::createNormalizer()->denormalize(
+            '2016-03-01',
+            \DateTime::class
+        );
+
+        $this->assertEquals($expectedDate, $date);
+    }
 }
 
 class Lightsaber implements CollectionableInterface
 {
     use NormalizableTrait;
 
-    public $id;
+    protected $id;
+    protected $bladesNumber;
     public $color;
-    public $bladesNumber;
     public $owner;
 
     public static function getScopes()
@@ -72,6 +100,15 @@ class Lightsaber implements CollectionableInterface
             'default' => array('id', 'color', 'bladesNumber'),
             'full' => array('@default', 'owner'),
         );
+    }
+
+    /**
+     * Construct.
+     */
+    public function __construct($id, $bladesNumber = null, $nothing = 'wrong')
+    {
+        $this->id = $id;
+        $this->bladesNumber = $bladesNumber;
     }
 
     /**

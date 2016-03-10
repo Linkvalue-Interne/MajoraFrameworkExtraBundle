@@ -2,6 +2,7 @@
 
 namespace Majora\Framework\Normalizer;
 
+use Majora\Framework\Inflector\Inflector;
 use Majora\Framework\Normalizer\Exception\InvalidScopeException;
 use Majora\Framework\Normalizer\Exception\ScopeNotFoundException;
 use Majora\Framework\Normalizer\Model\NormalizableInterface;
@@ -46,6 +47,11 @@ class MajoraNormalizer
     protected $propertyAccessor;
 
     /**
+     * @var Inflector
+     */
+    protected $inflector;
+
+    /**
      * Create and return an instantiated normalizer, returns always the same throught this call.
      *
      * @param string $key optionnal normalizer key
@@ -69,6 +75,7 @@ class MajoraNormalizer
     public function __construct(PropertyAccessor $propertyAccessor)
     {
         $this->propertyAccessor = $propertyAccessor;
+        $this->inflector = new Inflector();
     }
 
     /**
@@ -304,16 +311,41 @@ class MajoraNormalizer
                 return $reflection->newInstance();
             }
 
+            $argument = array();
+
             // Construct with parameters ? we will try to hydrate arguments from their names
             if ($reflection->hasMethod('__construct')
-                && count($reflection->getMethod('__construct')->getParameters())
+                && count($parameters = $reflection->getMethod('__construct')->getParameters())
             ) {
-                // @todo clever parameter ventilation
+                // String as items cases like \DateTime
+                if (!is_array($data)) {
+                    $arguments = array($data);
+                    unset($data);
+                } else {
+                    // Hydrate constructor args from data keys
+                    foreach ($parameters as $parameter) {
+                        $argKey = $this->inflector->snakelize($parameter->getName());
+                        if (isset($data[$argKey])) {
+                            $arguments[] = $parameter->getClass() ?
+                                $this->normalize($data[$argKey], $parameter->getClass()) :
+                                $data[$argKey]
+                            ;
+                            unset($data[$argKey]);
 
-                return $reflection->newInstanceArgs((array) $data);
+                            continue;
+                        }
+
+                        $arguments[] = $parameter->isOptional() ?
+                            $parameter->getDefaultValue() :
+                            null
+                        ;
+                    }
+                }
             }
 
-            $object = $reflection->newInstance();
+            $object = empty($arguments) ?
+                $reflection->newInstance() :
+                $reflection->newInstanceArgs($arguments);
         }
 
         if (empty($data)) {
