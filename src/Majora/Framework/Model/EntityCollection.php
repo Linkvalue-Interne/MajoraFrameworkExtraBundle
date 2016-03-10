@@ -3,6 +3,7 @@
 namespace Majora\Framework\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Majora\Framework\Normalizer\MajoraNormalizer;
 use Majora\Framework\Normalizer\Model\NormalizableInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
@@ -12,14 +13,14 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 class EntityCollection extends ArrayCollection implements NormalizableInterface
 {
     /**
-     * return collectionned entity class
+     * return collectionned entity class.
      *
      * @return string
      */
     protected function getEntityClass()
     {
         throw new \BadMethodCallException(sprintf('%s() method has to be defined in %s class.',
-            __FUNCTION__, get_class($this)
+            __FUNCTION__, static::class
         ));
     }
 
@@ -37,7 +38,7 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
     public function normalize($scope = 'default')
     {
         return $this
-            ->map(function(NormalizableInterface $entity) use ($scope) {
+            ->map(function (NormalizableInterface $entity) use ($scope) {
                 return $entity->normalize($scope);
             })
             ->toArray()
@@ -50,12 +51,10 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
     public function denormalize(array $data)
     {
         $this->clear();
-        $entityClass = $this->getEntityClass();
 
         foreach ($data as $key => $majoraEntityData) {
-            $this->set(
-                $key,
-                (new $entityClass())->denormalize($majoraEntityData)
+            $this->set($key, MajoraNormalizer::createNormalizer()
+                ->denormalize($majoraEntityData, $this->getEntityClass())
             );
         }
 
@@ -159,7 +158,7 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
     }
 
     /**
-     * Sort collection with given closure
+     * Sort collection with given closure.
      *
      * @param \Closure $p
      *
@@ -178,10 +177,11 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
 
     /**
      * Reduce collection with given closure.
+     *
      * @link http://php.net/manual/en/function.array-reduce.php
      *
      * @param \Closure $p
-     * @param mixed $initialValue
+     * @param mixed    $initialValue
      *
      * @return mixed
      */

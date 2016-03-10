@@ -28,6 +28,11 @@ class MajoraNormalizer
     /**
      * @var \Closure
      */
+    private $extractorDelegate;
+
+    /**
+     * @var \Closure
+     */
     private $readDelegate;
 
     /**
@@ -67,6 +72,18 @@ class MajoraNormalizer
     }
 
     /**
+     * Create and return a Closure which can read all properties from an object.
+     *
+     * @return \Closure
+     */
+    private function createExtractorDelegate()
+    {
+        return $this->extractorDelegate ?: $this->extractorDelegate = function () {
+            return get_object_vars($this);
+        };
+    }
+
+    /**
      * Create and return a Closure available to read an object property through a property path or a private property.
      *
      * @return \Closure
@@ -94,24 +111,60 @@ class MajoraNormalizer
     }
 
     /**
-     * Normalize given normalizable object using given scope.
+     * Normalize given object using given scope.
      *
-     * @param NormalizableInterface $object
-     * @param string                $scope
+     * @param mixed  $object
+     * @param string $scope
      *
      * @return array|string
      *
      * @throws ScopeNotFoundException If given scope not defined into given normalizable
      * @throws InvalidScopeException  If given scope requires an unaccessible field
      */
-    public function normalize(NormalizableInterface $object, $scope = 'default')
+    public function normalize($object, $scope = 'default')
+    {
+        switch (true) {
+
+            // Cannot normalized anything which already are
+            case !is_object($object) :
+                return $object;
+
+            // StdClass can be cast as array
+            case $object instanceof StdClass :
+                return (array) $object;
+
+            // DateTime : ISO format
+            case $object instanceof \DateTime:
+                return $object->format(\DateTime::ISO8601);
+
+            // Other objects : we use a closure hack to read data
+            case !$object instanceof NormalizableInterface :
+                $extractor = \Closure::bind($this->createExtractorDelegate(), $object, get_class($object));
+
+                return $extractor($object);
+
+            // At this point, we always got a Normalizable
+            default:
+                return $object->normalize($scope);
+        }
+    }
+
+    /**
+     * Normalize given normalizable following given scope.
+     *
+     * @param NormalizableInterface $object
+     * @param string                $scope
+     *
+     * @return array
+     */
+    public function scopify(NormalizableInterface $object, $scope)
     {
         $scopes = $object->getScopes();
         if (!isset($scopes[$scope])) {
             throw new ScopeNotFoundException(sprintf(
-                'Invalid scope for %s object, only [%s] supported, "%s" given.',
+                'Invalid scope for %s object, only ["%s"] supported, "%s" given.',
                 get_class($object),
-                implode(', ', array_keys($scopes)),
+                implode('", "', array_keys($scopes)),
                 $scope
             ));
         }
@@ -125,72 +178,68 @@ class MajoraNormalizer
             get_class($object)
         );
 
+        // simple value scope
         if (is_string($scopes[$scope])) {
             return $read($scopes[$scope], $this->propertyAccessor);
         }
 
-        $data = array();
+        // flatten fields
+        $fields = array();
         $stack = array($scopes[$scope]);
         do {
             $stackedField = array_shift($stack);
             foreach ($stackedField as $fieldConfig) {
-                if (strpos($fieldConfig, '@') === false) {
-                    $optionnal = false;
-                    if (strpos($fieldConfig, '?') !== false) {
-                        $fieldConfig = str_replace('?', '', $fieldConfig);
-                        $optionnal = true;
+                if (strpos($fieldConfig, '@') === 0) {
+                    if (!array_key_exists(
+                        $inheritedScope = str_replace('@', '', $fieldConfig),
+                        $scopes
+                    )) {
+                        throw new ScopeNotFoundException(sprintf(
+                            'Invalid inherited scope for %s object at %s scope, only ["%s"] supported, "%s" given.',
+                            get_class($object),
+                            $scope,
+                            implode(', ', array_keys($scopes)),
+                            $inheritedScope
+                        ));
                     }
 
-                    // dont override previously setted value :
-                    // first to inject always are field in asked scope, included one dont have to override
-                    if (array_key_exists($fieldConfig, $data)) {
-                        continue;
-                    }
-
-                    $value = $read($fieldConfig, $this->propertyAccessor);
-
-                    // serializable child object ?
-                    if ($value instanceof NormalizableInterface) {
-                        $value = $value->normalize('default');
-                    }
-
-                    // date ?
-                    if ($value instanceof \DateTime) {
-                        $value = $value->format(\DateTime::ISO8601);
-                    }
-
-                    // nullable ?
-                    if (!(is_null($value) && $optionnal)) {
-                        $data[$fieldConfig] = $value;
-                    }
-
+                    array_unshift($stack, $scopes[$inheritedScope]);
                     continue;
                 }
 
-                list($field, $includeScope) = explode('@', $fieldConfig);
-
-                if (empty($field)) { // internal scope
-                    array_unshift($stack, $scopes[$includeScope]);
-                    continue;
-                }
-
-                // external scopes : first in, last in
-                if (isset($data[$field])) {
-                    continue;
-                }
-
-                $relatedEntity = $read($field, $this->propertyAccessor);
-
-                // serialize child entity
-                if ($relatedEntity instanceof NormalizableInterface) {
-                    $relatedEntity = $relatedEntity->normalize(
-                        $includeScope ?: 'default'
-                    );
-                }
-
-                $data[$field] = $relatedEntity;
+                $fields[] = $fieldConfig;
             }
         } while (!empty($stack));
+
+        // begin normalization
+        $data = array();
+        foreach ($fields as $field) {
+            // optionnal field detection
+            $optionnal = false;
+            if (strpos($field, '?') !== false) {
+                $field = str_replace('?', '', $field);
+                $optionnal = true;
+            }
+
+            // external scopes : first in, last in
+            $subScope = 'default';
+            if (strpos($field, '@') !== false) {
+                list($field, $subScope) = explode('@', $field);
+            }
+            if (isset($data[$field])) {
+                continue;
+            }
+
+            $value = $this->normalize(
+                $read($field, $this->propertyAccessor),
+                $subScope
+            );
+
+            // nullable ?
+            if (!(is_null($value) && $optionnal)) {
+                $data[$field] = $value;
+            }
+        }
 
         return $data;
     }
@@ -251,7 +300,6 @@ class MajoraNormalizer
 
         // Got reflection ? so build a new object
         if (is_string($object) || $object instanceof \ReflectionClass) {
-
             if (empty($data)) { // no data ? no worries !
                 return $reflection->newInstance();
             }
