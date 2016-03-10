@@ -2,11 +2,10 @@
 
 namespace Majora\Framework\Domain;
 
-use Majora\Framework\Domain\AbstractDomain;
 use Majora\Framework\Domain\Action\ActionFactory;
 
 /**
- * Base class for domains which uses distributed actions
+ * Base class for domains which uses distributed actions.
  */
 class ActionDispatcherDomain extends AbstractDomain
 {
@@ -16,7 +15,7 @@ class ActionDispatcherDomain extends AbstractDomain
     protected $actionFactory;
 
     /**
-     * Construct
+     * Construct.
      *
      * @param ActionFactory $actionFactory
      */
@@ -26,9 +25,9 @@ class ActionDispatcherDomain extends AbstractDomain
     }
 
     /**
-     * Create and return a promise of $name action
+     * Create and return a promise of $name action.
      *
-     * @param string  $name
+     * @param string $name
      *
      * @return ActionInterface
      */
@@ -36,11 +35,11 @@ class ActionDispatcherDomain extends AbstractDomain
     {
         return $this->actionFactory
             ->createAction($name)
-            ->deserialize(isset($arguments[0]) && is_array($arguments[0]) ?
+            ->denormalize(isset($arguments[0]) && is_array($arguments[0]) ?
                 $arguments[0] :
                 array()
             )
-            ->init($relatedEntity)
+            ->init($relatedEntity, ...$arguments)
         ;
     }
 }
