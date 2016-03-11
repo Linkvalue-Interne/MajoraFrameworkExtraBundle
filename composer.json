@@ -1,6 +1,5 @@
 {
     "name":         "majora/framework-extra-bundle",
-    "version":      "1.0",
     "description":  "Provides extra classes and configurations for Symfony framework.",
     "keywords":     ["framework", "Symfony", "bundle"],
     "type":         "library",
