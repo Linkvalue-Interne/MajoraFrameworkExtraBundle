@@ -3,6 +3,7 @@
 namespace Majora\Framework\Normalizer;
 
 use Majora\Framework\Inflector\Inflector;
+use Majora\Framework\Model\EntityCollection;
 use Majora\Framework\Normalizer\Exception\InvalidScopeException;
 use Majora\Framework\Normalizer\Exception\ScopeNotFoundException;
 use Majora\Framework\Normalizer\Model\NormalizableInterface;
@@ -346,6 +347,11 @@ class MajoraNormalizer
             $object = empty($arguments) ?
                 $reflection->newInstance() :
                 $reflection->newInstanceArgs($arguments);
+        }
+
+        // BAD !
+        if ($object instanceof EntityCollection) {
+            return $object->denormalize($data);
         }
 
         if (empty($data)) {
