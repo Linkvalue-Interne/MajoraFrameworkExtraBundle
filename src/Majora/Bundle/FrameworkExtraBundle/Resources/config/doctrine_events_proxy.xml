@@ -9,7 +9,6 @@
         <!-- Doctrine event proxy -->
         <service id="majora.doctrine.event_proxy" class="Majora\Framework\Loader\Bridge\Doctrine\DoctrineEventProxy">
             <tag name="doctrine.event_subscriber" />
-            <argument type="service" id="service_container" />
         </service>
 
     </services>

@@ -4,9 +4,10 @@ namespace Majora\Framework\Loader\Bridge\Doctrine;
 
 use Doctrine\Common\Collections\Collection;
 use Majora\Framework\Loader\LoaderTrait;
+use Majora\Framework\Repository\Doctrine\BaseDoctrineRepository;
 
 /**
- * Trait to use into Doctrine loaders to get a simple implementation of LoaderInterface
+ * Trait to use into Doctrine loaders to get a simple implementation of LoaderInterface.
  *
  * @property $entityRepository
  * @property $entityClass
@@ -18,38 +19,31 @@ trait DoctrineLoaderTrait
     use LoaderTrait;
 
     /**
-     * checks if loader is initialized.
+     * Construct.
      *
-     * @throws \RuntimeException if not configured
+     * @param BaseDoctrineRepository $entityRepository (optionnal)
      */
-    private function assertIsConfigured()
+    public function __construct(BaseDoctrineRepository $entityRepository = null)
     {
-        if ($this->entityRepository && $this->entityClass
-            && $this->collectionClass && $this->filterResolver
-        ) {
-            return;
-        }
-
-        throw new \RuntimeException(sprintf(
-            '%s methods cannot be used, it has not been initialize through setUp() method.',
-            __CLASS__
-        ));
+        $this->entityRepository = $entityRepository;
     }
 
     /**
-     * hook which call on every entity or collection loaded through this loader
+     * Hook called with every entity or collection loaded through this loader.
      *
-     * @param object|EntityCollection $entity
+     * @param CollectionnableInterface|EntityCollection $entity
      *
-     * @return $object same entity
+     * @return $object same entity or collection
      */
     protected function onLoad($entity)
     {
+        @trigger_error(__METHOD__.' is deprecated and will be removed in 2.0. Use full class delegate instead, see Majora\Framework\Loader\LazyLoaderInterface.', E_USER_DEPRECATED);
+
         return $entity;
     }
 
     /**
-     * Convert given array or Collection result set to managed entity collection class
+     * Convert given array or Collection result set to managed entity collection class.
      *
      * @param array|Collection $result [description]
      *
@@ -88,21 +82,61 @@ trait DoctrineLoaderTrait
     }
 
     /**
-     * Loads data from repository
-     * then cast it to proper classes if not.
+     * Create entity query.
+     * Proxy to base query builder method to use to custom all queries from this loader.
      *
+     * @param string $alias
+     *
+     * @return QueryBuilder
+     */
+    protected function createQuery($alias = 'entity')
+    {
+        return $this->entityRepository->createQueryBuilder($alias);
+    }
+
+    /**
+     * create query an filter it with given data.
+     *
+     * @param array $filters
+     *
+     * @return Query
+     */
+    private function createFilteredQuery(array $filters)
+    {
+        $qb = $this->createQuery('entity');
+
+        foreach ($filters as $field => $filter) {
+            $qb->andWhere(is_array($filter)
+                    ? sprintf('entity.%s in (:%s)', $field, $field)
+                    : sprintf('entity.%s = :%s', $field, $field)
+                )
+                ->setParameter(sprintf(':%s', $field), $filter)
+            ;
+        }
+
+        return $qb->getQuery();
+    }
+
+    /**
      * @see LoaderInterface::retrieveAll()
      */
     public function retrieveAll(array $filters = array(), $limit = null, $offset = null)
     {
         $this->assertIsConfigured();
 
+        $query = $this->createFilteredQuery(
+            $this->filterResolver->resolve($filters)
+        );
+
+        if ($limit) {
+            $query->setMaxResults($limit);
+        }
+        if ($offset) {
+            $query->setFirstResult($offset);
+        }
+
         return $this->toEntityCollection(
-            $this->entityRepository->retrieveAll(
-                $this->filterResolver->resolve($filters),
-                $limit,
-                $offset
-            )
+            $query->getResult()
         );
     }
 
@@ -111,7 +145,11 @@ trait DoctrineLoaderTrait
      */
     public function retrieveOne(array $filters = array())
     {
-        return $this->retrieveAll($filters)->first();
+        $this->assertIsConfigured();
+
+        return $this->onLoad($this->createFilteredQuery($filters)
+            ->getOneOrNullResult()
+        );
     }
 
     /**
@@ -119,10 +157,6 @@ trait DoctrineLoaderTrait
      */
     public function retrieve($id)
     {
-        $this->assertIsConfigured();
-
-        return $this->onLoad(
-            $this->entityRepository->retrieve($id)
-        );
+        return $this->onLoad($this->retrieveOne(array('id' => $id)));
     }
 }

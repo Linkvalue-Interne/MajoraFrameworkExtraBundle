@@ -10,6 +10,15 @@ use Majora\Framework\Model\EntityCollection;
 interface LoaderInterface
 {
     /**
+     * All entity metadata configuration are passed from this method.
+     *
+     * @param string $entityClass
+     * @param array  $entityProperties
+     * @param string $collectionClass
+     */
+    public function configureMetadata($entityClass, array $entityProperties, $collectionClass);
+
+    /**
      * retrieve all entities in this repository.
      *
      * @param array $filters optionnal property => value filter map
@@ -21,11 +30,11 @@ interface LoaderInterface
     public function retrieveAll(array $filters = array(), $limit = null, $offset = null);
 
     /**
-     * retrive one entity matching given filters throught this loader
+     * retrive one entity matching given filters throught this loader.
      *
      * @param array $filters optionnal property => value filter map
      *
-     * @return Object
+     * @return object
      */
     public function retrieveOne(array $filters = array());
 
@@ -34,7 +43,7 @@ interface LoaderInterface
      *
      * @param $id
      *
-     * @return Object
+     * @return object
      */
     public function retrieve($id);
 }
