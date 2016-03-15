@@ -50,6 +50,7 @@ trait LazyPropertiesTrait
     protected function load($field)
     {
         if (!is_null($this->$field)
+            || !$this->delegatesCollection
             || !$this->delegatesCollection->containsKey($field = strtolower($field))
         ) {
             return $this->$field;
