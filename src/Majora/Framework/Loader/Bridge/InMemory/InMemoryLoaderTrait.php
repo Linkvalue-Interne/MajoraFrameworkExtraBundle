@@ -2,6 +2,7 @@
 
 namespace Majora\Framework\Loader\Bridge\InMemory;
 
+use Majora\Framework\Loader\LazyLoaderTrait;
 use Majora\Framework\Model\CollectionableInterface;
 use Majora\Framework\Model\EntityCollection;
 use Majora\Framework\Normalizer\MajoraNormalizer;
@@ -11,6 +12,8 @@ use Majora\Framework\Normalizer\MajoraNormalizer;
  */
 trait InMemoryLoaderTrait
 {
+    use LazyLoaderTrait;
+
     /**
      * @var EntityCollection
      */
@@ -97,7 +100,10 @@ trait InMemoryLoaderTrait
             ));
         }
 
-        $this->entityCollection->set($entity->getId(), $entity);
+        $this->entityCollection->set(
+            $entity->getId(),
+            $this->loadDelegates($entity)
+        );
     }
 
     /**

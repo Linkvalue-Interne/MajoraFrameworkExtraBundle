@@ -2,15 +2,24 @@
 
 namespace Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler;
 
+use Majora\Framework\Loader\Bridge\Doctrine\AbstractDoctrineLoader;
+use Majora\Framework\Loader\LoaderInterface;
+use Majora\Framework\Model\CollectionableInterface;
+use Majora\Framework\Model\LazyPropertiesInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Compiler pass to register loaders setUp
+ * Compiler pass to register loaders setUp.
  */
 class LoaderCompilerPass implements CompilerPassInterface
 {
+    /**
+     * {@inheritdoc}
+     *
+     * Processes "majora.loader" tags
+     */
     public function process(ContainerBuilder $container)
     {
         $loaderTags = $container->findTaggedServiceIds('majora.loader');
@@ -18,39 +27,63 @@ class LoaderCompilerPass implements CompilerPassInterface
         foreach ($loaderTags as $loaderId => $tags) {
             $loaderDefinition = $container->getDefinition($loaderId);
             $loaderReflection = new \ReflectionClass($loaderDefinition->getClass());
-            $setUp = $loaderReflection->hasMethod('setUp');
 
             foreach ($tags as $attributes) {
-                if ($setUp) {
-                    $entityReflection = new \ReflectionClass($attributes['entityClass']);
-                    if (!$entityReflection->implementsInterface('Majora\Framework\Model\CollectionableInterface')) {
+                $method = $loaderReflection->implementsInterface(LoaderInterface::class) ?
+                    'configureMetadata' : ($loaderReflection->hasMethod('setUp') ?
+                        'setUp' : ''
+                    )
+                ;
+                if (isset($attributes['entityClass']) || isset($attributes['entityCollection'])) {
+                    @trigger_error('"entityClass" and "entityCollection" attributes for tag "majora.loader" are deprecated and will be removed in 2.0. Please "entity" and "collection" instead.', E_USER_DEPRECATED);
+                }
+                $entityClass = isset($attributes['entity']) ? $attributes['entity'] : $attributes['entityClass'];
+                $collectionClass = isset($attributes['collection']) ? $attributes['collection'] : $attributes['entityCollection'];
+                $entityReflection = new \ReflectionClass($entityClass);
+
+                if ($method) {
+                    if (!$entityReflection->implementsInterface(CollectionableInterface::class)) {
                         throw new \InvalidArgumentException(sprintf(
-                            'Cannot support "%s" class into "%s" : managed items have to be Majora\Framework\Model\CollectionableInterface.',
-                            $attributes['entityClass'],
-                            $loaderDefinition->getClass()
+                            'Cannot support "%s" class into "%s" : managed items have to be %s.',
+                            $entityClass,
+                            $loaderDefinition->getClass(),
+                            CollectionableInterface::class
                         ));
                     }
-
-                    $loaderDefinition->addMethodCall('setUp', array(
-                        $attributes['entityClass'],
+                    $arguments = array(
+                        $entityClass,
                         array_map(
-                            function($property) { return $property->getName(); },
+                            function ($property) { return $property->getName(); },
                             $entityReflection->getProperties()
                         ),
-                        $attributes['entityCollection'],
-                        isset($attributes['repository']) ?
-                            new Reference($attributes['repository']) :
-                            null
-                    ));
+                        $collectionClass,
+                    );
+
+                    if (isset($attributes['repository'])) {
+                        @trigger_error('Repository injection tag "majora.loader" is deprecated and will be removed in 2.0. Please inject it by constructor.', E_USER_DEPRECATED);
+                        $arguments[] = new Reference($attributes['repository']);
+                    }
+
+                    $loaderDefinition->addMethodCall($method, $arguments);
                 }
 
-                // doctrine bridge
-                if ($container->hasDefinition('majora.doctrine.event_proxy')) {
-                    $container
-                        ->getDefinition('majora.doctrine.event_proxy')
-                        ->addMethodCall('registerDoctrineLoader', array(
-                            $attributes['entityClass'],
-                            $loaderId
+                // for doctrine, loaders cannot self enable objects lazy loading
+                // so we have to check class / attribute and register service into event proxy
+                if ($container->hasDefinition('majora.doctrine.event_proxy')
+                    && !empty($attributes['lazy'])
+                    && $loaderReflection->isSubclassOf(AbstractDoctrineLoader::class)
+                ) {
+                    if (!$entityReflection->implementsInterface(LazyPropertiesInterface::class)) {
+                        throw new \InvalidArgumentException(sprintf(
+                            'Class %s has to implement %s to be able to lazy load her properties.',
+                            $entityClass,
+                            LazyPropertiesInterface::class
+                        ));
+                    }
+                    $container->getDefinition('majora.doctrine.event_proxy')
+                        ->addMethodCall('registerDoctrineLazyLoader', array(
+                            $entityClass,
+                            new Reference($loaderId),
                         ))
                     ;
                 }

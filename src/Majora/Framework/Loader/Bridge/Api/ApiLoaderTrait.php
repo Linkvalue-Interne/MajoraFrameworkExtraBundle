@@ -4,22 +4,23 @@ namespace Majora\Framework\Loader\Bridge\Api;
 
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Response;
-use Majora\Framework\Api\Client\RestApiClient;
+use Majora\Framework\Api\Client\ApiClientInterface;
+use Majora\Framework\Loader\LazyLoaderTrait;
 use Majora\Framework\Loader\LoaderInterface;
 use Majora\Framework\Loader\LoaderTrait;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
- * Trait to use into Api loaders to get a simple implementation of LoaderInterface
+ * Trait to use into Api loaders to get a simple implementation of LoaderInterface.
  *
  * @property filterResolver
  */
 trait ApiLoaderTrait
 {
-    use LoaderTrait;
+    use LoaderTrait, LazyLoaderTrait;
 
     /**
-     * @var RestApiClient
+     * @var ApiClientInterface
      */
     protected $restApiClient;
 
@@ -29,22 +30,21 @@ trait ApiLoaderTrait
     protected $serializer;
 
     /**
-     * Construct
+     * Construct.
      *
-     * @param RestApiClient $restApiClient
+     * @param ApiClientInterface  $restApiClient
      * @param SerializerInterface $serializer
      */
     public function __construct(
-        RestApiClient $restApiClient,
+        ApiClientInterface $restApiClient,
         SerializerInterface $serializer
-    )
-    {
+    ) {
         $this->restApiClient = $restApiClient;
         $this->serializer = $serializer;
     }
 
     /**
-     * Resolve given filters
+     * Resolve given filters.
      *
      * @param array $filters
      *
@@ -58,7 +58,7 @@ trait ApiLoaderTrait
     }
 
     /**
-     * Performs an Api call on given method
+     * Performs an Api call on given method.
      *
      * @param string   $method
      * @param array    $query
@@ -70,8 +70,7 @@ trait ApiLoaderTrait
         array $query = array(),
         callable $onSuccess,
         $emptyValue = null
-    )
-    {
+    ) {
         try {
             return $onSuccess(
                 $this->restApiClient->$method($query)
@@ -95,12 +94,17 @@ trait ApiLoaderTrait
         return $this->apiCall(
             'cget',
             $this->resolveFilters($filters),
-            function(Response $response) {
-                return $this->serializer->deserialize(
-                    (string) $response->getBody(),
-                    $this->collectionClass,
-                    'json'
-                );
+            function (Response $response) {
+                return $this->serializer
+                    ->deserialize(
+                        (string) $response->getBody(),
+                        $this->collectionClass,
+                        'json'
+                    )
+                    ->map(function ($entity) {
+                        return $this->loadDelegates($entity);
+                    })
+                ;
             },
             new $this->collectionClass()
         );
@@ -119,11 +123,13 @@ trait ApiLoaderTrait
      */
     public function retrieve($id)
     {
-        return $this->apiCall('get', array('id' => $id), function(Response $response) {
-            return $this->serializer->deserialize(
-                (string) $response->getBody(),
-                $this->entityClass,
-                'json'
+        return $this->apiCall('get', array('id' => $id), function (Response $response) {
+            return $this->loadDelegates(
+                $this->serializer->deserialize(
+                    (string) $response->getBody(),
+                    $this->entityClass,
+                    'json'
+                )
             );
         });
     }

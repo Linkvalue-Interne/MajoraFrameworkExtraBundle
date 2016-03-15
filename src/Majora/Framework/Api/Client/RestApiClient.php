@@ -10,7 +10,7 @@ use Majora\Framework\Log\LoggableTrait;
  * Rest api client which use standard Http client to handle http calls.
  * Use and returns non parsed data from api calls.
  */
-class RestApiClient
+class RestApiClient implements ApiClientInterface
 {
     use LoggableTrait;
 
@@ -25,7 +25,7 @@ class RestApiClient
     protected $requestFactory;
 
     /**
-     * Construct
+     * Construct.
      *
      * @param ClientInterface       $httpClient
      * @param RestApiRequestFactory $requestFactory
@@ -37,9 +37,7 @@ class RestApiClient
     }
 
     /**
-     * Create and send a http request throught http client, and return response as is
-     *
-     * @return Response
+     * @see ApiClientInterface::send()
      */
     public function send(
         $name,
@@ -47,8 +45,7 @@ class RestApiClient
         array $query = array(),
         array $body = array(),
         array $options = array()
-    )
-    {
+    ) {
         return $this->httpClient->request(
             $method,
             $this->requestFactory->createRequestUri($name, $query),
@@ -60,12 +57,7 @@ class RestApiClient
     }
 
     /**
-     * Performs a get query using "cget" factory presets
-     *
-     * @param array $query
-     * @param array options
-     *
-     * @return Response
+     * @see ApiClientInterface::cget()
      */
     public function cget(array $query = array(), array $options = array())
     {
@@ -73,12 +65,7 @@ class RestApiClient
     }
 
     /**
-     * Performs a get query using "get" factory presets
-     *
-     * @param array $query
-     * @param array options
-     *
-     * @return Response
+     * @see ApiClientInterface::get()
      */
     public function get(array $query = array(), array $options = array())
     {
@@ -86,13 +73,7 @@ class RestApiClient
     }
 
     /**
-     * Performs a post query using "post" factory presets
-     *
-     * @param array $query
-     * @param array $body
-     * @param array $options
-     *
-     * @return Response
+     * @see ApiClientInterface::post()
      */
     public function post(array $query = array(), array $body = array(), array $options = array())
     {
@@ -100,13 +81,7 @@ class RestApiClient
     }
 
     /**
-     * Performs a put query using "put" factory presets
-     *
-     * @param array $query
-     * @param array $body
-     * @param array $options
-     *
-     * @return Response
+     * @see ApiClientInterface::put()
      */
     public function put(array $query = array(), array $body = array(), array $options = array())
     {
@@ -114,13 +89,7 @@ class RestApiClient
     }
 
     /**
-     * Performs a delete query using "delete" factory presets
-     *
-     * @param array $query
-     * @param array $body
-     * @param array $options
-     *
-     * @return Response
+     * @see ApiClientInterface::delete()
      */
     public function delete(array $query = array(), array $body = array(), array $options = array())
     {
