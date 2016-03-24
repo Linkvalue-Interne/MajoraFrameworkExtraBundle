@@ -51,13 +51,13 @@ trait LazyPropertiesTrait
     {
         if (!is_null($this->$field)
             || !$this->delegatesCollection
-            || !$this->delegatesCollection->containsKey($field = strtolower($field))
+            || !$this->delegatesCollection->containsKey($key = strtolower($field))
         ) {
             return $this->$field;
         }
 
-        $loader = $this->delegatesCollection->get($field);
-        $this->delegatesCollection->remove($field);
+        $loader = $this->delegatesCollection->get($key);
+        $this->delegatesCollection->remove($key);
 
         return $this->$field = $loader($this);
     }

@@ -68,25 +68,6 @@ trait LoaderTrait
     }
 
     /**
-     * Checks if loader is properly configured.
-     *
-     * @throws \RuntimeException if not configured
-     */
-    private function assertIsConfigured()
-    {
-        if ($this->entityRepository && $this->entityClass
-            && $this->collectionClass && $this->filterResolver
-        ) {
-            return;
-        }
-
-        throw new \RuntimeException(sprintf(
-            '%s methods cannot be used, it has not been initialize through configureMetadata() method.',
-            __CLASS__
-        ));
-    }
-
-    /**
      * @see LoaderInterface::configureMetadata()
      */
     public function configureMetadata($entityClass, array $entityProperties, $collectionClass)
