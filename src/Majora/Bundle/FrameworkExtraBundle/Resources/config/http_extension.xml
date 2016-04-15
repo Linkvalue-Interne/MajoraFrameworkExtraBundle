@@ -1,0 +1,21 @@
+<?xml version="1.0"  ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="guzzle_wrapper" class="Majora\Framework\Http\Services\GuzzleWrapper">
+            <argument type="service" id="guzzle.curl_handler"/>
+        </service>
+        <service id="guzzle.curl_handler" class="GuzzleHttp\Handler\CurlHandler">
+            <factory class="GuzzleHttp\HandlerStack" method="create"/>
+        </service>
+        <service id="majora.http_eventdispatcher" class="Majora\Framework\Http\Middleware\MajoraEventDispatcher">
+            <argument type="service" id="debug.stopwatch"/>
+            <argument type="service" id="event_dispatcher"/>
+            <argument/>
+        </service>
+    </services>
+</container>
+

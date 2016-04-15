@@ -1,0 +1,94 @@
+{% extends 'WebProfilerBundle:Profiler:layout.html.twig' %}
+
+{% block toolbar %}
+    {% set text %}
+        {# this is the content displayed when hovering the mouse over
+              the toolbar panel #}
+        {% set icon %}
+            <span class="sf-toolbar-value">MajoraHttp</span>
+        {% endset %}
+        <div class="sf-toolbar-info-piece">
+            <b>MajoraHttp</b>
+        </div>
+
+    {% endset %}
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: true }) }}
+{% endblock %}
+
+{% block menu %}
+    <span class="label">
+        <span class="icon"></span>
+        <strong>Majora HTTP</strong>
+        <span class="count">{{ collector.commands|length }}</span>
+    </span>
+{% endblock %}
+
+{% block panel %}
+
+
+    <h2><b>Majora HTTP</b></h2>
+    {% for command in collector.commands %}
+
+        <span style="font-size: 16px; font-weight: bold;">Request URI </span>: {{ command.uri }}<br>
+        <br>
+        <b>REQUEST</b>
+        <table>
+            <thead>
+            <th>Method</th>
+            <th>Content-Type</th>
+            <th>Host</th>
+            {% if command.headers.apiKey is defined %}
+                <th>ApiKey</th>
+            {% endif %}
+            </thead>
+            <td>
+                {{ command.method }}
+            </td>
+            <td>
+                {% if command.headers['Content-Type'][0]  is defined %}
+                    {{ command.headers['Content-Type'][0] }}
+                {% else %}
+                    null
+                {% endif %}
+            </td>
+            <td>
+                {{ command.headers['Host'][0] }}
+            </td>
+            {% if command.headers.apiKey is defined %}
+                <td>
+                    {{ command.headers['api_key'][0] }}
+                </td>
+            {% endif %}
+        </table>
+
+
+        <b>RESPONSE</b>
+        <table>
+            <thead>
+            <th>Status Code</th>
+            <th>Message</th>
+            <th>Execution Time</th>
+            </thead>
+
+            <td>
+                {{ command.statusCode }}
+            </td>
+            <td>
+                {{ command.reasonPhrase}}</td>
+            </td>
+            <td>
+                {{ command.executionTime }} ms
+            </td>
+        </table>
+        <table>
+            <thead>
+            <th>Body</th>
+            </thead>
+            <td>
+                {{ command.responseBody|slice(0,100)|json_encode }}
+            </td>
+        </table>
+        <br><br><br>
+    {% endfor %}
+
+{% endblock %}

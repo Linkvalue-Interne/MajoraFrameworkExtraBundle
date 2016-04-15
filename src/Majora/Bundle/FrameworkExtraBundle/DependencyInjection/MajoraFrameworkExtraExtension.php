@@ -64,5 +64,17 @@ class MajoraFrameworkExtraExtension extends Extension
         if (!empty($config['json_form_extension']['enabled'])) {
             $loader->load('json_form_extension.xml');
         }
+
+
+        // http_extension
+        if(!empty($config['http_extension']['enabled']))
+        {
+            $loader->load('http_extension.xml');
+            new HttpClientFactory($container, $config['http_extension']);
+
+            if ($container->getParameter('kernel.debug')) {
+                $loader->load('http_datacollector.xml');
+            }
+        }
     }
 }
