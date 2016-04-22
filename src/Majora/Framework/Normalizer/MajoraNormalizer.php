@@ -9,6 +9,8 @@ use Majora\Framework\Normalizer\Exception\ScopeNotFoundException;
 use Majora\Framework\Normalizer\Model\NormalizableInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\PropertyAccess\PropertyPathInterface;
+use Symfony\Component\PropertyAccess\PropertyPath;
 
 /**
  * Normalizer class implementing scoping compilation and object normalization construction.
@@ -26,6 +28,11 @@ class MajoraNormalizer
      * @var \ReflectionClass[]
      */
     private static $reflectionPool;
+
+    /**
+     * @var PropertyPath[]
+     */
+    private static $propertiesPathPool;
 
     /**
      * @var \Closure
@@ -259,7 +266,7 @@ class MajoraNormalizer
      */
     private function createWrittingDelegate()
     {
-        return $this->writeDelegate ?: $this->writeDelegate = function ($property, $value, PropertyAccessor $propertyAccessor) {
+        return $this->writeDelegate ?: $this->writeDelegate = function (PropertyPathInterface $property, $value, PropertyAccessor $propertyAccessor) {
             switch (true) {
 
                 // Public property / accessor case
@@ -312,7 +319,7 @@ class MajoraNormalizer
                 return $reflection->newInstance();
             }
 
-            $argument = array();
+            $arguments = array();
 
             // Construct with parameters ? we will try to hydrate arguments from their names
             if ($reflection->hasMethod('__construct')
@@ -365,10 +372,14 @@ class MajoraNormalizer
         );
 
         foreach ($data as $property => $value) {
+            // Instanciate propertyPath before usage, to improve performance.
+            if (!isset(self::$propertiesPathPool[$property])) {
+                self::$propertiesPathPool[$property] = new PropertyPath($property);
+            }
 
             // simple case : access property
             if (!$reflection->hasMethod($setter = sprintf('set%s', ucfirst($property)))) {
-                $write($property, $value, $this->propertyAccessor);
+                $write(self::$propertiesPathPool[$property], $value, $this->propertyAccessor);
                 continue;
             }
 
@@ -379,7 +390,7 @@ class MajoraNormalizer
 
             // scalar or array ?
             if (!$setParameter->getClass() || $setParameter->isArray()) {
-                $write($property, $value, $this->propertyAccessor);
+                $write(self::$propertiesPathPool[$property], $value, $this->propertyAccessor);
 
                 continue;
             }
@@ -387,7 +398,7 @@ class MajoraNormalizer
             // nullable object ?
             if (empty($value)) {
                 if ($setParameter->allowsNull()) {
-                    $write($property, null, $this->propertyAccessor);
+                    $write(self::$propertiesPathPool[$property], null, $this->propertyAccessor);
                 }
 
                 continue;
@@ -396,12 +407,12 @@ class MajoraNormalizer
             // callable ?
             if (is_callable($value)) {
                 if ($setParameter->isCallable()) {
-                    $write($property, $value, $this->propertyAccessor);
+                    $write(self::$propertiesPathPool[$property], $value, $this->propertyAccessor);
                 }
             }
 
             $write(
-                $property,
+                self::$propertiesPathPool[$property],
                 $this->denormalize($value, $setParameter->getClass()),
                 $this->propertyAccessor
             );

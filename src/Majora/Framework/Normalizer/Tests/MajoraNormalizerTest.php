@@ -35,11 +35,11 @@ class MajoraNormalizerTest extends \PHPUnit_Framework_TestCase
     public function testCollectionNormalization($scope, $expectedNormalization)
     {
         $lightsaber1 = new Lightsaber(42, 1);
-        $lightsaber1->color = 'purple';
+        $lightsaber1->setColor('purple');
         $lightsaber1->owner = 'Mace Windu';
 
         $lightsaber2 = new Lightsaber(66, 3);
-        $lightsaber2->color = 'red';
+        $lightsaber2->setColor('red');
         $lightsaber2->owner = 'Kylo Ren';
 
         $this->assertEquals(
@@ -57,7 +57,7 @@ class MajoraNormalizerTest extends \PHPUnit_Framework_TestCase
     public function testDenormalizeConstruct()
     {
         $expectedLightsaber = new Lightsaber(42, 1);
-        $expectedLightsaber->color = 'purple';
+        $expectedLightsaber->setColor('purple');
         $expectedLightsaber->owner = 'Mace Windu';
 
         $lightsaber = MajoraNormalizer::createNormalizer()->denormalize(
@@ -82,6 +82,49 @@ class MajoraNormalizerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedDate, $date);
     }
+
+    public function denormalizePerformanceProvider()
+    {
+        $normalizer = MajoraNormalizer::createNormalizer();
+        $start = microtime(true);
+        $normalizer->denormalize(
+                array('id' => 42, 'color' => 'purple', 'blades_number' => 1, 'owner' => 'Mace Windu'),
+                Lightsaber::class
+            );
+        $end = microtime(true);
+        $diff = ($end - $start);
+
+        $nTime = 10000;
+
+        return array(
+            array(
+                ($diff * $nTime),
+                $nTime, 
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider denormalizePerformanceProvider
+     * @coversNothing
+     */
+    public function testDenormalizePerformance($maxExecutionTime, $nTime)
+    {
+        $normalizer = MajoraNormalizer::createNormalizer();
+
+        $start = microtime(true);
+
+        for ($i = 0; $i < $nTime; $i++) {
+            $normalizer->denormalize(
+                array('id' => 42, 'color' => 'purple', 'blades_number' => 1, 'owner' => 'Mace Windu'),
+                Lightsaber::class
+            );
+        }
+
+        $end = microtime(true);
+        $diff = ($end - $start);
+        $this->assertLessThan($maxExecutionTime, $diff);
+    }
 }
 
 class Lightsaber implements CollectionableInterface
@@ -90,7 +133,7 @@ class Lightsaber implements CollectionableInterface
 
     protected $id;
     protected $bladesNumber;
-    public $color;
+    protected $color;
     public $owner;
 
     public static function getScopes()
@@ -119,6 +162,10 @@ class Lightsaber implements CollectionableInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setColor($color) {
+        $this->color = $color;
     }
 }
 
