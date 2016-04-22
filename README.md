@@ -1,43 +1,43 @@
 # MajoraFrameworkExtraBundle
-Provides extra classes and config for Symfony framework.
-Help to implements a clean and safe DDD architecture.
+Provides extra classes and configurations for Symfony framework.
+Helps to implements modern and clean architectures, like DDD, CQRS, Flux...
 
-## Normalize and serialize
+Features included :
 
-Based on Symfony serializer component, MajoraSerializer introduce the scope notion through FormatHandlerInterface.
-Using SerializableTrait trait and defining getScope method, you will add to your class an easy way to configure its own serialisation.
-Indeed defining ScopableInterface::getScopes() method will allows you to list several normalization strategies.
+* Serializer / Normalizer
+* Validation bridges
+* API clients
+* Base implementations for Api and Admin controllers
+* DDD / CQRS / Flux helpers trait and base classes (domains, actions, loaders, repositories)
+* Form extensions and transformers
+* Doctrine event optimizer
+* Agnostic route generation
+* Inflector
+* Current date provider
+* Log helpers
 
-Let's assume an entity "Person". The Person::getScope method defines 4 different scopes. Scopes can be combined, in this example :
+Features to come in v1.* :
 
-* 'default', is an aggregation of a subset of 'Person' entity attributes and another scope called 'location' defined in the related entity 'related_address'  
-* 'full', is an aggregation of 'default' scope and the remaining 'Person' attributes
-* 'full_location', is aggregation of 'full' scope and the 'default' scope of 'related_address' entity
-* 'id', is a scope which is returning only 'id' attribute
+* More documentation
+* Cookbook
+* More tests
 
-```              
-     namespace Alg\Identity\Component\Entity;
-     
-     use Majora\Framework\Serializer\Model\SerializableTrait;
- 
-     /**
-      * Person model class.
-      */
-     class Person  
-     {
-         use SerializableTrait;
-         
-         // attributes, getters and setters ....
-         
-         /**
-          * @see ScopableInterface::getScopes()
-          */
-         public static function getScopes()
-         {
-             return array(
-                 'default' => array('id', 'familyName', 'givenName', 'related_address@location'),
-                 'full' => array('@default', 'telephone', 'email'),
-                 'full_location' => array('@full', 'related_address'),
-                 'id' => 'id'
-             );
-         }
+Features to come in v2.0 :
+
+* Middlewares into loaders query system
+* Broadcastables events with wildarding listening
+* Deprecations removal
+
+## Installation
+
+@todo
+
+## License
+
+This bundle is under the MIT license. See the complete license :
+
+    LICENSE.md
+
+## Credits
+
+- [Quentin Cerny](https://github.com/Nyxis), [Link Value](http://link-value.fr/), and [all contributors](https://github.com/LinkValue/MajoraFrameworkExtraBundle/graphs/contributors)

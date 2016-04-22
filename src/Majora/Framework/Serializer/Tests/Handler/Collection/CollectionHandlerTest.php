@@ -10,6 +10,8 @@ use PHPUnit_Framework_TestCase;
  * Unit test class for CollectionHandler.php.
  *
  * @see Majora\Framework\Serializer\Handler\Collection\CollectionHandler
+ *
+ * @group legacy
  */
 class CollectionHandlerTest extends PHPUnit_Framework_TestCase
 {
@@ -32,8 +34,8 @@ class CollectionHandlerTest extends PHPUnit_Framework_TestCase
     {
         $cases = array(
             'string_as_array' => array('string', 'test', array('string')),
-            'int_as_array'    => array(42, 'test', array(42)),
-            'array_as_array'  => array(
+            'int_as_array' => array(42, 'test', array(42)),
+            'array_as_array' => array(
                 array('hello', 'foo' => 'bar', 42),
                 'test',
                 array('hello', 'foo' => 'bar', 42),
@@ -68,10 +70,10 @@ class CollectionHandlerTest extends PHPUnit_Framework_TestCase
     public function testDeserializeProvider()
     {
         return array(
-            'not_an_object'     => array(123, 'integer', 123),
+            'not_an_object' => array(123, 'integer', 123),
             'inexistant_object' => array('biggoron', 'F*ckingBigSword', 'biggoron'),
-            'not_serializable'  => array(array('ganon' => 'dorf'), 'StdClass', new \StdClass()),
-            'serializable'      => array(
+            'not_serializable' => array(array('ganon' => 'dorf'), 'StdClass', new \StdClass()),
+            'serializable' => array(
                 array('id' => 42),
                 'Majora\Framework\Serializer\Tests\Model\SerializableMock1',
                 (new SerializableMock1())->setId(42),

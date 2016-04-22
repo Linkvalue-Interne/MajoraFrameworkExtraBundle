@@ -6,6 +6,8 @@ use PHPUnit_Framework_TestCase;
 
 /**
  * Test class for serializable trait.
+ *
+ * @group legacy
  */
 class SerializableTraitTest extends PHPUnit_Framework_TestCase
 {
