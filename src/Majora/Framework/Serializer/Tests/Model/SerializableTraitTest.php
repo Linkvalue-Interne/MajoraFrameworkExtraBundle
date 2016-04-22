@@ -93,7 +93,7 @@ class SerializableTraitTest extends PHPUnit_Framework_TestCase
 
     public function serializedDataProvider()
     {
-        $ganonDorf = new \StdClass();
+        $ganonDorf = new SimpleClassMock();
         $ganonDorf->ganon = 'dorf';
 
         return array(
