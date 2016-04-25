@@ -1,13 +1,14 @@
 ## Contributing
 
-    make install
-    git checkout -b "branchName"
+Installation for contributing is triggered by a Makefile.
+```sh
+git clone git@github.com:YourFork/MajoraFrameworkExtraBundle.git
+make install
+```
 
-Now you can implement new features.
+Tests running
+```sh
+make tests
+```
 
-**Before pushing**
-
-    make tests
-
-After your push, make a pull request, and tag the PR with label "ask for review"
-
+After push, feel free to open a [pull request](https://github.com/LinkValue/MajoraFrameworkExtraBundle/compare) on the main repository !

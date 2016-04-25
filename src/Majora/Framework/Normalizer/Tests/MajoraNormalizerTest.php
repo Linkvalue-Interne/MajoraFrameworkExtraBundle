@@ -88,19 +88,16 @@ class MajoraNormalizerTest extends \PHPUnit_Framework_TestCase
         $normalizer = MajoraNormalizer::createNormalizer();
         $start = microtime(true);
         $normalizer->denormalize(
-                array('id' => 42, 'color' => 'purple', 'blades_number' => 1, 'owner' => 'Mace Windu'),
-                Lightsaber::class
-            );
+            array('id' => 42, 'color' => 'purple', 'blades_number' => 1, 'owner' => 'Mace Windu'),
+            Lightsaber::class
+        );
         $end = microtime(true);
         $diff = ($end - $start);
 
-        $nTime = 10000;
+        $nTime = 20000;
 
         return array(
-            array(
-                ($diff * $nTime),
-                $nTime, 
-            ),
+            array(($diff * $nTime), $nTime),
         );
     }
 
@@ -114,7 +111,7 @@ class MajoraNormalizerTest extends \PHPUnit_Framework_TestCase
 
         $start = microtime(true);
 
-        for ($i = 0; $i < $nTime; $i++) {
+        for ($i = 0; $i < $nTime; ++$i) {
             $normalizer->denormalize(
                 array('id' => 42, 'color' => 'purple', 'blades_number' => 1, 'owner' => 'Mace Windu'),
                 Lightsaber::class
@@ -123,6 +120,7 @@ class MajoraNormalizerTest extends \PHPUnit_Framework_TestCase
 
         $end = microtime(true);
         $diff = ($end - $start);
+
         $this->assertLessThan($maxExecutionTime, $diff);
     }
 }
@@ -164,7 +162,8 @@ class Lightsaber implements CollectionableInterface
         return $this->id;
     }
 
-    public function setColor($color) {
+    public function setColor($color)
+    {
         $this->color = $color;
     }
 }

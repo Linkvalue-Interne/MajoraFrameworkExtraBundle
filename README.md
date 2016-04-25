@@ -1,14 +1,16 @@
 # MajoraFrameworkExtraBundle
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/4ba76532-49c8-448d-902f-9e037102b7d2/mini.png)](https://insight.sensiolabs.com/projects/beb6e229-e98c-4df6-a894-2586a64418cc) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/LinkValue/MajoraFrameworkExtraBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/LinkValue/MajoraFrameworkExtraBundle/?branch=master) [![Build Status](https://travis-ci.org/LinkValue/MajoraFrameworkExtraBundle.svg?branch=master)](https://travis-ci.org/LinkValue/MajoraFrameworkExtraBundle) [![Code Coverage](https://scrutinizer-ci.com/g/LinkValue/MajoraFrameworkExtraBundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/LinkValue/MajoraFrameworkExtraBundle/?branch=master) [![Total Downloads](https://poser.pugx.org/majora/framework-extra-bundle/downloads)](https://packagist.org/packages/majora/framework-extra-bundle) [![Latest Stable Version](https://poser.pugx.org/majora/framework-extra-bundle/v/stable)](https://packagist.org/packages/majora/framework-extra-bundle) [![License](https://poser.pugx.org/majora/framework-extra-bundle/license)](https://packagist.org/packages/majora/framework-extra-bundle)
+
 Provides extra classes and configurations for Symfony framework.
 Helps to implements modern and clean architectures, like DDD, CQRS, Flux...
 
 Features included :
 
-* Serializer / Normalizer
+* [Normalizer / Serializer](https://github.com/LinkValue/MajoraFrameworkExtraBundle/blob/master/docs/normalizer.md)
 * Validation bridges
 * API clients
 * Base implementations for Api and Admin controllers
-* DDD / CQRS / Flux helpers trait and base classes (domains, actions, loaders, repositories)
+* DDD / CQRS / Flux helpers traits and base classes (domains, actions, loaders, repositories)
 * Form extensions and transformers
 * Doctrine event optimizer
 * Agnostic route generation
@@ -26,17 +28,49 @@ Features to come in v2.0 :
 
 * Middlewares into loaders query system
 * Broadcastables events with wildarding listening
+* JSON component
+* DI tags for recurent configurations like logger / debug / validator / event dispatcher registering
 * Deprecations removal
 
 ## Installation
 
-@todo
+Use [Composer](http://getcomposer.org) !
+You can pick a version at [Packagist](https://packagist.org/packages/majora/framework-extra-bundle), this bundle follows standard versioning : _dev-master_ for last updates, _~1.3_ for stable releases.
+
+```js
+// composer.json
+{
+    "require": {
+        // ...
+        "majora/framework-extra-bundle": "~1.3"
+    }
+}
+```
+
+Register the bundle into your Kernel :
+```php
+<?php
+// app/AppKernel.php
+
+public function registerBundles()
+{
+    $bundles = array(
+        // ...
+        new Majora\Bundle\FrameworkExtraBundle\MajoraFrameworkExtraBundle($this),
+    );
+}
+```
+**Note** : Pay attention to the reference into bundle instanciation, it's required for iterate over bundles for extra configuration discovering.
 
 ## License
 
 This bundle is under the MIT license. See the complete license :
 
     LICENSE.md
+
+## Contributing
+
+This bundle is open to contributions, please follow this [documentation](https://github.com/LinkValue/MajoraFrameworkExtraBundle/blob/master/docs/contributing.md) and have fun !
 
 ## Credits
 

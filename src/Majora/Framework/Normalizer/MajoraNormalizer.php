@@ -32,7 +32,7 @@ class MajoraNormalizer
     /**
      * @var PropertyPath[]
      */
-    private static $propertiesPathPool;
+    private $propertiesPathPool;
 
     /**
      * @var \Closure
@@ -84,6 +84,7 @@ class MajoraNormalizer
     {
         $this->propertyAccessor = $propertyAccessor;
         $this->inflector = new Inflector();
+        $this->propertiesPathPool = array();
     }
 
     /**
@@ -373,13 +374,14 @@ class MajoraNormalizer
 
         foreach ($data as $property => $value) {
             // Instanciate propertyPath before usage, to improve performance.
-            if (!isset(self::$propertiesPathPool[$property])) {
-                self::$propertiesPathPool[$property] = new PropertyPath($property);
+            if (!isset($this->propertiesPathPool[$property])) {
+                $this->propertiesPathPool[$property] = new PropertyPath($property);
             }
+            $propertyPath = $this->propertiesPathPool[$property];
 
             // simple case : access property
             if (!$reflection->hasMethod($setter = sprintf('set%s', ucfirst($property)))) {
-                $write(self::$propertiesPathPool[$property], $value, $this->propertyAccessor);
+                $write($propertyPath, $value, $this->propertyAccessor);
                 continue;
             }
 
@@ -390,7 +392,7 @@ class MajoraNormalizer
 
             // scalar or array ?
             if (!$setParameter->getClass() || $setParameter->isArray()) {
-                $write(self::$propertiesPathPool[$property], $value, $this->propertyAccessor);
+                $write($propertyPath, $value, $this->propertyAccessor);
 
                 continue;
             }
@@ -398,7 +400,7 @@ class MajoraNormalizer
             // nullable object ?
             if (empty($value)) {
                 if ($setParameter->allowsNull()) {
-                    $write(self::$propertiesPathPool[$property], null, $this->propertyAccessor);
+                    $write($propertyPath, null, $this->propertyAccessor);
                 }
 
                 continue;
@@ -407,12 +409,12 @@ class MajoraNormalizer
             // callable ?
             if (is_callable($value)) {
                 if ($setParameter->isCallable()) {
-                    $write(self::$propertiesPathPool[$property], $value, $this->propertyAccessor);
+                    $write($propertyPath, $value, $this->propertyAccessor);
                 }
             }
 
             $write(
-                self::$propertiesPathPool[$property],
+                $propertyPath,
                 $this->denormalize($value, $setParameter->getClass()),
                 $this->propertyAccessor
             );
