@@ -14,7 +14,7 @@ trait GraphLoaderTrait
      */
     public function retrieveAll(array $filters = array(), $limit = null, $offset = null)
     {
-
+        throw new \BadMethodCallException(sprintf('Not yet implemented : %s::%s()', __CLASS__, __FUNCTION__));
     }
 
     /**
@@ -22,7 +22,7 @@ trait GraphLoaderTrait
      */
     public function retrieveOne(array $filters = array())
     {
-
+        throw new \BadMethodCallException(sprintf('Not yet implemented : %s::%s()', __CLASS__, __FUNCTION__));
     }
 
     /**
@@ -30,6 +30,6 @@ trait GraphLoaderTrait
      */
     public function retrieve($id)
     {
-
+        throw new \BadMethodCallException(sprintf('Not yet implemented : %s::%s()', __CLASS__, __FUNCTION__));
     }
 }

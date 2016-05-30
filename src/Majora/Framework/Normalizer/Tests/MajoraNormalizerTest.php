@@ -82,47 +82,6 @@ class MajoraNormalizerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedDate, $date);
     }
-
-    public function denormalizePerformanceProvider()
-    {
-        $normalizer = MajoraNormalizer::createNormalizer();
-        $start = microtime(true);
-        $normalizer->denormalize(
-            array('id' => 42, 'color' => 'purple', 'blades_number' => 1, 'owner' => 'Mace Windu'),
-            Lightsaber::class
-        );
-        $end = microtime(true);
-        $diff = ($end - $start);
-
-        $nTime = 20000;
-
-        return array(
-            array(($diff * $nTime), $nTime),
-        );
-    }
-
-    /**
-     * @dataProvider denormalizePerformanceProvider
-     * @coversNothing
-     */
-    public function testDenormalizePerformance($maxExecutionTime, $nTime)
-    {
-        $normalizer = MajoraNormalizer::createNormalizer();
-
-        $start = microtime(true);
-
-        for ($i = 0; $i < $nTime; ++$i) {
-            $normalizer->denormalize(
-                array('id' => 42, 'color' => 'purple', 'blades_number' => 1, 'owner' => 'Mace Windu'),
-                Lightsaber::class
-            );
-        }
-
-        $end = microtime(true);
-        $diff = ($end - $start);
-
-        $this->assertLessThan($maxExecutionTime, $diff);
-    }
 }
 
 class Lightsaber implements CollectionableInterface

@@ -95,4 +95,28 @@ trait DalActionTrait
 
         $this->eventDispatcher->dispatch($eventName, $event);
     }
+
+    /**
+     * @see NormalizableInterface::getScopes()
+     */
+    public static function getScopes()
+    {
+        return array();
+    }
+
+    /**
+     * @see NormalizableInterface::normalize()
+     */
+    public function normalize($scope = 'default')
+    {
+        return array();
+    }
+
+    /**
+     * @see NormalizableInterface::denormalize()
+     */
+    public function denormalize(array $data)
+    {
+        return $this;
+    }
 }

@@ -314,6 +314,11 @@ class MajoraNormalizer
 
         $object = $normalizable;
 
+        // Already got a denormalized object ?
+        if (is_object($data) && is_a($data, $class)) {
+            return $data;
+        }
+
         // Got reflection ? so build a new object
         if (is_string($object) || $object instanceof \ReflectionClass) {
             if (empty($data)) { // no data ? no worries !
