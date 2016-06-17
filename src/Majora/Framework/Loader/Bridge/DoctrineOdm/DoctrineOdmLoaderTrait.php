@@ -23,8 +23,9 @@ trait DoctrineOdmLoaderTrait
      *
      * @param BaseDoctrineRepository $entityRepository (optionnal)
      */
-    public function __construct(BaseDoctrineOdmRepository $entityRepository = null)
+    public function __construct($entityRepository = null)
     {
+        //TODO: BaseDoctrineOdmRepository $entityRepository = null              in __construct
         $this->entityRepository = $entityRepository;
     }
 
@@ -104,17 +105,24 @@ trait DoctrineOdmLoaderTrait
     private function createFilteredQuery(array $filters)
     {
         $qb = $this->createQuery('entity');
-
+        var_dump($);
         foreach ($filters as $field => $filter) {
+
+            $qb->where("function() { return this.type }");
+
+
+
+
+
             $qb->andWhere(is_array($filter)
-                    ? sprintf('entity.%s in (:%s)', $field, $field)
-                    : sprintf('entity.%s = :%s', $field, $field)
-                )
+                ? sprintf('entity.%s in (:%s)', $field, $field)
+                : sprintf('entity.%s = :%s', $field, $field)
+            )
                 ->setParameter(sprintf(':%s', $field), $filter)
             ;
         }
 
-        return $qb->getQuery();
+        return $qb;
     }
 
     /**
@@ -129,14 +137,14 @@ trait DoctrineOdmLoaderTrait
         );
 
         if ($limit) {
-            $query->setMaxResults($limit);
+            $query->limit($limit);
         }
         if ($offset) {
-            $query->setFirstResult($offset);
+            $query->skip($offset);
         }
 
         return $this->toEntityCollection(
-            $query->getResult()
+            $query->getQuery()->execute()
         );
     }
 
@@ -147,8 +155,8 @@ trait DoctrineOdmLoaderTrait
     {
         $this->assertIsConfigured();
 
-        return $this->onLoad($this->createFilteredQuery($filters)
-            ->getOneOrNullResult()
+        return $this->onLoad($this->createFilteredQuery($filters)->getQuery()
+            ->getSingleResult()
         );
     }
 
