@@ -2,7 +2,7 @@
 
 namespace Majora\Framework\Repository\DoctrineOdm;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\ODM\MongoDB\DocumentRepository;
 
 /**
  * Base class for doctrine repository.

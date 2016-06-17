@@ -4,7 +4,7 @@ namespace Majora\Framework\Loader\Bridge\DoctrineOdm;
 
 use Doctrine\Common\Collections\Collection;
 use Majora\Framework\Loader\LoaderTrait;
-use Majora\Framework\Repository\Doctrine\BaseDoctrineRepository;
+use Majora\Framework\Repository\DoctrineOdm\BaseDoctrineOdmRepository;
 
 /**
  * Trait to use into Doctrine loaders to get a simple implementation of LoaderInterface.
@@ -23,7 +23,7 @@ trait DoctrineOdmLoaderTrait
      *
      * @param BaseDoctrineRepository $entityRepository (optionnal)
      */
-    public function __construct(BaseDoctrineRepository $entityRepository = null)
+    public function __construct(BaseDoctrineOdmRepository $entityRepository = null)
     {
         $this->entityRepository = $entityRepository;
     }
