@@ -41,6 +41,7 @@ class LoaderCompilerPass implements CompilerPassInterface
                 $collectionClass = isset($attributes['collection']) ? $attributes['collection'] : $attributes['entityCollection'];
                 $entityReflection = new \ReflectionClass($entityClass);
 
+                // configureMetadata() call configuration
                 if ($method) {
                     if (!$entityReflection->implementsInterface(CollectionableInterface::class)) {
                         throw new \InvalidArgumentException(sprintf(
@@ -59,33 +60,40 @@ class LoaderCompilerPass implements CompilerPassInterface
                         $collectionClass,
                     );
 
-                    if (isset($attributes['repository'])) {
-                        @trigger_error('Repository injection tag "majora.loader" is deprecated and will be removed in 2.0. Please inject it by constructor.', E_USER_DEPRECATED);
-                        $arguments[] = new Reference($attributes['repository']);
-                    }
-
                     $loaderDefinition->addMethodCall($method, $arguments);
                 }
 
-                // for doctrine, loaders cannot self enable objects lazy loading
-                // so we have to check class / attribute and register service into event proxy
-                if ($container->hasDefinition('majora.doctrine.event_proxy')
-                    && !empty($attributes['lazy'])
-                    && $loaderReflection->isSubclassOf(AbstractDoctrineLoader::class)
-                ) {
-                    if (!$entityReflection->implementsInterface(LazyPropertiesInterface::class)) {
-                        throw new \InvalidArgumentException(sprintf(
-                            'Class %s has to implement %s to be able to lazy load her properties.',
-                            $entityClass,
-                            LazyPropertiesInterface::class
-                        ));
+                // Doctrine case
+                if ($loaderReflection->isSubclassOf(AbstractDoctrineLoader::class)) {
+
+                    // "repository" attribute key only supported for doctrine loaders
+                    // Repository is injected through mutator to avoid circular references
+                    // with Doctrine events and connection
+                    if (isset($attributes['repository'])) {
+                        $loaderDefinition->addMethodCall(
+                            'setEntityRepository',
+                            array(new Reference($attributes['repository']))
+                        );
                     }
-                    $container->getDefinition('majora.doctrine.event_proxy')
-                        ->addMethodCall('registerDoctrineLazyLoader', array(
-                            $entityClass,
-                            new Reference($loaderId),
-                        ))
-                    ;
+
+                    // for Doctrine, loaders cannot self enable objects lazy loading
+                    // due to general event trigger into all listener for each entites
+                    // so we have to check class / attribute and register service into event proxy
+                    if ($container->hasDefinition('majora.doctrine.event_proxy') && !empty($attributes['lazy'])) {
+                        if (!$entityReflection->implementsInterface(LazyPropertiesInterface::class)) {
+                            throw new \InvalidArgumentException(sprintf(
+                                'Class %s has to implement %s to be able to lazy load her properties.',
+                                $entityClass,
+                                LazyPropertiesInterface::class
+                            ));
+                        }
+                        $container->getDefinition('majora.doctrine.event_proxy')
+                            ->addMethodCall('registerDoctrineLazyLoader', array(
+                                $entityClass,
+                                new Reference($loaderId),
+                            ))
+                        ;
+                    }
                 }
             }
         }

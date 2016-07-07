@@ -9,7 +9,9 @@ use Majora\Framework\Loader\LoaderTrait;
 /**
  * Trait to use into Doctrine loaders to get a simple implementation of LoaderInterface.
  *
- * @property $entityRepository
+ * @method getEntityRepository : EntityRepository
+ * @method setEntityRepository(EntityRepository)
+ *
  * @property $entityClass
  * @property $collectionClass
  * @property $filterResolver
@@ -25,7 +27,10 @@ trait DoctrineLoaderTrait
      */
     public function __construct(EntityRepository $entityRepository = null)
     {
-        $this->entityRepository = $entityRepository;
+        if ($entityRepository) {
+            @trigger_error('Repository constructor injection is deprecated for ORM implementation due to circular references with Doctrine events and will be removed in 2.0. Use setEntityRepository() instead.', E_USER_DEPRECATED);
+            $this->setEntityRepository($entityRepository);
+        }
     }
 
     /**
@@ -39,13 +44,6 @@ trait DoctrineLoaderTrait
             throw new \RuntimeException(sprintf(
                 '%s methods cannot be used while it has not been initialize through %s::configureMetadata().',
                 static::class,
-                static::class
-            ));
-        }
-        if (!$this->entityRepository) {
-            throw new \RuntimeException(sprintf(
-                'You must provide %s entity Doctrine repository throught %s::__construct() method to use this loader.',
-                $this->entityClass,
                 static::class
             ));
         }
@@ -114,7 +112,9 @@ trait DoctrineLoaderTrait
      */
     protected function createQuery($alias = 'entity')
     {
-        return $this->entityRepository->createQueryBuilder($alias);
+        return $this->getEntityRepository()
+            ->createQueryBuilder($alias)
+        ;
     }
 
     /**

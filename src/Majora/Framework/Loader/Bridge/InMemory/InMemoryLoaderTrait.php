@@ -126,7 +126,7 @@ trait InMemoryLoaderTrait
      */
     public function retrieveOne(array $filters = array())
     {
-        return $this->retrieveAll()->first();
+        return $this->retrieveAll($filters)->first();
     }
 
     /**

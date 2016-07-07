@@ -2,7 +2,6 @@
 
 namespace Majora\Framework\Loader\Bridge\Doctrine;
 
-use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Majora\Framework\Loader\LazyLoaderInterface;
 use Majora\Framework\Model\EntityCollection;
@@ -12,7 +11,7 @@ use Majora\Framework\Model\LazyPropertiesInterface;
  * Proxy class to dispatch Doctrine events to proper loaders only
  * (Doctrine notify all listeners at each loaded entities, so we have to proxy it here, and lazy load dependencies).
  */
-class DoctrineEventProxy implements EventSubscriber
+class DoctrineEventProxy
 {
     /**
      * @var EntityCollection
@@ -31,16 +30,6 @@ class DoctrineEventProxy implements EventSubscriber
     {
         $this->loaders = new EntityCollection();
         $this->unsupportedClasses = new EntityCollection();
-    }
-
-    /**
-     * @see EventSubscriber::getSubscribedEvents()
-     */
-    public function getSubscribedEvents()
-    {
-        return array(
-            DoctrineLoaderInterface::POST_LOAD_EVENT,
-        );
     }
 
     /**
