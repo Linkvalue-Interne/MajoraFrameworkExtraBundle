@@ -7,16 +7,17 @@ Helps to implements modern and clean architectures, like DDD, CQRS, Flux...
 Features included :
 
 * [Normalizer / Serializer](docs/normalizer.md)
-* Validation bridges
-* API clients
-* Base implementations for Api and Admin controllers
-* DDD / CQRS / Flux helpers traits and base classes (domains, actions, loaders, repositories)
-* Form extensions and transformers
-* Doctrine event optimizer
-* Agnostic route generation
-* Inflector
-* Current date provider
-* Log helpers
+* [Form extensions and transformers](docs/forms.md)
+* [Inflector](docs/inflector.md)
+* [Date mocker](docs/date_mocker.md)
+* [Agnostic route generation](docs/agnostic_router.md)
+* [API clients](docs/api_clients.md)
+* [Validation helpers](docs/validation.md)
+* [Log helpers](docs/logs.md)
+* [Admin and Api controllers helpers](docs/controllers.md)
+* Architecture helpers :
+  * Entity loading system
+  * Action system
 
 Features to come in v1.* :
 
@@ -26,8 +27,10 @@ Features to come in v1.* :
 
 Features to come in v2.0 :
 
+* Rework DDD helper classes naming to match original concepts
 * Middlewares into loaders query system
 * Broadcastables events with wildarding listening
+* Normalization / Serialization strategies from loader delegates
 * JSON component
 * DI tags for recurent configurations like logger / debug / validator / event dispatcher registering
 * Deprecations removal
@@ -44,7 +47,7 @@ This bundle is under the MIT license. See the complete license :
 
 ## Contributing
 
-This bundle is open to contributions, please follow this [documentation](https://github.com/LinkValue/MajoraFrameworkExtraBundle/blob/master/docs/contributing.md) and have fun !
+This bundle is open to contributions, please follow this [documentation](docs/contributing.md) and have fun !
 
 ## Credits
 
