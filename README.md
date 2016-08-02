@@ -6,17 +6,18 @@ Helps to implements modern and clean architectures, like DDD, CQRS, Flux...
 
 Features included :
 
-* [Normalizer / Serializer](https://github.com/LinkValue/MajoraFrameworkExtraBundle/blob/master/docs/normalizer.md)
-* Validation bridges
-* API clients
-* Base implementations for Api and Admin controllers
-* DDD / CQRS / Flux helpers traits and base classes (domains, actions, loaders, repositories)
-* Form extensions and transformers
-* Doctrine event optimizer
-* Agnostic route generation
-* Inflector
-* Current date provider
-* Log helpers
+* [Normalizer / Serializer](docs/normalizer.md)
+* [Form extensions and transformers](docs/forms.md)
+* [Inflector](docs/inflector.md)
+* [Date mocker](docs/date_mocker.md)
+* [Agnostic route generation](docs/agnostic_router.md)
+* [API clients](docs/api_clients.md)
+* [Validation helpers](docs/validation.md)
+* [Log helpers](docs/logs.md)
+* [Admin and Api controllers helpers](docs/controllers.md)
+* Architecture helpers :
+  * Entity loading system
+  * Action system
 
 Features to come in v1.* :
 
@@ -26,41 +27,18 @@ Features to come in v1.* :
 
 Features to come in v2.0 :
 
+* Refactor folders structure
+* Rework DDD helper classes naming to match original concepts
 * Middlewares into loaders query system
 * Broadcastables events with wildarding listening
+* Normalization / Serialization strategies from loader delegates
 * JSON component
 * DI tags for recurent configurations like logger / debug / validator / event dispatcher registering
 * Deprecations removal
 
 ## Installation
 
-Use [Composer](http://getcomposer.org) !
-You can pick a version at [Packagist](https://packagist.org/packages/majora/framework-extra-bundle), this bundle follows standard versioning : _dev-master_ for last updates, _~1.3_ for stable releases.
-
-```js
-// composer.json
-{
-    "require": {
-        // ...
-        "majora/framework-extra-bundle": "~1.3"
-    }
-}
-```
-
-Register the bundle into your Kernel :
-```php
-<?php
-// app/AppKernel.php
-
-public function registerBundles()
-{
-    $bundles = array(
-        // ...
-        new Majora\Bundle\FrameworkExtraBundle\MajoraFrameworkExtraBundle($this),
-    );
-}
-```
-**Note** : Pay attention to the reference into bundle instanciation, it's required for iterate over bundles for extra configuration discovering.
+See complete installation [here](docs/installation.md).
 
 ## License
 
@@ -70,7 +48,7 @@ This bundle is under the MIT license. See the complete license :
 
 ## Contributing
 
-This bundle is open to contributions, please follow this [documentation](https://github.com/LinkValue/MajoraFrameworkExtraBundle/blob/master/docs/contributing.md) and have fun !
+This bundle is open to contributions, please follow this [documentation](docs/contributing.md) and have fun !
 
 ## Credits
 

@@ -20,13 +20,13 @@ class SerializerCompilerPass implements CompilerPassInterface
         $serializer  = $container->getDefinition('majora.serializer');
         $handlersDef = $container->findTaggedServiceIds('majora.serialization_handler');
 
-        $handlerReferences = [];
         foreach ($handlersDef as $id => $attributes) {
             foreach ($attributes as $attribute) {
-                $handlerReferences[$attribute['format']] = new Reference($id);
+                $serializer->addMethodCall('registerFormatHandler', array(
+                    $attribute['format'],
+                    new Reference($id)
+                ));
             }
         }
-
-        $serializer->replaceArgument(0, $handlerReferences);
     }
 }
