@@ -27,6 +27,7 @@ Features to come in v1.* :
 
 Features to come in v2.0 :
 
+* Refactor folders structure
 * Rework DDD helper classes naming to match original concepts
 * Middlewares into loaders query system
 * Broadcastables events with wildarding listening
