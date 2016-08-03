@@ -9,7 +9,7 @@ Features included :
 * [Normalizer / Serializer](docs/normalizer.md)
 * [Form extensions](docs/forms.md)
 * [Inflector](docs/inflector.md)
-* [Date mocker](docs/date_mocker.md)
+* [Clock and date mocker](docs/date_mocker.md)
 * [Agnostic route generation](docs/agnostic_router.md)
 * [API clients](docs/api_clients.md)
 * [Validation helpers](docs/validation.md)
