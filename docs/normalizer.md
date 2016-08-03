@@ -1,16 +1,17 @@
 # Normalizer and serializer component
 
 These components are another approach for normalization (transform an object from/to standard classes or array) and serialization (object to / from strings).
+
 We wanted to get a simple serializer, without many librairy magical integrations like Doctrine, so be it !
 
 This component is based on a simple assertion : an object normalization should be designed into the object itself, programmatically, not with a pseudo language into comments, or within a fat configuration file. Just like `__toString()` method.
 
 Majora Normalizer use a light schema system to design normalization views, called "scopes". The same as Symfony Normalizer "groups", but defineds into object, into a proper function. The improvement come from the scope chaining feature :the scope is localized into the normalized entity, and is not propagated to entity dependencies: you can define another one into sub objects, for each of them.
-The goal is reducing object output weight, with less circular references, and more field exposition control.
+The goal is to reduce object output weight, with less circular references, and more field exposition control.
 
 ## Normalizer
 
-Every object which implements behavior "normalizable" has to implements corresponding interface : `Majora\Framework\Normalizer\Model\NormalizableInterface`.
+Every object that implements behavior "normalizable" has to implement the following interface : `Majora\Framework\Normalizer\Model\NormalizableInterface`.
 
 3 methods are required :
 
@@ -22,9 +23,9 @@ The normalizer component provides a Php trait to help implementation : `Majora\F
 
 ### Normalization
 
-Normalization begins with `getScope()` method, which is normalization configuration entry point.
+Normalization begins with the `getScope()` method, which is the normalization configuration entry point.
 
-Let's take a tour of all configuration options.
+Overview of all configuration options.
 
 #### Scope configuration reference
 ```php
@@ -71,11 +72,11 @@ class Entity implements NormalizableInterface
 }
 ```
 
-Note the important operator : "@". It materialize a scope, of a related object if used with a field name, or current object other scope.
+Note the important operator : "@". It materializes a scope of a related object if used with a field name, or current object other scope.
 
 You can easily customize all your object representations, function of many cases, to optimize data exposition, function of domain, security, or all your custom rules.
 
-About field naming : Majora Normalizer use Symfony PropertyAccess component to guess values from fields, so you can use direct property call or getter call, just the same as you do with PropertyAccess (into Form for example).
+About field naming : Majora Normalizer use the Symfony PropertyAccess component to guess values from fields, so you can use direct property call or getter call, just the same as you do with PropertyAccess (into Form for example).
 
 Particular cases :
 
@@ -88,7 +89,7 @@ Consider these object definitions :
 class Article implements Normalizable
 {
     protected $title = 'MajoraFrameworkExtraBundle documentation released';
-    protected $headline = 'After more than a year after release, MajoraFramework got a proper documentation !';
+    protected $headline = 'More than a year after release, MajoraFramework got a proper documentation !';
     protected $body = 'That\'s amazing, everyone wanted a documentation of this tools package, and now this is done. All the team worked very hard to reach this goal, and i would personally thanks my mom who learned me to always push myself off limits !';
     protected $category;
 
@@ -148,7 +149,7 @@ var_export($article->normalize('simple'));
 // will output
 array(
    'title' => 'MajoraFrameworkExtraBundle documentation released',
-   'headline' => 'After more than a year after release, MajoraFramework got a proper documentation !',
+   'headline' => 'More than a year after release, MajoraFramework got a proper documentation !',
    'body' => 'That\'s amazing, everyone wanted a documentation of this tools package, and now this is done. All the team worked very hard to reach this goal, and i would personally thanks my mom who learned me to always push myself off limits !',
    'category' => 'News'
 );
@@ -158,7 +159,7 @@ var_export($article->normalize('full'));
 // will output
 array(
    'title' => 'MajoraFrameworkExtraBundle documentation released',
-   'headline' => 'After more than a year after release, MajoraFramework got a proper documentation !',
+   'headline' => 'More than a year after release, MajoraFramework got a proper documentation !',
    'body' => 'That\'s amazing, everyone wanted a documentation of this tools package, and now this is done. All the team worked very hard to reach this goal, and i would personally thanks my mom who learned me to always push myself off limits !',
    'category' => array(
         'name' => 'News',
@@ -341,7 +342,7 @@ Majora Serializer is exposed under id "majora.serializer" into DIC, and is alias
 
 ## Disclaimer and advises
 
-This component has been designed defore Symfony Serializer component came to maturity. This component doesn't claim to replace it, he's here to propose another way to normalization.
+This component has been designed before Symfony Serializer component came to maturity. This component doesn't claim to replace it, he's here to propose another way to normalization.
 
 For advanced cases, like many subobjects types, into large collections, with Doctrine lazy calls etc... normalizer can be slow. By the way, why normalize all this stuff ? But that's not the topic. For those cases, we advise you to implement your custom logic, into `normalize()` method.
 The reflection used by denormalization system is slow as well, when denormalizing a large set of data, with deep dependencies, so don't fear to implement manually some property access right into the `denormalize()` method.
