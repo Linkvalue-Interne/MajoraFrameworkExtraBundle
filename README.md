@@ -7,7 +7,7 @@ Helps to implements modern and clean architectures, like DDD, CQRS, Flux...
 Features included :
 
 * [Normalizer / Serializer](docs/normalizer.md)
-* [Form extensions and transformers](docs/forms.md)
+* [Form extensions](docs/forms.md)
 * [Inflector](docs/inflector.md)
 * [Date mocker](docs/date_mocker.md)
 * [Agnostic route generation](docs/agnostic_router.md)
@@ -22,8 +22,9 @@ Features included :
 Features to come in v1.* :
 
 * More documentation
-* Cookbook
 * More tests
+* Minor refactorization of some components
+* Cookbook
 
 Features to come in v2.0 :
 
@@ -38,7 +39,11 @@ Features to come in v2.0 :
 
 ## Installation
 
-See complete installation [here](docs/installation.md).
+See complete installation [documentation](docs/installation.md).
+
+## Configuration
+
+See complete [configuration reference](docs/configuration_reference.md).
 
 ## License
 

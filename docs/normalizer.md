@@ -9,6 +9,12 @@ This component is based on a simple assertion : an object normalization should b
 Majora Normalizer use a light schema system to design normalization views, called "scopes". The same as Symfony Normalizer "groups", but defineds into object, into a proper function. The improvement come from the scope chaining feature :the scope is localized into the normalized entity, and is not propagated to entity dependencies: you can define another one into sub objects, for each of them.
 The goal is to reduce object output weight, with less circular references, and more field exposition control.
 
+## Installation
+
+Install and enable MajoraFrameworkExtraBundle (see [install documentation](installation.md)).
+
+Normalizer and serializer are both activated with the bundle.
+
 ## Normalizer
 
 Every object that implements behavior "normalizable" has to implement the following interface : `Majora\Framework\Normalizer\Model\NormalizableInterface`.
