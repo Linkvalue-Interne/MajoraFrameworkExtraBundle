@@ -5,13 +5,22 @@ When following standard quality, DateTime object should be injected into service
 
 ## Configuration
 
+```yml
+# app/config/config.yml
+
+majora_framework_extra:
+    # ...
+    clock:
+        enabled: true            # default false, enable / disable component
+        mock_param: "_date_mock" # by default, mock parameter name into request and cli options
+```
 
 ## Date injection
 
-Majora Clock component adds a service under key "majora.clock", which provide a `Majora\Framework\Date\Clock` object.
-One usefull method : `now()`, returning current date, formatted if first parameter is used.
+Majora Clock component adds a service under key "majora.clock", which provides a `Majora\Framework\Date\Clock` object.
+One useful method : `now()`, returning current date, formatted if first parameter is used.
 
-You can use this class into your "time-reactive" services, to increase testability, and to no be coupled to date.
+You can use this class into your "time-reactive" services, to increase testability, and to be decoupled to date.
 
 Example :
 ```php
@@ -34,13 +43,13 @@ class DelayCalculator
 }
 ```
 
-It resolve the 1 sec problem, when time change between many classes function of time which aren't called at same second : time is created at service construction and won't change.
+It resolves the 1 sec problem, when time changes between many classes function of time which aren't called at same second : time is created at service construction and won't change.
 
 ## Date mocking system
 
 Use a provider for current date allows mocking into unit tests, but in current testing ?
 
-Clock component implements a magic parameter for request and a magic option for console commands to mock date directly from execution, to test à specified date.
+Clock component implements a magic parameter for request and a magic option for console commands to mock date directly from execution, to test a specified date.
 
 Examples :
 ```sh

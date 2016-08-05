@@ -15,14 +15,14 @@ Supported transformations are :
  - uppercase : `$inflector->uppercase('thisString');` => `'THIS_STRING'`
  - slugify : `$inflector->slugify('baguette Croissants pain d\'épice');` => `'baguette-croissants-pain-d-epice'`
 
-This algorythms are based on Symfony Container [helper methods](https://github.com/symfony/dependency-injection/blob/master/Container.php#L342).
+This algorithms are based on Symfony Container [helper methods](https://github.com/symfony/dependency-injection/blob/master/Container.php#L342).
 
-Every format can be called dynamically throught `normalize()` method :
+Every format can be dynamically called through `normalize()` method :
 ```
 $inflector('this_string', 'snakelize');
 ```
 `normalize()` works with arrays too, and will iterate to format all keys.
-Usefull for request data form submission, for example :
+Useful for request data form submission, for example :
 ```php
     // ....
     $form->submit($inflector->normalize(

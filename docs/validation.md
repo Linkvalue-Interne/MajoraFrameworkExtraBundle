@@ -1,18 +1,18 @@
 # Validation helpers
 
 Validation system is often ignored with Symfony, no time for it, "not required for v0", esthetic feature...
-But users make mistakes. All the time. Errors have to be consider as an application use case.
+But users make mistakes. All the time. Errors have to be considered as an application use case.
 
-These helpers dont add killer features to framework, just developper experience improvements.
+These helpers don't add killer features to framework, just developer experience improvements.
 
 ## Yaml file parsing
 
-Maybe you red it before, but for us, annotations are wrong. Link a class and her configurations breaks everything we believe in, when we use dependency injection elsewhere.
+Maybe you read it before, but for us, annotations are bad. Link a class and its configurations breaks everything we believe in, when we use dependency injection elsewhere.
 
 So we use Yaml for our config files.
 
 By default, Symfony loads one validation Yaml file per bundle, here : `path/To/Bundle/Resources/config/validation.yml`.
-So you have to put all your entity validation mapping into the same file. It can be ugly when you don't use one bundle per entity architecture.
+So you have to put all your entity validation mappings into the same file. It can be ugly when you don't use one bundle per entity architecture.
 
 To solve this minor trouble, MajoraFrameworkExtraBundles adds another path for your validation mapping files : `path/To/Bundle/Resources/config/validation/*.yml`. All your `.yml` files within this folder will be add to Validation component.
 
@@ -21,9 +21,9 @@ To solve this minor trouble, MajoraFrameworkExtraBundles adds another path for y
 Like exposed before, we assume error management have to be an application feature.
 Validation should also be a part of your domain implementation, not only into forms.
 
-On the other hand, this is not better to `return false;` or `return $errorCode;` in your domain code. Exceptions are design for this case, even if Php, for many developpers, they are the same as Fatal Errors.
+On the other hand, this is not better to `return false;` or `return $errorCode;` in your domain code. Exceptions are designed for this case, even if Php, for many developers, they are the same as Fatal Errors.
 
-We propose to use a specific exception which can expose why system refused input data : `Majora\Framework\Validation\ValidationException`, with construct prototype :
+We suggest to use a specific exception which can expose why system refused input data : `Majora\Framework\Validation\ValidationException`, with construct prototype :
 
  - entity : object which triggered the error
  - report : error list, handles :
@@ -38,7 +38,7 @@ You can get all this stuff using accessors on the exception.
 
 ## Exception listener
 
-Have an exception for validation is good, but handle it in every controller is painfull.
+Having an exception for validation is good, but handling it in every controller is painfull.
 A first response of this problem is implementing an exception listener, which can format your exception to be readable for humans.
 
 For enable it :

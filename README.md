@@ -13,16 +13,21 @@ Features included :
 * [Agnostic route generation](docs/agnostic_router.md)
 * [API clients](docs/api_clients.md)
 * [Validation helpers](docs/validation.md)
-* [Log helpers](docs/logs.md)
-* [Admin and Api controllers helpers](docs/controllers.md)
+* [DI helpers](docs/dependency_injection.md)
 * Architecture helpers :
   * Entity loading system
   * Action system
+
+Features deprecated :
+
+* All controller helpers, they only are proxies for core methods, and sometimes they obfuscate underlaying APIs
+* LoggableTrait, this system will be reworked with a full featured log API
 
 Features to come in v1.* :
 
 * More documentation
 * More tests
+* Adds toggle configurations for all components which override / extends an existing one
 * Minor refactorization of some components
 * Cookbook
 

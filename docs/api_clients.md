@@ -1,9 +1,9 @@
-# Api clients
+# API clients
 
 Consuming webservices is a recurrent job on server-side development these days.
-Et over and over again, we implement our client, using Guzzle (or other library), everytime better, but everytime different.
+And over and over again, we implement our client, using Guzzle (or other library), everytime better, but everytime different.
 
-Api client component helps implementation of your http webservices calls : it give you some classes to exploit Guzzle, Symfony Routing and Majora Agnostic router, in a query builder Api style.
+API client component helps implementation of your calls to http webservices : it give you some classes to exploit Guzzle, Symfony Routing and Majora Agnostic router, in a query builder API style.
 
 ## Implementation
 
@@ -17,7 +17,7 @@ Every alias will be the name of the future request.
 
 ## Example
 
-For example, we want to read and write tweets from Twitter Api (non-contractual endpoint).
+For example, we want to read and write tweets from Twitter API (non-contractual endpoint).
 
 First, we have to create read and write tweets routes :
 ```yml
@@ -36,7 +36,7 @@ twitter_api_create_tweet:
     path: /
 ```
 
-Then we create instances of component classes, throught DIC :
+Then we create instances of component classes, through DIC :
 ```xml
 <!-- MajoraTwitterBundle/Resources/config/services.xml -->
 <container>
@@ -72,7 +72,7 @@ $response = $this->container->get('majora.twitter.api_client')->send(
 );
 ```
 
-__**Note**__ : `"majora.http.abstract_request_factory"` define a dependency on [Majora Agnostic Router](agnostic_router.md) to always strip front controller file from url generation.
+__**Note**__ : `"majora.http.abstract_request_factory"` defines a dependency on [Majora Agnostic Router](agnostic_router.md) to always strip front controller file from url generation.
 
 ## Cookbook
 
@@ -185,7 +185,7 @@ class TwitterApiClient
 
 ## Roadmap
 
-Obviously, developper experience of this component isn't the best ever.
+Obviously, developer experience of this component is not the best ever.
 Our bigger evolution plans are :
 
  - v2.* :
