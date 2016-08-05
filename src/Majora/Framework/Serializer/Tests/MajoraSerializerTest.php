@@ -10,6 +10,8 @@ use Prophecy\Argument;
  * Unit test class for MajoraSerializer.php.
  *
  * @see Majora\Framework\Serializer\MajoraSerializer
+ *
+ * @group legacy
  */
 class MajoraSerializerTest
     extends PHPUnit_Framework_TestCase

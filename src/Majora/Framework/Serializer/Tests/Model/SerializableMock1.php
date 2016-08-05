@@ -86,7 +86,7 @@ class SerializableMock1 implements SerializableInterface
         return $this->mock3;
     }
 
-    public function setMock3(\StdClass $mock3)
+    public function setMock3(SimpleClassMock $mock3)
     {
         $this->mock3 = $mock3;
 
@@ -129,4 +129,9 @@ class SerializableMock1 implements SerializableInterface
             'extra' => array('@full', 'mock2'),
         );
     }
+}
+
+class SimpleClassMock
+{
+    public $ganon;
 }

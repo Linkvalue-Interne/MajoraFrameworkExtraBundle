@@ -3,13 +3,15 @@
 namespace Majora\Framework\Loader\Bridge\Doctrine;
 
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityRepository;
 use Majora\Framework\Loader\LoaderTrait;
-use Majora\Framework\Repository\Doctrine\BaseDoctrineRepository;
 
 /**
  * Trait to use into Doctrine loaders to get a simple implementation of LoaderInterface.
  *
- * @property $entityRepository
+ * @method getEntityRepository : EntityRepository
+ * @method setEntityRepository(EntityRepository)
+ *
  * @property $entityClass
  * @property $collectionClass
  * @property $filterResolver
@@ -21,11 +23,30 @@ trait DoctrineLoaderTrait
     /**
      * Construct.
      *
-     * @param BaseDoctrineRepository $entityRepository (optionnal)
+     * @param EntityRepository $entityRepository (optionnal)
      */
-    public function __construct(BaseDoctrineRepository $entityRepository = null)
+    public function __construct(EntityRepository $entityRepository = null)
     {
-        $this->entityRepository = $entityRepository;
+        if ($entityRepository) {
+            @trigger_error('Repository constructor injection is deprecated for ORM implementation due to circular references with Doctrine events and will be removed in 2.0. Use setEntityRepository() instead.', E_USER_DEPRECATED);
+            $this->setEntityRepository($entityRepository);
+        }
+    }
+
+    /**
+     * Checks if loader is properly configured.
+     *
+     * @throws \RuntimeException if not configured
+     */
+    private function assertIsConfigured()
+    {
+        if (!$this->entityClass || !$this->collectionClass || !$this->filterResolver) {
+            throw new \RuntimeException(sprintf(
+                '%s methods cannot be used while it has not been initialize through %s::configureMetadata().',
+                static::class,
+                static::class
+            ));
+        }
     }
 
     /**
@@ -45,7 +66,7 @@ trait DoctrineLoaderTrait
     /**
      * Convert given array or Collection result set to managed entity collection class.
      *
-     * @param array|Collection $result [description]
+     * @param array|Collection $result
      *
      * @return EntityCollection
      */
@@ -91,7 +112,9 @@ trait DoctrineLoaderTrait
      */
     protected function createQuery($alias = 'entity')
     {
-        return $this->entityRepository->createQueryBuilder($alias);
+        return $this->getEntityRepository()
+            ->createQueryBuilder($alias)
+        ;
     }
 
     /**
@@ -148,6 +171,7 @@ trait DoctrineLoaderTrait
         $this->assertIsConfigured();
 
         return $this->onLoad($this->createFilteredQuery($filters)
+            ->setMaxResults(1)
             ->getOneOrNullResult()
         );
     }

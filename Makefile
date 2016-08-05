@@ -40,12 +40,15 @@ install-vendors: install-composer
 #
 tests: test-phpunit-coverage
 
-test-phpunit:
-	./vendor/phpunit/phpunit/phpunit src -c phpunit.xml.dist
+bin/phpunit:
+	cd bin && ln -f -s ../vendor/phpunit/phpunit/phpunit phpunit
 
-test-phpunit-coverage:
+test-phpunit: bin/phpunit
+	./bin/phpunit src -c phpunit.xml.dist
+
+test-phpunit-coverage: bin/phpunit
 	rm -rf tests-coverage/* || /bin/true
-	./vendor/phpunit/phpunit/phpunit src -c phpunit.xml.dist --coverage-html tests-coverage
+	./bin/phpunit src -c phpunit.xml.dist --coverage-html tests-coverage
 
 #
 # CI

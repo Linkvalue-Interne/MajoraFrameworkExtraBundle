@@ -32,6 +32,17 @@ trait InMemoryLoaderTrait
      */
     public function __construct($collectionClass, MajoraNormalizer $normalizer)
     {
+        $this->setUp($collectionClass, $normalizer);
+    }
+
+    /**
+     * Substitue to __construct() in order to easier call from parent class.
+     *
+     * @param string           $collectionClass
+     * @param MajoraNormalizer $normalizer
+     */
+    private function setUp($collectionClass, MajoraNormalizer $normalizer)
+    {
         if (empty($collectionClass) || !class_exists($collectionClass)) {
             throw new \InvalidArgumentException(sprintf(
                 'You must provide a valid EntityCollection class name, "%s" given.',
@@ -50,31 +61,14 @@ trait InMemoryLoaderTrait
     }
 
     /**
-     * Asserts data source provided.
-     *
-     * @throws \RuntimeException If datastore is initialized
-     */
-    private function assertDatastoreIsReady()
-    {
-        if (!$this->entityCollection instanceof EntityCollection) {
-            throw new \RuntimeException(sprintf(
-                '%s datastore is not ready, setUp() method has to be called.',
-                get_class($this)
-            ));
-        }
-    }
-
-    /**
      * Register given set of data into datastore.
      *
      * @param array $entityData
      */
     public function registerData(array $entityData)
     {
-        $this->assertDatastoreIsReady();
-
         foreach ($entityData as $data) {
-            $this->registerEntity($this->normalizer->normalize(
+            $this->registerEntity($this->normalizer->denormalize(
                 $data,
                 $this->entityCollection->getEntityClass()
             ));
@@ -90,9 +84,7 @@ trait InMemoryLoaderTrait
      */
     public function registerEntity(CollectionableInterface $entity)
     {
-        $this->assertDatastoreIsReady();
-
-        if (!is_subclass_of($entity, $this->entityCollection->getEntityClass())) {
+        if (!is_a($entity, $this->entityCollection->getEntityClass())) {
             throw new \InvalidArgumentException(sprintf('Only "%s" object allowed into "%s" store, "%s" given.',
                 $this->entityCollection->getEntityClass(),
                 get_class($this),
@@ -113,8 +105,6 @@ trait InMemoryLoaderTrait
      */
     public function retrieveAll(array $filters = array(), $limit = null, $offset = null)
     {
-        $this->assertDatastoreIsReady();
-
         $result = clone $this->entityCollection;
         if (!empty($filters)) {
             $result = $result->search($filters);
@@ -136,7 +126,7 @@ trait InMemoryLoaderTrait
      */
     public function retrieveOne(array $filters = array())
     {
-        return $this->retrieveAll()->first();
+        return $this->retrieveAll($filters)->first();
     }
 
     /**
@@ -146,8 +136,6 @@ trait InMemoryLoaderTrait
      */
     public function retrieve($id)
     {
-        $this->assertDatastoreIsReady();
-
         return $this->entityCollection->get($id);
     }
 }

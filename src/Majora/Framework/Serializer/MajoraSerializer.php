@@ -7,11 +7,13 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Base class for fixtures repository.
+ *
+ * @group legacy
  */
 class MajoraSerializer implements SerializerInterface
 {
     /**
-     * FormatHandlerInterface[]
+     * FormatHandlerInterface[].
      */
     protected $handlers;
 
@@ -22,14 +24,25 @@ class MajoraSerializer implements SerializerInterface
      */
     public function __construct(array $handlers)
     {
-        $this->handlers = array_map(
-            function(FormatHandlerInterface $handler) { return $handler; },
-            $handlers
-        );
+        $this->handlers = array();
+        foreach ($handlers as $alias => $handler) {
+            $this->registerFormatHandler($alias, $handler);
+        }
     }
 
     /**
-     * {@inheritDoc}
+     * Register a format handler under given alias
+     *
+     * @param string                 $alias
+     * @param FormatHandlerInterface $handler
+     */
+    public function registerFormatHandler($alias, FormatHandlerInterface $handler)
+    {
+        $this->handlers[$alias] = $handler;
+    }
+
+    /**
+     * {@inheritdoc}
      *
      * @see SerializerInterface::serialize()
      */
@@ -49,7 +62,7 @@ class MajoraSerializer implements SerializerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @see SerializerInterface::deserialize()
      */
