@@ -1,7 +1,7 @@
 # API clients
 
 Consuming webservices is a recurrent job on server-side development these days.
-And over and over again, we implement our client, using Guzzle (or other library), everytime better, but everytime different.
+And over and over again, we implement our client, using Guzzle (or other library), everytime better, but everytime from a different way.
 
 API client component helps implementation of your calls to http webservices : it give you some classes to exploit Guzzle, Symfony Routing and Majora Agnostic router, in a query builder API style.
 
@@ -61,7 +61,7 @@ Then we create instances of component classes, through DIC :
 </container>
 ```
 
-Now, we can get an user tweet list from this call :
+Now, we can get the user tweet list with the call :
 ```php
 $response = $this->container->get('majora.twitter.api_client')->send(
     'read',                         // request name, route key into factory
@@ -72,13 +72,13 @@ $response = $this->container->get('majora.twitter.api_client')->send(
 );
 ```
 
-__**Note**__ : `"majora.http.abstract_request_factory"` defines a dependency on [Majora Agnostic Router](agnostic_router.md) to always strip front controller file from url generation.
+__**Note**__ : `"majora.http.abstract_request_factory"` defines a dependency on [Majora Agnostic Router](agnostic_router.md) to allow you using Symfony's routing framework for composing any external urls.
 
 ## Cookbook
 
 Example above is NOT good enough. With all Symfony and MajoraFramework, we can do better.
 
-### Introduce proper methods for calling clients
+### Introduce custom methods for calling clients
 
 ```php
 // MajoraTwitterBundle/Twitter/TwitterApiClient.php
@@ -185,7 +185,7 @@ class TwitterApiClient
 
 ## Roadmap
 
-Obviously, developer experience of this component is not the best ever.
+For a better developer experience, some features of this components will be rewritted in the following major version.
 Our bigger evolution plans are :
 
  - v2.* :

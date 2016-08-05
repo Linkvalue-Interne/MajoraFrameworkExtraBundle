@@ -1,7 +1,7 @@
 # Clock
 
 Working with date is boring : timezone, testing, ...
-When following standard quality, DateTime object should be injected into services, but it seems to be overkill. Except if this is already implemented.
+When following standard quality, DateTime object should be injected into services, but it seems a bit overkill. Except if it is already implemented.
 
 ## Configuration
 
@@ -17,8 +17,8 @@ majora_framework_extra:
 
 ## Date injection
 
-Majora Clock component adds a service under key "majora.clock", which provides a `Majora\Framework\Date\Clock` object.
-One useful method : `now()`, returning current date, formatted if first parameter is used.
+Majora Clock component is referenced into DIC under the key "majora.clock", which provides a `Majora\Framework\Date\Clock` object.
+Only one public method : `now()`, which returns the current date holded by a DateTime object or a date string if you pass a `$format` parameter.
 
 You can use this class into your "time-reactive" services, to increase testability, and to be decoupled to date.
 

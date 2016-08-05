@@ -1,6 +1,6 @@
 # Inflector
 
-When following coding standards, many times, changing string cases is awefull : camelcase, snake-case... At the moment, Symfony doesn't have a proper component which can handle string format conversion, so there is one !
+When following coding standards, many times, changing string cases is painfull : camelcase, snake-case... At the moment, Symfony doesn't have a proper component which can handle string format conversion, so here is one !
 
 It handles conversion from various format to all others.
 

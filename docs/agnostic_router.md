@@ -1,6 +1,6 @@
 # Agnostic router
 
-Sometimes, you need to call some services in the cloud, Google APIs, Facebook... Potentially all APIs in the world.
+You need sometimes to call some services in the cloud, Google APIs, Facebook... Potentially all APIs in the world.
 Most of the time, these calls are HTTP calls, and require at least an url generation.
 How do we generate this url ? `sprintf()`? `http_build_query()`? `implode()`?
 
@@ -27,28 +27,19 @@ majora_framework_extra:
 #### Example
 ```yml
 # app/config/routing.yml
-majora_article_edition:          # local route
-    path: /articles/{id}/edit
-    defaults:
-        _controller: "MajoraAppBundle:Article:edit"
-    methods: [GET, POST]
-    requirements:
-        id: \d+
-    host: %majora_admin_host%
-
 twitter_tweet_publication:       # external route
     path: /tweets
     host: api.twitter.com
     scheme: https
 ```
 ```php
-    $url = $this->container->get('router')->generate('majora_article_creation', array(
-        'id' => 42,
+    $url = $this->container->get('router')->generate('twitter_tweet_publication', array(
+        'api_key' => $this->container->getParameter('twitter_api_key')
         'query_key' => 'query_value'
     ));
 
     // will output
-    "//majora.dev/app_dev.php/articles/42/edit?query_key=query_value";
+    ""https://api.twitter.com/app_dev.php/tweets?api_key=123456azerty";
 
     $url = $this->container->get('majora.agnostic_url_generator')->generate('twitter_tweet_publication', array(
         'api_key' => $this->container->getParameter('twitter_api_key')

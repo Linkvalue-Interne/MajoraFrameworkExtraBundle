@@ -1,8 +1,8 @@
 # Normalizer and serializer component
 
-These components are another approach for normalization (transform an object from/to standard classes or array) and serialization (object to / from strings).
+These components are another approach for normalization (transform an object from standard classes or array) and serialization (object to strings).
 
-We wanted to get a simple serializer, without many librairy magical integrations like Doctrine, so be it !
+We wanted to get a simple serializer, without magical many librairy integrations like Doctrine, so be it !
 
 This component is based on a simple assertion : an object normalization should be designed into the object itself, programmatically, not with a pseudo language into comments, or within a fat configuration file. Just like `__toString()` method.
 
@@ -17,7 +17,7 @@ Normalizer and serializer are both activated with the bundle.
 
 ## Normalizer
 
-Every object that implements behavior "normalizable" has to implement the following interface : `Majora\Framework\Normalizer\Model\NormalizableInterface`.
+Every object that implements "normalizable" behavior has to implement the following interface : `Majora\Framework\Normalizer\Model\NormalizableInterface`.
 
 3 methods are required :
 
@@ -96,7 +96,7 @@ class Article implements Normalizable
 {
     protected $title = 'MajoraFrameworkExtraBundle documentation released';
     protected $headline = 'More than a year after release, MajoraFramework got a proper documentation !';
-    protected $body = 'That\'s amazing, everyone wanted a documentation of this tools package, and now this is done. All the team worked very hard to reach this goal, and i would personally thanks my mom who learned me to always push myself off limits !';
+    protected $body = 'That\'s amazing, everyone wanted a documentation of this tools package, and now this is done. All the team worked very hard to reach this goal, and I would personally thanks my mom who learned me to always push ambitions to the limit !';
     protected $category;
 
     public function __construct()
@@ -156,7 +156,7 @@ var_export($article->normalize('simple'));
 array(
    'title' => 'MajoraFrameworkExtraBundle documentation released',
    'headline' => 'More than a year after release, MajoraFramework got a proper documentation !',
-   'body' => 'That\'s amazing, everyone wanted a documentation of this tools package, and now this is done. All the team worked very hard to reach this goal, and i would personally thanks my mom who learned me to always push myself off limits !',
+   'body' => 'That\'s amazing, everyone wanted a documentation of this tools package, and now this is done. All the team worked very hard to reach this goal, and i would personally thanks my mom who learned me to always push ambitions to the limit!',
    'category' => 'News'
 );
 
@@ -166,7 +166,7 @@ var_export($article->normalize('full'));
 array(
    'title' => 'MajoraFrameworkExtraBundle documentation released',
    'headline' => 'More than a year after release, MajoraFramework got a proper documentation !',
-   'body' => 'That\'s amazing, everyone wanted a documentation of this tools package, and now this is done. All the team worked very hard to reach this goal, and i would personally thanks my mom who learned me to always push myself off limits !',
+   'body' => 'That\'s amazing, everyone wanted a documentation of this tools package, and now this is done. All the team worked very hard to reach this goal, and i would personally thanks my mom who learned me to always push ambitions to the limit !',
    'category' => array(
         'name' => 'News',
         'website' => 'www.github.com/LinkValue/MajoraFrameworkExtraBundle'
@@ -292,7 +292,7 @@ var_export(
 "{
    "title": "MajoraFrameworkExtraBundle documentation released",
    "headline": "After more than a year after release, MajoraFramework got a proper documentation !",
-   "body": "That\"s amazing, everyone wanted a documentation of this tools package, and now this is done. All the team worked very hard to reach this goal, and i would personally thanks my mom who learned me to always push myself off limits !",
+   "body": "That\"s amazing, everyone wanted a documentation of this tools package, and now this is done. All the team worked very hard to reach this goal, and i would personally thanks my mom who learned me to always push ambitions to the limit!",
    "category": {
         "name": "News",
         "website": "www.github.com/LinkValue/MajoraFrameworkExtraBundle"
@@ -310,7 +310,7 @@ var_dump(
         "{
            "title": "MajoraFrameworkExtraBundle documentation released",
            "headline": "After more than a year after release, MajoraFramework got a proper documentation !",
-           "body": "That\"s amazing, everyone wanted a documentation of this tools package, and now this is done. All the team worked very hard to reach this goal, and i would personally thanks my mom who learned me to always push myself off limits !",
+           "body": "That\"s amazing, everyone wanted a documentation of this tools package, and now this is done. All the team worked very hard to reach this goal, and i would personally thanks my mom who learned me to always push ambitions to the limit!",
            "category": {
                 "name": "News",
                 "website": "www.github.com/LinkValue/MajoraFrameworkExtraBundle"
