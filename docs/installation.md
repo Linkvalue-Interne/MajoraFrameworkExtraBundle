@@ -26,6 +26,6 @@ public function registerBundles()
     );
 }
 ```
-**Note** : Pay attention to the reference into bundle instanciation, it's required for iterate over bundles for extra configuration discovering.
+**Note** : Pay attention to the reference into bundle instanciation, it's required to iterate over bundles for extra configuration discovering.
 
 ##### Continue to [configurations reference](configuration_reference.md).

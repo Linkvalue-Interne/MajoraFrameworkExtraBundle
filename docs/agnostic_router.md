@@ -1,10 +1,10 @@
 # Agnostic router
 
-Sometimes, you need to call some services in the cloud, Google apis, Facebook... Potentially all Apis in the world.
+Sometimes, you need to call some services in the cloud, Google APIs, Facebook... Potentially all APIs in the world.
 Most of the time, these calls are HTTP calls, and require at least an url generation.
 How do we generate this url ? `sprintf()`? `http_build_query()`? `implode()`?
 
-No, there's a better way.
+No, there is a better way.
 
 Symfony has a proper Router component, which can do this job, but a little problem remains : the `app_dev.php` into your dev environment, added by FrameworkBundle router bridge.
 

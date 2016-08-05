@@ -6,7 +6,7 @@ We wanted to get a simple serializer, without many librairy magical integrations
 
 This component is based on a simple assertion : an object normalization should be designed into the object itself, programmatically, not with a pseudo language into comments, or within a fat configuration file. Just like `__toString()` method.
 
-Majora Normalizer use a light schema system to design normalization views, called "scopes". The same as Symfony Normalizer "groups", but defineds into object, into a proper function. The improvement come from the scope chaining feature :the scope is localized into the normalized entity, and is not propagated to entity dependencies: you can define another one into sub objects, for each of them.
+Majora Normalizer use a light schema system to design normalization views, called "scopes". The same as Symfony Normalizer "groups", but defineds into object, into a proper function. The improvement comes from the scope chaining feature :the scope is localized into the normalized entity, and is not propagated to entity dependencies: you can define another one into sub objects, for each of them.
 The goal is to reduce object output weight, with less circular references, and more field exposition control.
 
 ## Installation
@@ -22,8 +22,8 @@ Every object that implements behavior "normalizable" has to implement the follow
 3 methods are required :
 
  - `static getScopes() : array` : returns object scopes as a map `name => fields`, see below
- - `normalize($scope) : array` : trigger object normalization for given scope and returns an array with data
- - `denormalize(array $data)` : hydrate this object with given data, if mappable
+ - `normalize($scope) : array` : triggers object normalization for given scope and returns an array with data
+ - `denormalize(array $data)` : hydrates this object with given data, if mappable
 
 The normalizer component provides a Php trait to help implementation : `Majora\Framework\Normalizer\Model\NormalizableTrait`, but you can implement your own strategy for one or more entities.
 
@@ -179,7 +179,7 @@ array(
 Object denormalization follow the same logic : an interface behavior, implemented into a Php trait.
 
 On the other hand, denormalization doesn't use `getScope()` method, but mutators type hinting.
-Why implementing a denormalization by this way ? Because an object member which is not accessible throught a mutator shouldn't be accessible throught denormalization.
+Why implementing a denormalization by this way ? Because an object member which is not accessible through a mutator should not be accessible through denormalization.
 
 With the same object structure :
 ```php
@@ -242,7 +242,7 @@ $article = MajoraNormalizer::createNormalizer()->denormalize(
 );
 ```
 
-This is the proper way to denormalize entity using constructor parameters (Value objects / DDD), because Majora Normalizer detects construct parameters as well.
+Because Majora Normalizer detects construct parameters as well, this is the proper way to denormalize entity using constructor parameters (Value objects / DDD),
 
 ### Service exposition
 
@@ -277,7 +277,7 @@ Majora Serializer is an adapter for Normalizer : instead of returning raw data f
 
 ### Serialization
 
-Serializer follows the same prototypes as normalizer, it use the [same scoping system](#scope-configuration-reference) as well.
+Serializer follows the same prototypes as normalizer, it uses the [same scoping system](#scope-configuration-reference) as well.
 
 ```php
 var_export(
@@ -330,9 +330,9 @@ var_dump(
 
 ### Format handlers
 
-Majora Serializer implements himself some formats (json and yaml), and is open for extensions, throught FormatHandler strategy system.
+Majora Serializer implements himself some formats (json and yaml), and is open for extensions, through FormatHandler strategy system.
 
-To create your own one (csv maybe ?), implement `Majora\Framework\Serializer\Handler\FormatHandlerInterface` into your custom class, and reference it as a service with tag :
+To create one of your own (csv maybe ?), implement `Majora\Framework\Serializer\Handler\FormatHandlerInterface` into your custom class, and reference it as a service with tag :
 ```xml
 <tag name="majora.serialization_handler" format="csv" />
 ```
@@ -350,8 +350,8 @@ Majora Serializer is exposed under id "majora.serializer" into DIC, and is alias
 
 This component has been designed before Symfony Serializer component came to maturity. This component doesn't claim to replace it, he's here to propose another way to normalization.
 
-For advanced cases, like many subobjects types, into large collections, with Doctrine lazy calls etc... normalizer can be slow. By the way, why normalize all this stuff ? But that's not the topic. For those cases, we advise you to implement your custom logic, into `normalize()` method.
-The reflection used by denormalization system is slow as well, when denormalizing a large set of data, with deep dependencies, so don't fear to implement manually some property access right into the `denormalize()` method.
+For advanced cases, like many subobject types, into large collections, with Doctrine lazy calls etc. normalizer can be slow. By the way, why normalize all this stuff ? But that's not the topic. For those cases, we advise you to implement your custom logic, into `normalize()` method.
+The reflection used by denormalization system is slow as well, when denormalizing a large set of data, with deep dependencies, so don't fear to manually implement some property access right into the `denormalize()` method.
 
 ## Roadmap
  - v1.3
