@@ -1,6 +1,6 @@
 # Forms
 
-The Symfony Form component has a huge extension system, and allows us to customize it with extra behaviors.
+The Symfony Form component has a powerfull extension system, and allows us to customize it with extra behaviors.
 
 All this stuff is non-intrusive in your project and have to be activated through bundle config, and a form option.
 
@@ -8,7 +8,7 @@ All this stuff is non-intrusive in your project and have to be activated through
 
 By default, Form component can handle HttpKernel request, but only if data are sent in `GET`, or in `POST` (`PUT` / `PATCH`) with `application/x-www-form-urlencoded` or `multipart/form-data` encoded data.
 
-Not Json. With current microservices / REST / cloud mania. Mmmmkay !
+No Json. With current microservices / REST / cloud mania. Mmmmkay !
 
 Json extension allows Form component to parse directly json into request content, and uses it like row data.
 
