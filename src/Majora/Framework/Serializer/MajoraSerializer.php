@@ -24,10 +24,21 @@ class MajoraSerializer implements SerializerInterface
      */
     public function __construct(array $handlers)
     {
-        $this->handlers = array_map(
-            function (FormatHandlerInterface $handler) { return $handler; },
-            $handlers
-        );
+        $this->handlers = array();
+        foreach ($handlers as $alias => $handler) {
+            $this->registerFormatHandler($alias, $handler);
+        }
+    }
+
+    /**
+     * Register a format handler under given alias
+     *
+     * @param string                 $alias
+     * @param FormatHandlerInterface $handler
+     */
+    public function registerFormatHandler($alias, FormatHandlerInterface $handler)
+    {
+        $this->handlers[$alias] = $handler;
     }
 
     /**

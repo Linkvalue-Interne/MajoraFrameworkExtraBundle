@@ -12,24 +12,28 @@
 
         <!-- Serializer -->
         <service id="majora.serializer" class="Majora\Framework\Serializer\MajoraSerializer">
-            <argument><!-- serialize handlers --></argument>
+            <argument type="collection">
+
+                <!-- Json serialization handler -->
+                <argument key="json" type="service">
+                    <service class="Majora\Framework\Serializer\Handler\Json\JsonHandler">
+                        <argument type="service" id="majora.normalizer" />
+                    </service>
+                </argument>
+
+                <!-- Yaml serialization handler -->
+                <argument key="yaml" type="service">
+                    <service class="Majora\Framework\Serializer\Handler\Yaml\YamlHandler">
+                        <argument type="service">
+                            <service class="Symfony\Component\Yaml\Yaml" />
+                        </argument>
+                        <argument type="service" id="majora.normalizer" />
+                    </service>
+                </argument>
+
+            </argument>
         </service>
         <service id="serializer" alias="majora.serializer" />
-
-        <!-- Json serialization handler -->
-        <service id="majora.serialization_handler.json" class="Majora\Framework\Serializer\Handler\Json\JsonHandler" public="false">
-            <tag name="majora.serialization_handler" format="json" />
-            <argument type="service" id="majora.normalizer" />
-        </service>
-
-        <!-- Yaml serialization handler -->
-        <service id="majora.serialization_handler.yaml" class="Majora\Framework\Serializer\Handler\Yaml\YamlHandler" public="false">
-            <tag name="majora.serialization_handler" format="yaml" />
-            <argument type="service">
-                <service class="Symfony\Component\Yaml\Yaml" />
-            </argument>
-            <argument type="service" id="majora.normalizer" />
-        </service>
 
         <!-- Array serialization handler -->
         <service id="majora.serialization_handler.array" class="Majora\Framework\Serializer\Handler\Collection\CollectionHandler" public="false">

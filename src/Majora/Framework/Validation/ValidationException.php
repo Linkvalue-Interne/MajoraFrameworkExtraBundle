@@ -106,7 +106,8 @@ class ValidationException extends \InvalidArgumentException
      *
      * @return array
      */
-    public function formatReport(){
+    public function formatReport()
+    {
         $messages = array();
         $report = $this->getReport();
 

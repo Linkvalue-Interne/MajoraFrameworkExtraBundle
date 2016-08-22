@@ -11,7 +11,15 @@ class Clock
     /**
      * @var \DateTime
      */
-    protected $mockedDate;
+    private $currentDate;
+
+    /**
+     * Construct
+     */
+    public function __construct()
+    {
+        $this->currentDate = new \DateTime();
+    }
 
     /**
      * use given date as mock
@@ -20,7 +28,7 @@ class Clock
      */
     protected function mock($date)
     {
-        $this->mockedDate = $date instanceof \DateTime ?
+        $this->currentDate = $date instanceof \DateTime ?
             $date :
             date_create($date)
         ;
@@ -35,10 +43,7 @@ class Clock
      */
     public function now($format = null)
     {
-        $date = $this->mockedDate instanceof \DateTime ?
-            $this->mockedDate :
-            new \DateTime()
-        ;
+        $date = clone $this->currentDate;
 
         return empty($format) ?
             $date :
