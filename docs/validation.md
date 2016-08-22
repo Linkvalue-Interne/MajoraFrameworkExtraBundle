@@ -52,3 +52,9 @@ majora_framework_extra:
 ```
 
 __**Note**__ : at the moment, it only is triggered by `application/json` content types and outputs `JsonResponse`.
+
+## Roadmap
+
+ - v2.x
+    - Form integration (reinject validation exception into root form if triggered on submit)
+    - More error format integration

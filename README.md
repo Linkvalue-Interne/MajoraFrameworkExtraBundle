@@ -21,12 +21,13 @@ Features included :
 Features deprecated :
 
 * All controller helpers, they only are proxies for core methods, and sometimes they obfuscate underlaying APIs
-* LoggableTrait, this system will be reworked with a full featured log API
+* LoggableTrait, this system will be reworked with a full featured log API (service tag and php trait)
 
 Features to come in v1.* :
 
 * More documentation
 * More tests
+* More deprecations
 * Adds toggle configurations for all components which override / extends an existing one
 * Minor refactorization of some components
 * Cookbook
