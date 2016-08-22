@@ -16,8 +16,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * @example
  *      /app_dev.php/article/1?_date_mock=2015-01-01
  */
-class ClockSubscriber extends Clock
-    implements EventSubscriberInterface
+class ClockSubscriber extends Clock implements EventSubscriberInterface
 {
     protected $mockParamName;
 

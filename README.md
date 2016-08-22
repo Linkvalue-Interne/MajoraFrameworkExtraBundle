@@ -1,43 +1,66 @@
 # MajoraFrameworkExtraBundle
-Provides extra classes and config for Symfony framework.
-Help to implements a clean and safe DDD architecture.
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/4ba76532-49c8-448d-902f-9e037102b7d2/mini.png)](https://insight.sensiolabs.com/projects/beb6e229-e98c-4df6-a894-2586a64418cc) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/LinkValue/MajoraFrameworkExtraBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/LinkValue/MajoraFrameworkExtraBundle/?branch=master) [![Build Status](https://travis-ci.org/LinkValue/MajoraFrameworkExtraBundle.svg?branch=master)](https://travis-ci.org/LinkValue/MajoraFrameworkExtraBundle) [![Code Coverage](https://scrutinizer-ci.com/g/LinkValue/MajoraFrameworkExtraBundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/LinkValue/MajoraFrameworkExtraBundle/?branch=master) [![Total Downloads](https://poser.pugx.org/majora/framework-extra-bundle/downloads)](https://packagist.org/packages/majora/framework-extra-bundle) [![Latest Stable Version](https://poser.pugx.org/majora/framework-extra-bundle/v/stable)](https://packagist.org/packages/majora/framework-extra-bundle) [![License](https://poser.pugx.org/majora/framework-extra-bundle/license)](https://packagist.org/packages/majora/framework-extra-bundle)
 
-## Normalize and serialize
+Provides extra classes and configurations for Symfony framework.
+Helps to implements modern and clean architectures, like DDD, CQRS, Flux...
 
-Based on Symfony serializer component, MajoraSerializer introduce the scope notion through FormatHandlerInterface.
-Using SerializableTrait trait and defining getScope method, you will add to your class an easy way to configure its own serialisation.
-Indeed defining ScopableInterface::getScopes() method will allows you to list several normalization strategies.
+Features included :
 
-Let's assume an entity "Person". The Person::getScope method defines 4 different scopes. Scopes can be combined, in this example :
+* [Normalizer / Serializer](docs/normalizer.md)
+* [Form extensions](docs/forms.md)
+* [Inflector](docs/inflector.md)
+* [Clock and date mocker](docs/date_mocker.md)
+* [Agnostic route generation](docs/agnostic_router.md)
+* [API clients](docs/api_clients.md)
+* [Validation helpers](docs/validation.md)
+* [DI helpers](docs/dependency_injection.md)
+* Architecture helpers :
+  * Entity loading system
+  * Action system
 
-* 'default', is an aggregation of a subset of 'Person' entity attributes and another scope called 'location' defined in the related entity 'related_address'  
-* 'full', is an aggregation of 'default' scope and the remaining 'Person' attributes
-* 'full_location', is aggregation of 'full' scope and the 'default' scope of 'related_address' entity
-* 'id', is a scope which is returning only 'id' attribute
+Features deprecated :
 
-```              
-     namespace Alg\Identity\Component\Entity;
-     
-     use Majora\Framework\Serializer\Model\SerializableTrait;
- 
-     /**
-      * Person model class.
-      */
-     class Person  
-     {
-         use SerializableTrait;
-         
-         // attributes, getters and setters ....
-         
-         /**
-          * @see ScopableInterface::getScopes()
-          */
-         public static function getScopes()
-         {
-             return array(
-                 'default' => array('id', 'familyName', 'givenName', 'related_address@location'),
-                 'full' => array('@default', 'telephone', 'email'),
-                 'full_location' => array('@full', 'related_address'),
-                 'id' => 'id'
-             );
-         }
+* All controller helpers, they only are proxies for core methods, and sometimes they obfuscate underlaying APIs
+* LoggableTrait, this system will be reworked with a full featured log API (service tag and php trait)
+
+Features to come in v1.* :
+
+* More documentation
+* More tests
+* More deprecations
+* Adds toggle configurations for all components which override / extends an existing one
+* Minor refactorization of some components
+* Cookbook
+
+Features to come in v2.0 :
+
+* Refactor folders structure
+* Rework DDD helper classes naming to match original concepts
+* Middlewares into loaders query system
+* Broadcastables events with wildarding listening
+* Normalization / Serialization strategies from loader delegates
+* JSON component
+* DI tags for recurent configurations like logger / debug / validator / event dispatcher registering
+* Deprecations removal
+
+## Installation
+
+See complete installation [documentation](docs/installation.md).
+
+## Configuration
+
+See complete [configuration reference](docs/configuration_reference.md).
+
+## License
+
+This bundle is under the MIT license. See the complete license :
+
+    LICENSE.md
+
+## Contributing
+
+This bundle is open to contributions, please follow this [documentation](docs/contributing.md) and have fun !
+
+## Credits
+
+- [Quentin Cerny](https://github.com/Nyxis), [Link Value](http://link-value.fr/), and [all contributors](https://github.com/LinkValue/MajoraFrameworkExtraBundle/graphs/contributors)

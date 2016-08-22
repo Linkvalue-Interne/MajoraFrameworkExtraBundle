@@ -5,7 +5,6 @@ namespace Majora\Framework\Serializer\Tests\Handler\Yaml;
 use Majora\Framework\Normalizer\MajoraNormalizer;
 use Majora\Framework\Normalizer\Model\NormalizableInterface;
 use Majora\Framework\Serializer\Handler\Yaml\YamlHandler;
-use Majora\Framework\Serializer\Tests\Model\SerializableMock1;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\Yaml\Yaml;
 
@@ -13,6 +12,8 @@ use Symfony\Component\Yaml\Yaml;
  * Unit test class for YamlHandler.php.
  *
  * @see Majora\Framework\Serializer\Handler\Collection\YamlHandler
+ *
+ * @group legacy
  */
 class YamlHandlerTest extends PHPUnit_Framework_TestCase
 {
@@ -50,8 +51,8 @@ class YamlHandlerTest extends PHPUnit_Framework_TestCase
     {
         return array(
             'string_as_array' => array(array('string'), "- string\n"),
-            'int_as_array'    => array(array(42), "- 42\n"),
-            'array_as_array'  => array(
+            'int_as_array' => array(array(42), "- 42\n"),
+            'array_as_array' => array(
                 array('hello', 'foo' => 'bar', 42),
                 "0: hello\nfoo: bar\n1: 42\n",
             ),
@@ -85,7 +86,7 @@ class YamlHandlerTest extends PHPUnit_Framework_TestCase
             'array_as_array' => array(
                 "0: hello\nfoo: bar\n1: 42\n",
                 array('hello', 'foo' => 'bar', 42),
-            )
+            ),
         );
     }
 }

@@ -17,7 +17,7 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
      *
      * @return string
      */
-    protected function getEntityClass()
+    public function getEntityClass()
     {
         throw new \BadMethodCallException(sprintf('%s() method has to be defined in %s class.',
             __FUNCTION__, static::class

@@ -5,13 +5,14 @@ namespace Majora\Framework\Serializer\Tests\Handler\Collection;
 use Majora\Framework\Normalizer\MajoraNormalizer;
 use Majora\Framework\Normalizer\Model\NormalizableInterface;
 use Majora\Framework\Serializer\Handler\Json\JsonHandler;
-use Majora\Framework\Serializer\Tests\Model\SerializableMock1;
 use PHPUnit_Framework_TestCase;
 
 /**
  * Unit test class for JsonHandler.php.
  *
  * @see Majora\Framework\Serializer\Handler\Json\JsonHandler
+ *
+ * @group legacy
  */
 class JsonHandlerTest extends PHPUnit_Framework_TestCase
 {
@@ -49,8 +50,8 @@ class JsonHandlerTest extends PHPUnit_Framework_TestCase
             'int_as_array' => array(array(42), '[42]'),
             'array_as_array' => array(
                 $raw = array('hello', 'foo' => 'bar', 42, 'nested' => array('child' => 'value')),
-                json_encode($raw)
-            )
+                json_encode($raw),
+            ),
         );
     }
 
@@ -91,8 +92,8 @@ class JsonHandlerTest extends PHPUnit_Framework_TestCase
             'int_as_array' => array('[42]', array(42)),
             'array_as_array' => array(
                 json_encode($raw = array('hello', 'foo' => 'bar', 42, 'nested' => array('child' => 'value'))),
-                $raw
-            )
+                $raw,
+            ),
         );
     }
 }

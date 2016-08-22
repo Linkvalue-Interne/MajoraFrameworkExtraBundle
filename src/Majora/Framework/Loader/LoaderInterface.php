@@ -10,15 +10,6 @@ use Majora\Framework\Model\EntityCollection;
 interface LoaderInterface
 {
     /**
-     * All entity metadata configuration are passed from this method.
-     *
-     * @param string $entityClass
-     * @param array  $entityProperties
-     * @param string $collectionClass
-     */
-    public function configureMetadata($entityClass, array $entityProperties, $collectionClass);
-
-    /**
      * retrieve all entities in this repository.
      *
      * @param array $filters optionnal property => value filter map
