@@ -8,16 +8,16 @@ namespace Majora\Framework\Model;
 interface TranslatableInterface
 {
     /**
-     * define currentLocale
+     * define current object locale
      *
-     * @param string $currentLocale
+     * @param string $locale
      *
      * @return self
      */
-    public function setCurrentLocale($currentLocale);
+    public function setLocale($locale);
 
     /**
-     * define defaultLocale
+     * define object default locale to use
      *
      * @param string $currentLocale
      * @return self
