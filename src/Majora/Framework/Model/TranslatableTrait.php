@@ -7,15 +7,22 @@ namespace Majora\Framework\Model;
  */
 trait TranslatableTrait
 {
-    protected $currentLocale;
+    /**
+     * @var string
+     */
+    protected $locale;
+
+    /**
+     * @var string
+     */
     protected $defaultLocale;
 
     /**
-     * @see TranslatableInterface::setCurrentLocale()
+     * @see TranslatableInterface::setLocale()
      */
-    public function setCurrentLocale($currentLocale)
+    public function setLocale($locale)
     {
-        $this->currentLocale = $currentLocale;
+        $this->locale = $locale;
 
         return $this;
     }
@@ -46,8 +53,8 @@ trait TranslatableTrait
         }
 
         // current locale matched
-        if ($this->currentLocale && isset($translationData[$this->currentLocale])) {
-            return $translationData[$this->currentLocale];
+        if ($this->locale && isset($translationData[$this->locale])) {
+            return $translationData[$this->locale];
         }
 
         // default locale matched

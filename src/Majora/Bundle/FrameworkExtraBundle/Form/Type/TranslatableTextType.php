@@ -3,6 +3,8 @@
 namespace Majora\Bundle\FrameworkExtraBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -42,9 +44,14 @@ class TranslatableTextType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
+        $resolver->setDefault('widget', TextType::class);
+        $resolver->setAllowedValues('widget', array(
+            TextType::class, TextareaType::class
+        ));
+
         $resolver->setDefaults(array(
             'locales' => array(),
-            'options' => array(),
+            'widget_options' => array(),
         ));
     }
 
@@ -63,12 +70,12 @@ class TranslatableTextType extends AbstractType
 
         $childrenOptions = array_replace_recursive(
             array('auto_initialize' => false),
-            $options['options']
+            $options['widget_options']
         );
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($builder, $handledLocales, $childrenOptions) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($builder, $handledLocales, $childrenOptions, $options) {
             $form = $event->getForm();
-            $data = $event->getData();
+            $data = $event->getData() ?: array();
 
             if (!is_array($data)) {
                 throw new \InvalidArgumentException(sprintf('TranslatableText data have to be an array, %s given',
@@ -84,7 +91,7 @@ class TranslatableTextType extends AbstractType
 
             foreach ($handledLocales as $locale) {
                 $form->add($builder
-                    ->create($locale, 'text', $childrenOptions)
+                    ->create($locale, $options['widget'], $childrenOptions)
                     ->getForm()
                 );
             }

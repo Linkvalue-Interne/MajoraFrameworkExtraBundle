@@ -65,3 +65,7 @@ Form component will validate and map all this json data as if they were sent in 
 ## Loader collections bridge
 
 Work in progress !
+
+## Translatable text
+
+Work in progress !
