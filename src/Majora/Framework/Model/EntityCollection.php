@@ -117,7 +117,7 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
     {
         $chunkedData = array_chunk($this->toArray(), $length, true);
 
-        return new self(empty($chunkedData) ? array() : $chunkedData[0]);
+        return new static(empty($chunkedData) ? array() : $chunkedData[0]);
     }
 
     /**
@@ -127,7 +127,7 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
      */
     public function cslice($offset, $length = null)
     {
-        return new self($this->slice($offset, $length));
+        return new static($this->slice($offset, $length));
     }
 
     /**
@@ -172,7 +172,7 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
             throw new \InvalidArgumentException('Sort failed.');
         }
 
-        return new self($elements);
+        return new static(array_values($elements));
     }
 
     /**
