@@ -7,7 +7,6 @@ use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\AliasRegiste
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\InMemoryDataLoadCompilerPass;
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\LoaderCompilerPass;
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\SerializerCompilerPass;
-use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\ValidationCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\Config\FileLocator;
@@ -38,7 +37,6 @@ class MajoraFrameworkExtraBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new SerializerCompilerPass());
-        $container->addCompilerPass(new ValidationCompilerPass());
         $container->addCompilerPass(new LoaderCompilerPass());
         $container->addCompilerPass(new InMemoryDataLoadCompilerPass($this->fileLocator));
         $container->addCompilerPass(new ActionRegisterCompilerPass());
