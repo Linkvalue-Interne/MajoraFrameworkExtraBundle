@@ -43,7 +43,10 @@ class Clock
      */
     public function now($format = null)
     {
-        $date = clone $this->currentDate;
+        $date = $this->currentDate
+            ? clone $this->currentDate
+            : ($this->currentDate = new \DateTime())
+        ;
 
         return empty($format) ?
             $date :
