@@ -5,6 +5,7 @@ namespace Majora\Bundle\FrameworkExtraBundle;
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\ActionRegisterCompilerPass;
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\AliasRegisterCompilerPass;
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\InMemoryDataLoadCompilerPass;
+use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\LoaderBridgeFormCompilerPass;
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\LoaderCompilerPass;
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\SerializerCompilerPass;
 use Majora\Bundle\FrameworkExtraBundle\DependencyInjection\Compiler\ValidationCompilerPass;
@@ -43,5 +44,6 @@ class MajoraFrameworkExtraBundle extends Bundle
         $container->addCompilerPass(new InMemoryDataLoadCompilerPass($this->fileLocator));
         $container->addCompilerPass(new ActionRegisterCompilerPass());
         $container->addCompilerPass(new AliasRegisterCompilerPass());
+        $container->addCompilerPass(new LoaderBridgeFormCompilerPass());
     }
 }

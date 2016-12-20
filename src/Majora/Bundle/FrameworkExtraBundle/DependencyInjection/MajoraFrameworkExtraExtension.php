@@ -26,6 +26,7 @@ class MajoraFrameworkExtraExtension extends Extension
         $loader->load('serializer.xml');
         $loader->load('http.xml');
         $loader->load('services.xml');
+        $loader->load('loader_bridge_form.xml');
 
         // clock mocker
         if (!empty($config['clock']['enabled'])) {
