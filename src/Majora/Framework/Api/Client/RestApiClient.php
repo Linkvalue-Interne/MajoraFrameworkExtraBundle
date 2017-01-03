@@ -42,16 +42,16 @@ class RestApiClient implements ApiClientInterface
     public function send(
         $name,
         $method,
-        array $query = array(),
-        array $body = array(),
-        array $options = array()
+        array $query = [],
+        array $body = [],
+        array $options = []
     ) {
         return $this->httpClient->request(
             $method,
             $this->requestFactory->createRequestUri($name, $query),
             array_replace_recursive(
                 $this->requestFactory->createRequestOptions($options),
-                array('json' => $this->requestFactory->createRequestBodyData($body))
+                ['json' => $this->requestFactory->createRequestBodyData($body)]
             )
         );
     }
@@ -59,23 +59,23 @@ class RestApiClient implements ApiClientInterface
     /**
      * @see ApiClientInterface::cget()
      */
-    public function cget(array $query = array(), array $options = array())
+    public function cget(array $query = [], array $options = [])
     {
-        return $this->send('cget', 'GET', $query, array(), $options);
+        return $this->send('cget', 'GET', $query, [], $options);
     }
 
     /**
      * @see ApiClientInterface::get()
      */
-    public function get(array $query = array(), array $options = array())
+    public function get(array $query = [], array $options = [])
     {
-        return $this->send('get', 'GET', $query, array(), $options);
+        return $this->send('get', 'GET', $query, [], $options);
     }
 
     /**
      * @see ApiClientInterface::post()
      */
-    public function post(array $query = array(), array $body = array(), array $options = array())
+    public function post(array $query = [], array $body = [], array $options = [])
     {
         return $this->send('post', 'POST', $query, $body, $options);
     }
@@ -83,7 +83,7 @@ class RestApiClient implements ApiClientInterface
     /**
      * @see ApiClientInterface::put()
      */
-    public function put(array $query = array(), array $body = array(), array $options = array())
+    public function put(array $query = [], array $body = [], array $options = [])
     {
         return $this->send('put', 'PUT', $query, $body, $options);
     }
@@ -91,7 +91,7 @@ class RestApiClient implements ApiClientInterface
     /**
      * @see ApiClientInterface::delete()
      */
-    public function delete(array $query = array(), array $body = array(), array $options = array())
+    public function delete(array $query = [], array $body = [], array $options = [])
     {
         return $this->send('delete', 'DELETE', $query, $body, $options);
     }

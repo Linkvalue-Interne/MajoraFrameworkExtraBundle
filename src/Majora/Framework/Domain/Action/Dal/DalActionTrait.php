@@ -2,11 +2,9 @@
 
 namespace Majora\Framework\Domain\Action\Dal;
 
-use Majora\Framework\Api\Client\RestApiClient;
 use Majora\Framework\Validation\ValidationException;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -55,13 +53,15 @@ trait DalActionTrait
     protected function assertEntityIsValid($entity, $scope = null)
     {
         if (!$this->validator) {
-            throw new \BadMethodCallException(sprintf(
-                'Method %s() cannot be used while validator is not configured.',
-                __METHOD__
-            ));
+            throw new \BadMethodCallException(
+                sprintf(
+                    'Method %s() cannot be used while validator is not configured.',
+                    __METHOD__
+                )
+            );
         }
 
-        $scopes = $scope ? (array) $scope : null;
+        $scopes = $scope ? (array)$scope : null;
 
         $violationList = $this->validator->validate(
             $entity,
@@ -87,10 +87,12 @@ trait DalActionTrait
     protected function fireEvent($eventName, Event $event)
     {
         if (!$this->eventDispatcher) {
-            throw new \BadMethodCallException(sprintf(
-                'Method %s() cannot be used while event dispatcher is not configured.',
-                __METHOD__
-            ));
+            throw new \BadMethodCallException(
+                sprintf(
+                    'Method %s() cannot be used while event dispatcher is not configured.',
+                    __METHOD__
+                )
+            );
         }
 
         $this->eventDispatcher->dispatch($eventName, $event);
@@ -101,7 +103,7 @@ trait DalActionTrait
      */
     public static function getScopes()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -109,7 +111,7 @@ trait DalActionTrait
      */
     public function normalize($scope = 'default')
     {
-        return array();
+        return [];
     }
 
     /**

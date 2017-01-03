@@ -38,11 +38,13 @@ class AgnosticUrlGenerator implements UrlGeneratorInterface
     public function setContext(RequestContext $context)
     {
         $this->context = clone $context;
-        $this->context->setBaseUrl(preg_replace(
-            '/(\\/[\w]+_dev.php)/',
-            '',
-            $context->getBaseUrl()
-        ));
+        $this->context->setBaseUrl(
+            preg_replace(
+                '/(\\/[\w]+_dev.php)/',
+                '',
+                $context->getBaseUrl()
+            )
+        );
     }
 
     /**
@@ -56,7 +58,7 @@ class AgnosticUrlGenerator implements UrlGeneratorInterface
     /**
      * @see UrlGeneratorInterface::generate()
      */
-    public function generate($name, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
+    public function generate($name, $parameters = [], $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
         $proxiedContext = $this->urlGenerator->getContext();
         $this->setContext($proxiedContext);

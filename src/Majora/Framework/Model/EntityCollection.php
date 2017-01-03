@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Majora\Framework\Normalizer\MajoraNormalizer;
 use Majora\Framework\Normalizer\Model\NormalizableInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * Base class for entity aggregation collection.
@@ -19,9 +20,13 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
      */
     public function getEntityClass()
     {
-        throw new \BadMethodCallException(sprintf('%s() method has to be defined in %s class.',
-            __FUNCTION__, static::class
-        ));
+        throw new \BadMethodCallException(
+            sprintf(
+                '%s() method has to be defined in %s class.',
+                __FUNCTION__,
+                static::class
+            )
+        );
     }
 
     /**
@@ -29,7 +34,7 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
      */
     public static function getScopes()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -38,11 +43,12 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
     public function normalize($scope = 'default')
     {
         return $this
-            ->map(function (NormalizableInterface $entity) use ($scope) {
-                return $entity->normalize($scope);
-            })
-            ->toArray()
-        ;
+            ->map(
+                function (NormalizableInterface $entity) use ($scope) {
+                    return $entity->normalize($scope);
+                }
+            )
+            ->toArray();
     }
 
     /**
@@ -53,8 +59,10 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
         $this->clear();
 
         foreach ($data as $key => $majoraEntityData) {
-            $this->set($key, MajoraNormalizer::createNormalizer()
-                ->denormalize($majoraEntityData, $this->getEntityClass())
+            $this->set(
+                $key,
+                MajoraNormalizer::createNormalizer()
+                    ->denormalize($majoraEntityData, $this->getEntityClass())
             );
         }
 
@@ -66,7 +74,10 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
      */
     public function serialize($scope = 'default', PropertyAccessorInterface $propertyAccessor = null)
     {
-        @trigger_error(sprintf('The method %s() is deprecated and will be removed in 2.0. Use normalize() instead.', __METHOD__), E_USER_DEPRECATED);
+        @trigger_error(
+            sprintf('The method %s() is deprecated and will be removed in 2.0. Use normalize() instead.', __METHOD__),
+            E_USER_DEPRECATED
+        );
 
         return $this->normalize($scope);
     }
@@ -76,7 +87,10 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
      */
     public function deserialize(array $data, PropertyAccessorInterface $propertyAccessor = null)
     {
-        @trigger_error(sprintf('The method %s() is deprecated and will be removed in 2.0. Use denormalize() instead.', __METHOD__), E_USER_DEPRECATED);
+        @trigger_error(
+            sprintf('The method %s() is deprecated and will be removed in 2.0. Use denormalize() instead.', __METHOD__),
+            E_USER_DEPRECATED
+        );
 
         return $this->denormalize($data);
     }
@@ -92,18 +106,20 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
     {
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
-        return $this->filter(function (CollectionableInterface $entity) use ($filters, $propertyAccessor) {
-            $res = true;
-            foreach ($filters as $key => $value) {
-                $current = $propertyAccessor->getValue($entity, $key);
-                $res = $res && (is_array($value) ?
-                    in_array($current, $value) :
-                    $current == $value
-                );
-            }
+        return $this->filter(
+            function (CollectionableInterface $entity) use ($filters, $propertyAccessor) {
+                $res = true;
+                foreach ($filters as $key => $value) {
+                    $current = $propertyAccessor->getValue($entity, $key);
+                    $res = $res && (is_array($value) ?
+                            in_array($current, $value) :
+                            $current == $value
+                        );
+                }
 
-            return $res;
-        });
+                return $res;
+            }
+        );
     }
 
     /**
@@ -117,7 +133,7 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
     {
         $chunkedData = array_chunk($this->toArray(), $length, true);
 
-        return new static(empty($chunkedData) ? array() : $chunkedData[0]);
+        return new static(empty($chunkedData) ? [] : $chunkedData[0]);
     }
 
     /**
@@ -144,11 +160,15 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
 
         foreach ($elements as $element) {
             $method = sprintf('get%s', ucfirst($field));
-            if (!is_callable(array($element, $method))) {
-                throw new \InvalidArgumentException(sprintf(
-                    'Cannot index %s elements on "%s" field. At least one element doesnt implements %s() method.',
-                    get_class($this), $field, $method
-                ));
+            if (!is_callable([$element, $method])) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'Cannot index %s elements on "%s" field. At least one element doesnt implements %s() method.',
+                        get_class($this),
+                        $field,
+                        $method
+                    )
+                );
             }
 
             $this->set($element->$method(), $element);

@@ -3,7 +3,6 @@
 namespace Majora\Framework\Domain\Action;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Majora\Framework\Domain\Action\ActionInterface;
 
 /**
  * Factory class for domain actions

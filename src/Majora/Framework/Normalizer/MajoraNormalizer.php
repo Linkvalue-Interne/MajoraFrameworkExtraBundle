@@ -71,8 +71,8 @@ class MajoraNormalizer
         return isset(self::$instancePool[$key]) ?
             self::$instancePool[$key] :
             self::$instancePool[$key] = new static(
-            PropertyAccess::createPropertyAccessor()
-        );
+                PropertyAccess::createPropertyAccessor()
+            );
     }
 
     /**
@@ -84,7 +84,7 @@ class MajoraNormalizer
     {
         $this->propertyAccessor = $propertyAccessor;
         $this->inflector = new Inflector();
-        $this->propertiesPathPool = array();
+        $this->propertiesPathPool = [];
     }
 
     /**
@@ -110,7 +110,7 @@ class MajoraNormalizer
             switch (true) {
 
                 // Public property / accessor case
-                case $propertyAccessor->isReadable($this, $property) :
+                case $propertyAccessor->isReadable($this, $property):
                     return $propertyAccessor->getValue($this, $property);
 
                 // Private property / StdClass
@@ -118,11 +118,13 @@ class MajoraNormalizer
                     return $this->$property;
             }
 
-            throw new InvalidScopeException(sprintf(
-                'Unable to read "%s" property from a "%s" object, any existing property path to read it in.',
-                $property,
-                get_class($this)
-            ));
+            throw new InvalidScopeException(
+                sprintf(
+                    'Unable to read "%s" property from a "%s" object, any existing property path to read it in.',
+                    $property,
+                    get_class($this)
+                )
+            );
         };
     }
 
@@ -142,11 +144,11 @@ class MajoraNormalizer
         switch (true) {
 
             // Cannot normalized anything which already are
-            case !is_object($object) :
+            case !is_object($object):
                 return $object;
 
             // StdClass can be cast as array
-            case $object instanceof StdClass :
+            case $object instanceof StdClass:
                 return (array) $object;
 
             // DateTime : ISO format
@@ -154,7 +156,7 @@ class MajoraNormalizer
                 return $object->format(\DateTime::ISO8601);
 
             // Other objects : we use a closure hack to read data
-            case !$object instanceof NormalizableInterface :
+            case !$object instanceof NormalizableInterface:
                 $extractor = \Closure::bind($this->createExtractorDelegate(), $object, get_class($object));
 
                 return $extractor($object);
@@ -177,15 +179,17 @@ class MajoraNormalizer
     {
         $scopes = $object->getScopes();
         if (!isset($scopes[$scope])) {
-            throw new ScopeNotFoundException(sprintf(
-                'Invalid scope for %s object, only ["%s"] supported, "%s" given.',
-                get_class($object),
-                implode('", "', array_keys($scopes)),
-                $scope
-            ));
+            throw new ScopeNotFoundException(
+                sprintf(
+                    'Invalid scope for %s object, only ["%s"] supported, "%s" given.',
+                    get_class($object),
+                    implode('", "', array_keys($scopes)),
+                    $scope
+                )
+            );
         }
         if (empty($scopes) || empty($scopes[$scope])) {
-            return array();
+            return [];
         }
 
         $read = \Closure::bind(
@@ -200,8 +204,8 @@ class MajoraNormalizer
         }
 
         // flatten fields
-        $fields = array();
-        $stack = array($scopes[$scope]);
+        $fields = [];
+        $stack = [$scopes[$scope]];
         do {
             $stackedField = array_shift($stack);
             foreach ($stackedField as $fieldConfig) {
@@ -209,14 +213,17 @@ class MajoraNormalizer
                     if (!array_key_exists(
                         $inheritedScope = str_replace('@', '', $fieldConfig),
                         $scopes
-                    )) {
-                        throw new ScopeNotFoundException(sprintf(
-                            'Invalid inherited scope for %s object at %s scope, only ["%s"] supported, "%s" given.',
-                            get_class($object),
-                            $scope,
-                            implode(', ', array_keys($scopes)),
-                            $inheritedScope
-                        ));
+                    )
+                    ) {
+                        throw new ScopeNotFoundException(
+                            sprintf(
+                                'Invalid inherited scope for %s object at %s scope, only ["%s"] supported, "%s" given.',
+                                get_class($object),
+                                $scope,
+                                implode(', ', array_keys($scopes)),
+                                $inheritedScope
+                            )
+                        );
                     }
 
                     array_unshift($stack, $scopes[$inheritedScope]);
@@ -228,7 +235,7 @@ class MajoraNormalizer
         } while (!empty($stack));
 
         // begin normalization
-        $data = array();
+        $data = [];
         foreach ($fields as $field) {
             // optionnal field detection
             $optionnal = false;
@@ -267,23 +274,29 @@ class MajoraNormalizer
      */
     private function createWrittingDelegate()
     {
-        return $this->writeDelegate ?: $this->writeDelegate = function (PropertyPathInterface $property, $value, PropertyAccessor $propertyAccessor) {
+        return $this->writeDelegate ?: $this->writeDelegate = function (
+            PropertyPathInterface $property,
+            $value,
+            PropertyAccessor $propertyAccessor
+        ) {
             switch (true) {
 
                 // Public property / accessor case
-                case $propertyAccessor->isWritable($this, $property) :
+                case $propertyAccessor->isWritable($this, $property):
                     return $propertyAccessor->setValue($this, $property, $value);
 
                 // Private property / StdClass
-                case property_exists($this, $property) || $this instanceof \StdClass :
+                case property_exists($this, $property) || $this instanceof \StdClass:
                     return $this->$property = $value;
             }
 
-            throw new InvalidScopeException(sprintf(
-                'Unable to set "%s" property into a "%s" object, any existing property path to write it in.',
-                $property,
-                get_class($this)
-            ));
+            throw new InvalidScopeException(
+                sprintf(
+                    'Unable to set "%s" property into a "%s" object, any existing property path to write it in.',
+                    $property,
+                    get_class($this)
+                )
+            );
         };
     }
 
@@ -300,17 +313,15 @@ class MajoraNormalizer
     {
         $class = is_string($normalizable) ?
             $normalizable : (
-                $normalizable instanceof \ReflectionClass ?
-                    $normalizable->name :
-                    get_class($normalizable)
-            )
-        ;
+            $normalizable instanceof \ReflectionClass ?
+                $normalizable->name :
+                get_class($normalizable)
+            );
         $reflection = isset(self::$reflectionPool[$class]) ?
             self::$reflectionPool[$class] :
             self::$reflectionPool[$class] = $normalizable instanceof \ReflectionClass ?
                 $normalizable :
-                new \ReflectionClass($class)
-        ;
+                new \ReflectionClass($class);
 
         $object = $normalizable;
 
@@ -325,7 +336,7 @@ class MajoraNormalizer
                 return $reflection->newInstance();
             }
 
-            $arguments = array();
+            $arguments = [];
 
             // Construct with parameters ? we will try to hydrate arguments from their names
             if ($reflection->hasMethod('__construct')
@@ -333,7 +344,7 @@ class MajoraNormalizer
             ) {
                 // String as items cases like \DateTime
                 if (!is_array($data)) {
-                    $arguments = array($data);
+                    $arguments = [$data];
                     unset($data);
                 } else {
                     // Hydrate constructor args from data keys
@@ -342,8 +353,7 @@ class MajoraNormalizer
                         if (isset($data[$argKey])) {
                             $arguments[] = $parameter->getClass() ?
                                 $this->normalize($data[$argKey], $parameter->getClass()) :
-                                $data[$argKey]
-                            ;
+                                $data[$argKey];
                             unset($data[$argKey]);
 
                             continue;
@@ -351,8 +361,7 @@ class MajoraNormalizer
 
                         $arguments[] = $parameter->isOptional() ?
                             $parameter->getDefaultValue() :
-                            null
-                        ;
+                            null;
                     }
                 }
             }

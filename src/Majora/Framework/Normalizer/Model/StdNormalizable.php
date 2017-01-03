@@ -2,8 +2,6 @@
 
 namespace Majora\Framework\Normalizer\Model;
 
-use Majora\Framework\Normalizer\Model\NormalizableInterface;
-
 /**
  * Simple implementation of Normalizable with a StdClass
  */
@@ -14,7 +12,7 @@ class StdNormalizable extends \StdClass implements NormalizableInterface
      */
     public static function getScopes()
     {
-        return array();
+        return [];
     }
 
     /**

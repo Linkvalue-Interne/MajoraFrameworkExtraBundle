@@ -30,8 +30,7 @@ class Clock
     {
         $this->currentDate = $date instanceof \DateTime ?
             $date :
-            date_create($date)
-        ;
+            date_create($date);
     }
 
     /**
@@ -45,12 +44,10 @@ class Clock
     {
         $date = $this->currentDate
             ? clone $this->currentDate
-            : ($this->currentDate = new \DateTime())
-        ;
+            : ($this->currentDate = new \DateTime());
 
         return empty($format) ?
             $date :
-            $date->format($format)
-        ;
+            $date->format($format);
     }
 }

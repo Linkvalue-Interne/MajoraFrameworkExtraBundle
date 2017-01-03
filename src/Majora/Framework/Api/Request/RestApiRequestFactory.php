@@ -2,7 +2,6 @@
 
 namespace Majora\Framework\Api\Request;
 
-use GuzzleHttp\Psr7\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -40,11 +39,10 @@ class RestApiRequestFactory
      */
     public function __construct(
         UrlGeneratorInterface $urlGenerator,
-        array $defaultOptions = array(),
-        array $defaultBodyData = array(),
-        array $routeMapping = array()
-    )
-    {
+        array $defaultOptions = [],
+        array $defaultBodyData = [],
+        array $routeMapping = []
+    ) {
         $this->urlGenerator = $urlGenerator;
         $this->defaultOptions = $defaultOptions;
         $this->defaultBodyData = $defaultBodyData;
@@ -69,15 +67,18 @@ class RestApiRequestFactory
      *
      * @return string
      *
-     * @throws InvalidArgumentException If request doesnt exist for given name
+     * @throws \InvalidArgumentException If request does not exist for given name
      */
-    public function createRequestUri($name, array $query = array())
+    public function createRequestUri($name, array $query = [])
     {
         if (empty($this->routeMapping[$name])) {
-            throw new \InvalidArgumentException(sprintf('Unknow request preset under name "%s", only [%s] defined.',
-                $name,
-                implode('","', array_keys($this->routeMapping))
-            ));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Unknow request preset under name "%s", only [%s] defined.',
+                    $name,
+                    implode('","', array_keys($this->routeMapping))
+                )
+            );
         }
 
         // build request
@@ -95,7 +96,7 @@ class RestApiRequestFactory
      *
      * @return array
      */
-    public function createRequestBodyData(array $body = array())
+    public function createRequestBodyData(array $body = [])
     {
         return array_replace_recursive(
             $this->defaultBodyData,
@@ -110,7 +111,7 @@ class RestApiRequestFactory
      *
      * @return array
      */
-    public function createRequestOptions(array $options = array())
+    public function createRequestOptions(array $options = [])
     {
         return array_replace_recursive(
             $this->defaultOptions,

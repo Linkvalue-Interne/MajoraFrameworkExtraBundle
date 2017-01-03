@@ -31,7 +31,7 @@ trait LoggableTrait
     public function registerLogger(LoggerInterface $logger = null, $debug = false)
     {
         $this->logger = $logger ?: new NullLogger();
-        $this->debug = $debug;
+        $this->debug = (bool) $debug;
 
         return $this;
     }

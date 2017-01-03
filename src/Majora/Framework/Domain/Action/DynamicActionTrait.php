@@ -29,23 +29,32 @@ trait DynamicActionTrait
         switch (true) {
 
             // accessor ?
-            case strpos($method, 'get') === 0 :
-                return $this->_get(lcfirst(preg_filter(
-                    '/^get(.+)/', '$1', $method
-                )));
+            case strpos($method, 'get') === 0:
+                return $this->_get(
+                    lcfirst(
+                        preg_filter(
+                            '/^get(.+)/',
+                            '$1',
+                            $method
+                        )
+                    )
+                );
 
             // mutator ?
-            case strpos($method, 'set') === 0 :
+            case strpos($method, 'set') === 0:
                 return $this->_set(
                     lcfirst(preg_filter('/^set(.+)/', '$1', $method)),
                     $arguments[0]
                 );
 
             default:
-                throw new \BadMethodCallException(sprintf('Method %s::%s() doesnt exists.',
-                    get_class($this),
-                    $method
-                ));
+                throw new \BadMethodCallException(
+                    sprintf(
+                        'Method %s::%s() doesnt exists.',
+                        get_class($this),
+                        $method
+                    )
+                );
         }
     }
 
@@ -68,9 +77,7 @@ trait DynamicActionTrait
      */
     private function getPropertyAccessor()
     {
-        $this->propertyAccessor = $this->propertyAccessor ?:
-            PropertyAccess::createPropertyAccessor()
-        ;
+        $this->propertyAccessor = $this->propertyAccessor ?: PropertyAccess::createPropertyAccessor();
 
         return $this->propertyAccessor;
     }
@@ -126,10 +133,7 @@ trait DynamicActionTrait
     {
         $propertyAccessor = $this->getPropertyAccessor();
         if (!$this->_has($field)) {
-            return $propertyAccessor->isReadable($object, $field) ?
-                $propertyAccessor->getValue($object, $field) :
-                null
-            ;
+            return $propertyAccessor->getValue($object, $field);
         }
 
         $propertyAccessor->setValue(
@@ -146,7 +150,7 @@ trait DynamicActionTrait
      */
     public static function getScopes()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -157,22 +161,17 @@ trait DynamicActionTrait
         $data = $this->getAttributes()->toArray();
 
         $scopes = $this->getScopes();
-        if(empty($scopes[$scope])) {
+        if (empty($scopes[$scope])) {
             return $data;
         }
 
-        $normalizedData = array();
+        $normalizedData = [];
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
         foreach ($scopes[$scope] as $field) {
-            $normalizedData[$field] = $propertyAccessor->isReadable(
-                    $data,
-                    $propertyPath = strpos($field, '[') === 0 ?
-                        $field :
-                        sprintf('[%s]', $field)
-                ) ?
-                $propertyAccessor->getValue($data, $propertyPath) :
-                null
-            ;
+            $normalizedData[$field] = $propertyAccessor->getValue(
+                $data,
+                strpos($field, '[') === 0 ? $field : sprintf('[%s]', $field)
+            );
         }
 
         return $normalizedData;
@@ -195,7 +194,10 @@ trait DynamicActionTrait
      */
     public function serialize($scope = 'default', PropertyAccessorInterface $propertyAccessor = null)
     {
-        @trigger_error(sprintf('The method %s() is deprecated and will be removed in 2.0. Use normalize() instead.', __METHOD__), E_USER_DEPRECATED);
+        @trigger_error(
+            sprintf('The method %s() is deprecated and will be removed in 2.0. Use normalize() instead.', __METHOD__),
+            E_USER_DEPRECATED
+        );
 
         return $this->normalize($scope);
     }
@@ -205,7 +207,10 @@ trait DynamicActionTrait
      */
     public function deserialize(array $data, PropertyAccessorInterface $propertyAccessor = null)
     {
-        @trigger_error(sprintf('The method %s() is deprecated and will be removed in 2.0. Use denormalize() instead.', __METHOD__), E_USER_DEPRECATED);
+        @trigger_error(
+            sprintf('The method %s() is deprecated and will be removed in 2.0. Use denormalize() instead.', __METHOD__),
+            E_USER_DEPRECATED
+        );
 
         return $this->denormalize($data);
     }

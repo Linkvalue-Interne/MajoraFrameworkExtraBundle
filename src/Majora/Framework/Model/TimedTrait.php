@@ -21,7 +21,7 @@ trait TimedTrait
      * Proxy to return given date if defined, formated under given format (if defined)
      *
      * @param \DateTime $date
-     * @param string    $format  optional format
+     * @param string    $format optional format
      *
      * @return \DateTime string
      */
@@ -29,8 +29,7 @@ trait TimedTrait
     {
         return $date && $format ?
             $date->format($format) :
-            $date
-        ;
+            $date;
     }
 
     /**

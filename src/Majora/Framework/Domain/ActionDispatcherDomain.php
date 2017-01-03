@@ -27,9 +27,11 @@ class ActionDispatcherDomain extends AbstractDomain
     /**
      * Create and return a promise of $name action.
      *
-     * @param string $name
+     * @param       $name
+     * @param null  $relatedEntity
+     * @param array ...$arguments
      *
-     * @return ActionInterface
+     * @return \Majora\Framework\Domain\Action\ActionInterface
      */
     public function getAction($name, $relatedEntity = null, ...$arguments)
     {

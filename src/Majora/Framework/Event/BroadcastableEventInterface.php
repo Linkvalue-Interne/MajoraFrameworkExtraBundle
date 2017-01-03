@@ -36,7 +36,7 @@ interface BroadcastableEventInterface
     public function getSubject();
 
     /**
-     * define is event is currently broadcasted.
+     * define if event is currently broadcasted.
      *
      * @param bool $broadcasted
      */
