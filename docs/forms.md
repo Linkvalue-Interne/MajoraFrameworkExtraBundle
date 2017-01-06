@@ -64,7 +64,46 @@ Form component will validate and map all this json data as if they were sent in 
 
 ## Loader collections bridge
 
-Work in progress !
+With Majora Framework, we got services which can load our entities in different ways, even in form types.
+Like Doctrine entity form type, this custom entity type aim to extend `choiceType` to work with Majora loaders.
+
+First of all, create you loader and add an __alias__ on it
+```xml
+<service id="demo.entity_collection_type.loader.user" class="Demo\EntityCollectionTypeBundle\Loader\UserLoader">
+    <argument type="service" id="demo.entity_collection_type.repository.user" />
+    <tag name="majora.loader"
+        alias="demo.user.loader"
+        entity="Demo\EntityCollectionTypeBundle\Model\User"
+        collection="Demo\EntityCollectionTypeBundle\Collection\UserCollection"
+    />
+</service>
+```
+
+Use the new form type, with the required option `loader_alias` :
+```php
+// ...
+use Majora\Framework\Loader\Bridge\Form\Type\EntityCollectionType;
+
+class TestType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('user', EntityCollectionType::class, array(
+                'label' => 'Utilisateurs',
+                'loader_alias' => 'demo.user.loader',
+            ))
+        ;
+    }
+}
+```
+The form type allow you to define which method should be use on the loader to retrieve data with the option `loader_method`.
+This option use by default a method named `choiceList`. 
+The `loader_method` will have to return an `EntityCollection`.
+
+**Credits** :
+
+ - [Jamal](https://github.com/jamyouss)
 
 ## Translatable text
 

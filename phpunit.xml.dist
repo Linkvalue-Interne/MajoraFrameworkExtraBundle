@@ -3,13 +3,21 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
          colors="true"
-         bootstrap="./vendor/autoload.php"
+         bootstrap="vendor/autoload.php"
 >
+
+    <php>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
+    </php>
 
     <testsuites>
         <testsuite name="JsonFormExtension">
             <directory suffix="Test.php">src/Majora/Framework/Form/Extension/Json/Tests</directory>
             <file>src/Majora/Bundle/FrameworkExtraBundle/Tests/Functional/JsonFormExtensionTest.php</file>
+        </testsuite>
+
+        <testsuite name="majora_framework">
+            <directory>src/Majora/Framework/**/Tests</directory>
         </testsuite>
     </testsuites>
 
