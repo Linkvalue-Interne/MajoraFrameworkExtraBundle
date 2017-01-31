@@ -90,15 +90,14 @@ class DoctrineEventProxy
             return;
         }
 
-        $proxies = $loader->getLoadingDelegates();
-
-        // global handler
-        if (isset($proxies[$loaderClass = get_class($loader)])) {
-            $proxies[$loaderClass]($entity);
-            unset($proxies[$loaderClass]);
-        }
-
         // define delegates into object
-        $entity->registerLoaders($proxies);
+        $entity->registerLoaders(
+            $loader->getLoadingDelegates()
+        );
+
+        // global delegate if able to
+        if (is_callable($loader)) {
+            $loader($entity);
+        }
     }
 }
