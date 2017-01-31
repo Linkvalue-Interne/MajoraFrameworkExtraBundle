@@ -1,14 +1,14 @@
 # Installation
 
 Use [Composer](http://getcomposer.org) !
-You can pick a version at [Packagist](https://packagist.org/packages/majora/framework-extra-bundle), this bundle follows standard versioning : _dev-master_ for last updates, _~1.3_ for stable releases.
+You can pick a version at [Packagist](https://packagist.org/packages/majora/framework-extra-bundle), this bundle follows standard versioning : _v1.5.x-dev_ for last updates, _~1.5_ for stable releases.
 
 ```js
 // composer.json
 {
     "require": {
         // ...
-        "majora/framework-extra-bundle": "~1.3"
+        "majora/framework-extra-bundle": "~1.5"
     }
 }
 ```

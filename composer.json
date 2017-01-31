@@ -40,5 +40,19 @@
             "Majora\\Bundle\\": "src/Majora/Bundle",
             "Majora\\Framework\\": "src/Majora/Framework"
         }
+    },
+    "extra": {
+        "symfony-app-dir": "apps",
+        "symfony-bin-dir": "bin",
+        "symfony-var-dir": "var",
+        "symfony-web-dir": "web",
+        "symfony-tests-dir": "tests",
+        "symfony-assets-install": "relative",
+        "incenteev-parameters": {
+            "file": "apps/demo/config/parameters.yml"
+        },
+        "branch-alias": {
+            "dev-master": "1.5-dev"
+        }
     }
 }
