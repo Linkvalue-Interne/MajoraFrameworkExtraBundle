@@ -6,12 +6,30 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Majora\Framework\Normalizer\MajoraNormalizer;
 use Majora\Framework\Normalizer\Model\NormalizableInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
  * Base class for entity aggregation collection.
  */
 class EntityCollection extends ArrayCollection implements NormalizableInterface
 {
+    /**
+     * @var PropertyAccessorInterface
+     */
+    private static $propertyAccessor;
+
+    /**
+     * Create and returns local property accessor.
+     *
+     * @return PropertyAccessorInterface
+     */
+    private function getPropertyAccessor()
+    {
+        return self::$propertyAccessor = self::$propertyAccessor
+            ?: PropertyAccess::createPropertyAccessor()
+        ;
+    }
+
     /**
      * return collectionned entity class.
      *
@@ -90,12 +108,10 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
      */
     public function search(array $filters)
     {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
-
-        return $this->filter(function (CollectionableInterface $entity) use ($filters, $propertyAccessor) {
+        return $this->filter(function (CollectionableInterface $entity) use ($filters) {
             $res = true;
             foreach ($filters as $key => $value) {
-                $current = $propertyAccessor->getValue($entity, $key);
+                $current = $this->getPropertyAccessor()->getValue($entity, $key);
                 $res = $res && (is_array($value) ?
                     in_array($current, $value) :
                     $current == $value
@@ -131,33 +147,6 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
     }
 
     /**
-     * index collection by given object field.
-     *
-     * @param string $field
-     *
-     * @return EntityCollection
-     */
-    public function indexBy($field)
-    {
-        $elements = $this->toArray();
-        $this->clear();
-
-        foreach ($elements as $element) {
-            $method = sprintf('get%s', ucfirst($field));
-            if (!is_callable(array($element, $method))) {
-                throw new \InvalidArgumentException(sprintf(
-                    'Cannot index %s elements on "%s" field. At least one element doesnt implements %s() method.',
-                    get_class($this), $field, $method
-                ));
-            }
-
-            $this->set($element->$method(), $element);
-        }
-
-        return $this;
-    }
-
-    /**
      * Sort collection with given closure.
      *
      * @param \Closure $p
@@ -188,5 +177,96 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
     public function reduce(\Closure $p, $initialValue = null)
     {
         return array_reduce($this->toArray(), $p, $initialValue);
+    }
+
+    /**
+     * reads and returns value of given field into given element.
+     *
+     * @param CollectionableInterface $element
+     * @param string                  $field
+     *
+     * @return mixed
+     */
+    private function getFieldValue(CollectionableInterface $element, $field)
+    {
+        return $this->getPropertyAccessor()->getValue($element, $field);
+    }
+
+    /**
+     * index collection by given object field.
+     *
+     * @param string $field
+     *
+     * @return EntityCollection
+     */
+    public function indexBy($field)
+    {
+        $elements = $this->toArray();
+        $this->clear();
+
+        foreach ($elements as $element) {
+            $this->set(
+                $this->getFieldValue($element, $field),
+                $element
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Return value of inner objects given property as an array.
+     *
+     * This is an object version of array_column() method.
+     * @link http://php.net/manual/fr/function.array-column.php
+     *
+     * @param string $column
+     *
+     * @return array
+     */
+    public function column($column)
+    {
+        return $this
+            ->map(function (CollectionableInterface $entity) use ($column) {
+                return $this->getFieldValue($entity, $column);
+            })
+            ->toArray()
+        ;
+    }
+
+    /**
+     * Create a flattened view of collection as a key value array.
+     *
+     * @param string $indexColumn
+     * @param string $valueColumn
+     *
+     * @return array
+     */
+    public function flatten($indexColumn, $valueColumn)
+    {
+        return $this->reduce(
+            function ($carry, CollectionableInterface $entity) use ($indexColumn, $valueColumn) {
+                $carry[$this->getFieldValue($entity, $indexColumn)] = $this->getFieldValue($entity, $valueColumn);
+
+                return $carry;
+            },
+            array()
+        );
+    }
+
+    /**
+     * Returns a string representation of given column values.
+     *
+     * @param string $column
+     * @param string $slug
+     *
+     * @return string
+     */
+    public function display($column, $slug = '", "', $format = '["%s"]')
+    {
+        return sprintf($format, implode($slug, $this
+            ->column($column)
+            ->toArray()
+        ));
     }
 }

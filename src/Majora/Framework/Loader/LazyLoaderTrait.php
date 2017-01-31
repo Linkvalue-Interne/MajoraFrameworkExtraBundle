@@ -29,16 +29,15 @@ trait LazyLoaderTrait
             ));
         }
 
-        $proxies = $this->getLoadingDelegates();
+        // define delegates into object
+        $entity->registerLoaders(
+            $this->getLoadingDelegates()
+        );
 
         // global handler
-        if (isset($proxies[$loaderClass = static::class])) {
-            $proxies[$loaderClass]($entity);
-            unset($proxies[$loaderClass]);
+        if (is_callable($this)) {
+            $this($entity);
         }
-
-        // define delegates into object
-        $entity->registerLoaders($proxies);
 
         return $entity;
     }

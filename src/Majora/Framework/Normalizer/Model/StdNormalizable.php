@@ -18,6 +18,16 @@ class StdNormalizable extends \StdClass implements NormalizableInterface
     }
 
     /**
+     * Construct.
+     *
+     * @param array $data
+     */
+    public function __construct(array $data = array())
+    {
+        $this->denormalize($data);
+    }
+
+    /**
      * @see NormalizableInterface::normalize()
      */
     public function normalize($scope = 'default')
