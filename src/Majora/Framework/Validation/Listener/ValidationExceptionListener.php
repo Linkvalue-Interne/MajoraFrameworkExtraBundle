@@ -72,7 +72,7 @@ class ValidationExceptionListener implements EventSubscriberInterface
 
             // other http exceptions
             default:
-                $error = array($exception->getMessage());
+                $errors = array($exception->getMessage());
         }
 
         $data = array(
