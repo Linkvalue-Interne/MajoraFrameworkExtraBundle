@@ -90,6 +90,18 @@ class DoctrineEventProxy
             return;
         }
 
+        // global handler (deprecated)
+        if (isset($proxies[$loaderClass = static::class])) {
+            @trigger_error(
+                sprintf('Global loader delegate is deprecated and will be removed in 2.0. Make "%s" loader invokable instead, entity to handle is given at first parameter.',
+                    static::class
+                ),
+                E_USER_DEPRECATED
+            );
+            $proxies[$loaderClass]($entity);
+            unset($proxies[$loaderClass]);
+        }
+
         // define delegates into object
         $entity->registerLoaders(
             $loader->getLoadingDelegates()

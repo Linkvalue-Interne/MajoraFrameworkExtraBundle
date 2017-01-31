@@ -50,20 +50,6 @@ trait DoctrineLoaderTrait
     }
 
     /**
-     * Hook called with every entity or collection loaded through this loader.
-     *
-     * @param CollectionnableInterface|EntityCollection $entity
-     *
-     * @return $object same entity or collection
-     */
-    protected function onLoad($entity)
-    {
-        @trigger_error(__METHOD__.' is deprecated and will be removed in 2.0. Use full class delegate instead, see Majora\Framework\Loader\LazyLoaderInterface.', E_USER_DEPRECATED);
-
-        return $entity;
-    }
-
-    /**
      * Convert given array or Collection result set to managed entity collection class.
      *
      * @param array|Collection $result
@@ -99,7 +85,20 @@ trait DoctrineLoaderTrait
                 break;
         }
 
-        return $this->onLoad($collection);
+        if (is_callable(array($this, 'onLoad'))) {
+            @trigger_error(
+                sprintf('%s::onLoad() call is deprecated and will be removed in 2.0. Make "%s" invokable instead if you require to custom every "%s" loaded by ORM.',
+                    static::class,
+                    static::class,
+                    $this->entityClass
+                ),
+                E_USER_DEPRECATED
+            );
+
+            return $this->onLoad($collection);
+        }
+
+        return $collection;
     }
 
     /**
@@ -170,10 +169,25 @@ trait DoctrineLoaderTrait
     {
         $this->assertIsConfigured();
 
-        return $this->onLoad($this->createFilteredQuery($filters)
+        $entity = $this->createFilteredQuery($filters)
             ->setMaxResults(1)
             ->getOneOrNullResult()
-        );
+        ;
+
+        if (is_callable(array($this, 'onLoad'))) {
+            @trigger_error(
+                sprintf('%s::onLoad() call is deprecated and will be removed in 2.0. Make "%s" invokable instead if you require to custom every "%s" loaded by ORM.',
+                    static::class,
+                    static::class,
+                    $this->entityClass
+                ),
+                E_USER_DEPRECATED
+            );
+
+            return $this->onLoad($entity);
+        }
+
+        return $entity;
     }
 
     /**
@@ -181,6 +195,6 @@ trait DoctrineLoaderTrait
      */
     public function retrieve($id)
     {
-        return $this->onLoad($this->retrieveOne(array('id' => $id)));
+        return $this->retrieveOne(array('id' => $id));
     }
 }
