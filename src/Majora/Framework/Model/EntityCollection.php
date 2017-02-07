@@ -266,7 +266,6 @@ class EntityCollection extends ArrayCollection implements NormalizableInterface
     {
         return sprintf($format, implode($slug, $this
             ->column($column)
-            ->toArray()
         ));
     }
 }
