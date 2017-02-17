@@ -52,6 +52,11 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('json_form_extension')
                     ->canBeEnabled()
                 ->end()
+                ->arrayNode('http_extension')
+                    ->canBeEnabled()
+                    ->children()
+                    ->scalarNode('path')->end()
+                ->end()
             ->end()
         ;
 
