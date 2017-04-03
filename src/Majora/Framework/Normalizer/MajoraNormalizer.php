@@ -371,6 +371,12 @@ class MajoraNormalizer
             return $object;
         }
 
+        // In case $data is $object already denormalize,
+        // but it reached this point because $object doesn't have __construct() method
+        if (is_a($data, get_class($object))) {
+            return $data;
+        }
+
         $write = \Closure::bind(
             $this->createWrittingDelegate(),
             $object,
