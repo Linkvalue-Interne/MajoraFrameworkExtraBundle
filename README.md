@@ -1,5 +1,6 @@
 # MajoraFrameworkExtraBundle
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/4ba76532-49c8-448d-902f-9e037102b7d2/mini.png)](https://insight.sensiolabs.com/projects/beb6e229-e98c-4df6-a894-2586a64418cc) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/LinkValue/MajoraFrameworkExtraBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/LinkValue/MajoraFrameworkExtraBundle/?branch=master) [![Build Status](https://travis-ci.org/LinkValue/MajoraFrameworkExtraBundle.svg?branch=master)](https://travis-ci.org/LinkValue/MajoraFrameworkExtraBundle) [![Code Coverage](https://scrutinizer-ci.com/g/LinkValue/MajoraFrameworkExtraBundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/LinkValue/MajoraFrameworkExtraBundle/?branch=master) [![Total Downloads](https://poser.pugx.org/majora/framework-extra-bundle/downloads)](https://packagist.org/packages/majora/framework-extra-bundle) [![Latest Stable Version](https://poser.pugx.org/majora/framework-extra-bundle/v/stable)](https://packagist.org/packages/majora/framework-extra-bundle) [![License](https://poser.pugx.org/majora/framework-extra-bundle/license)](https://packagist.org/packages/majora/framework-extra-bundle)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FLinkValue%2FMajoraFrameworkExtraBundle.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FLinkValue%2FMajoraFrameworkExtraBundle?ref=badge_shield)
 
 Provides extra classes and configurations for Symfony framework.
 Helps to implements modern and clean architectures, like DDD, CQRS, Flux...
@@ -56,6 +57,9 @@ See complete [configuration reference](docs/configuration_reference.md).
 This bundle is under the MIT license. See the complete license :
 
     LICENSE.md
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FLinkValue%2FMajoraFrameworkExtraBundle.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FLinkValue%2FMajoraFrameworkExtraBundle?ref=badge_large)
 
 ## Contributing
 
